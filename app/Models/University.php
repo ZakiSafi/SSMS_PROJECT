@@ -16,4 +16,8 @@ class University extends Model
     {
         return $this->belongsTo(Province::class);
     }
+
+    public function faculties(){
+        return $this->hasMany(Faculty::class); 
+    }
 }
