@@ -17,7 +17,13 @@ class University extends Model
         return $this->belongsTo(Province::class);
     }
 
-    public function faculties(){
-        return $this->hasMany(Faculty::class); 
+    public function faculties()
+    {
+        return $this->hasMany(Faculty::class);
+    }
+
+    public function studentStatistics()
+    {
+        return $this->hasMany(StudentStatistic::class);
     }
 }
