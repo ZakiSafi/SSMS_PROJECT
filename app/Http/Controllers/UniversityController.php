@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UniversityRequest;
+use App\Http\Resources\UniversityResource;
+use App\Models\University;
 use Illuminate\Http\Request;
 
 class UniversityController extends Controller
@@ -9,40 +12,46 @@ class UniversityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+    private $model = University::class;
+
+    public function index(Request $request)
     {
-        //
+        $provinces =  $this->listRecord($request, $this->model);
+        return UniversityResource::collection($provinces);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UniversityRequest $request)
     {
-        //
+        return $this->storeRecord($request, $this->model);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(University $university)
     {
-        //
+        $university = $this->showRecord($university);
+        return new UniversityResource($university);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UniversityRequest $request, University $university)
     {
-        //
+        return $this->updateRecord($request, $university);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(University $university)
     {
-        //
+        $university = University::findOrFail($university->id);
+        return $this->deleteRecord($university);
     }
 }

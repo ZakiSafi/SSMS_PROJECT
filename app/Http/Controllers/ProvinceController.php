@@ -37,7 +37,7 @@ class ProvinceController extends Controller
     public function show(Province $province)
     {
 
-        $province = $this->showRecord($province,);
+        $province = $this->showRecord($province);
         return new ProvinceResource($province);
     }
 
