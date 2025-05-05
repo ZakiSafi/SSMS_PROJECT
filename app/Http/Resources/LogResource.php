@@ -14,6 +14,14 @@ class LogResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            "id" => $this->id,
+            "user_id" => $this->user_id,
+            "action_type" => $this->action_type,
+            "action_description" => $this->action_description,
+            "table_name" => $this->table_name,
+            "record_id" => $this->record_id,
+            "ip_address" => $this->ip_address,
+        ];
     }
 }
