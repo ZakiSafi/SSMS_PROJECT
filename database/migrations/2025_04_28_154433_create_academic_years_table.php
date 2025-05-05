@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('academic_years', function (Blueprint $table) {
             $table->id();
-            $table->year('years')->nullable();
-            $table->string('lable');
+            $table->year('year')->nullable();
+            $table->string('label');
             $table->timestamps();
         });
     }

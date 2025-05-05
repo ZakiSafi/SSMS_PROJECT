@@ -22,7 +22,8 @@ class AcademicYearRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'year' => 'required|date_format:Y',
+            'label' => 'required|string|max:255',
         ];
     }
 }

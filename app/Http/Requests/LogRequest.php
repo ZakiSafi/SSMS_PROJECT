@@ -22,7 +22,11 @@ class LogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => 'required|exists:users,id',
+            'action_type' => 'required|string|max:255',
+            'action_description' => 'nullable|string|max:255',
+            'record_id' => 'nullable|integer',
+            'ip_address' => 'nullable|ip',
         ];
     }
 }

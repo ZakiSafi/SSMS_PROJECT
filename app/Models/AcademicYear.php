@@ -7,11 +7,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AcademicYear extends Model
 {
-    protected $fillable = ['years','lable'];
+    protected $fillable = ['year', 'label'];
 
-    public function StudentStatistics():HasMany
+    public function StudentStatistics(): HasMany
     {
         return $this->hasMany(StudentStatistic::class);
     }
-
 }

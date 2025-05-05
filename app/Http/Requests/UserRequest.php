@@ -22,7 +22,11 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $this->user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'role_id' => 'required|exists:roll_permissions,id', // Assuming 'roll_permissions' is the name of the roles table
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional image upload
         ];
     }
 }

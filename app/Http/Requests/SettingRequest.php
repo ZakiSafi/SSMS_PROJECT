@@ -22,7 +22,11 @@ class SettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'university_id' => 'required|exists:universities,id',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Image validation
         ];
     }
 }
