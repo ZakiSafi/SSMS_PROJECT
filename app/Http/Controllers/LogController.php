@@ -11,7 +11,7 @@ class LogController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -46,3 +46,4 @@ class LogController extends Controller
         //
     }
 }
+//
