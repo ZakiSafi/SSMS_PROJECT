@@ -2,47 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StudentStatisticRequest;
+use App\Http\Resources\StudentStatisticResource;
 use Illuminate\Http\Request;
+use App\Models\StudentStatistic;
 
 class StudentStatisticController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    private $model = StudentStatistic::class;
     public function index()
     {
-        //
+        $studentStatistics = $this->listRecord(request(), $this->model, $with = ['academicYear', 'university', 'faculty', 'department', 'classroom']);
+        return StudentStatisticResource::collection($studentStatistics);
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StudentStatisticRequest $request)
     {
-        //
+        return $this->storeRecord($request, $this->model);
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(StudentStatistic $studentStatistic)
     {
-        //
+        return new StudentStatisticResource($studentStatistic);
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StudentStatisticRequest $request, StudentStatistic $studentStatistic)
     {
-        //
+        return $this->updateRecord($request, $studentStatistic);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(StudentStatistic $studentStatistic)
     {
-        //
+        return $this->deleteRecord($studentStatistic);
     }
+   
 }

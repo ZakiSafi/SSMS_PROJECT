@@ -17,8 +17,8 @@ class UniversityController extends Controller
 
     public function index(Request $request)
     {
-        $provinces =  $this->listRecord($request, $this->model);
-        return UniversityResource::collection($provinces);
+        $university =  $this->listRecord($request, $this->model, $with = ['provinces']);
+        return UniversityResource::collection($university);
     }
 
     /**
