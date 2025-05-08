@@ -1,4 +1,5 @@
 <template>
+    <CreateUniversity v-if="UniversityRepository.createDialog" />
     
     <div class="all-expense rounded-xl" :dir="dir">
         <div class="card rounded-xl">
@@ -12,7 +13,7 @@
                 <div class="text-field w-25">
                     <v-text-field
                         :loading="loading"
-                        color="primaryOld"
+                        color="primary"
                         density="compact"
                         variant="outlined"
                         label="search"
@@ -22,13 +23,13 @@
                     ></v-text-field>
                 </div>
                 <div class="btn">
-                    <v-btn variant="outlined" color="primaryOld" class="px-6">
+                    <v-btn variant="outlined" color="primary" class="px-6">
                         Filter
                     </v-btn>
                     &nbsp;
                     <v-btn
                         @click="CreateDialogShow"
-                        color="primaryOld"
+                        color="primary"
                         variant="flat"
                         text="create"
                         class="px-6"
@@ -110,6 +111,7 @@
 </template>
 
 <script setup>
+import CreateUniversity from "./CreateUniversity.vue"
 import { ref, onMounted ,computed} from "vue";
 import { useUniversityRepository } from "@/store/UniversityRepository";
 const UniversityRepository = useUniversityRepository();
@@ -117,18 +119,21 @@ const UniversityRepository = useUniversityRepository();
 
 // bulk delete
 
-// delete and update Create
+// delete and update Createun
 const CreateDialogShow = () => {
-    (UniversityRepository.owner = {}),UniversityRepository.setEditMode(false);
-   UniversityRepository.createDialog = true;
+    UniversityRepository.university = {};
+    UniversityRepository.isEditMode = false;
+    UniversityRepository.createDialog = true;
 };
+
+
 
 const edit = (item) => {
     console.log(item, "me");
-   UniversityRepository.setEditMode(true);
-   UniversityRepository.owner = {};
-    if (Object.keys(UniversityRepository.owner).length === 0) {
-       UniversityRepository.fetchOwner(item.id)
+    UniversityRepository.isEditMode = true;
+   UniversityRepository.university = {};
+    if (Object.keys(UniversityRepository.university).length === 0) {
+       UniversityRepository.FetchUniversity(item.id)
             .then(() => {
                UniversityRepository.createDialog = true;
             })
@@ -144,9 +149,7 @@ const deleteItem = async (item) => {
 // header
 const headers = [
     { title: "Name", key: "name", align: "start", sortable: false },
-    { title: "pickup", key: "totalAmount", align: "center", sortable: false },
-    { title:"phone", key: "phone", align: "center", sortable: false },
-
-    { title: "action", key: "action", align: "end", sortable: false },
+    { title: "Province", key: "province.name", align: "center", sortable: false },
+    { title: "Action", key: "action", align: "end", sortable: false },
 ];
 </script>

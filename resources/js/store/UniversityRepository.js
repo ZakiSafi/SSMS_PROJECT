@@ -21,6 +21,9 @@ export let useUniversityRepository = defineStore('universityRepository', {
 
             uniSearch: ref(""),
             universities: reactive([]),
+            university: reactive({}),
+            provinces: ref([]),
+
 
         }
 
@@ -30,10 +33,10 @@ export let useUniversityRepository = defineStore('universityRepository', {
             this.loading = true;
 
             const response = await axios.get(
-                `universties?page=${page}&perPage=${itemsPerPage}&search=${this.uniSearch}`
+                `universities?page=${page}&perPage=${itemsPerPage}&search=${this.uniSearch}`
             );
             this.universities = response.data.data;
-            // this.totalItems = response.data.meta.total;
+            this.totalItems = response.data.meta.total;
             this.loading = false;
         },
         async FetchUniversity(id) {
@@ -53,7 +56,7 @@ export let useUniversityRepository = defineStore('universityRepository', {
                 // Adding a custom header to the Axios request
                 const config = {
                     method: "POST",
-                    url: "universties",
+                    url: "universities",
 
                     data: formData,
                 };
@@ -74,7 +77,7 @@ export let useUniversityRepository = defineStore('universityRepository', {
             try {
                 const config = {
                     method: "PUT",
-                    url: "universties/" + id,
+                    url: "universities/" + id,
 
                     data: data,
                 };
@@ -113,6 +116,16 @@ export let useUniversityRepository = defineStore('universityRepository', {
                 this.error = err;
             }
         },
+
+        async FetchProvinces() {
+            try {
+                const response = await axios.get("provinces");
+                this.provinces = response.data.data; 
+            } catch (err) {
+                console.error("Failed to fetch provinces:", err);
+            }
+        },
+        
 
     }
 
