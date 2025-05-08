@@ -23,12 +23,15 @@ class User extends Authenticatable
         'password',
     ];
 
-
+    public function rollPermissions()
+    {
+        return $this->belongsTo(RollPermission::class);
+    }
     public function logs()
     {
         return $this->hasMany(Log::class);
     }
-    
+
     public function studentStatistics()
     {
         return $this->hasMany(StudentStatistic::class);
