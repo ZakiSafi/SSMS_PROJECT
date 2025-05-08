@@ -1,84 +1,175 @@
 <template>
-    <v-card>
-        <v-layout>
-            <v-navigation-drawer
-                v-model="drawer"
-                :rail="rail"
-                permanent
-                :width="200"
-                :rail-width="56"
+    <v-layout class="rounded rounded-md side">
+        <v-navigation-drawer
+            v-model="drawer"
+            :rail="rail"
+            permanent
+            color="#F8F8F8"
 
-                class="custom-drawer pt-6"
-                @click="rail = false"
+            floating
+
+            :location="dir"
+
+            class="sidebar"
+
+        >
+
+            <!-- <NavigationDrawer  :dir="isRtl ? 'rtl' : 'ltr'"  /> -->
+
+        </v-navigation-drawer>
+
+
+
+        <v-main class="d-flex flex-col" style="min-height: 300px">
+
+            <v-card
+
+                variant="flat"
+
+                elevation="1"
+
+                :style="vCardStyle"
+
+                class="min-h-screen d-flex flex-col m-4 ml-4 py-4 px-4 rounded-xl"
+
             >
 
+                <router-view></router-view>
 
-                <v-list density="compact" nav>
-                    <v-list-item
-                        prepend-icon="mdi-home-city"
-                        title="Home"
-                        value="home"
-                    >
-                        <template v-slot:append>
-                            <v-btn
-                                prepend-icon="mdi-chevron-left"
-                                variant="text"
-                                @click.stop="rail = !rail"
-                            ></v-btn> </template
-                    ></v-list-item>
-                    <v-list-item
-                        prepend-icon="mdi-home-city"
-                        title="Department"
-                        value="Department"
-                        to="/department"
-                    ></v-list-item>
-                    <v-list-item
-                        prepend-icon="mdi-account"
-                        title="My Account"
-                        value="account"
-                    ></v-list-item>
-                    <v-list-item
-                        prepend-icon="mdi-account-group-outline"
-                        title="Users"
-                        value="users"
-                    ></v-list-item>
-                </v-list>
-                <v-divider></v-divider>
-                <v-list-item
-                    prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-                    title="Jawad Mujaddidi"
-                    nav
-                >
-                </v-list-item>
-            </v-navigation-drawer>
-        </v-layout>
-    </v-card>
+            </v-card>
+
+        </v-main>
+
+    </v-layout>
+
 </template>
 
-<script setup>
-import { ref } from "vue";
 
-const drawer = ref(true);
-const rail = ref(false);
+
+<script setup>
+
+import { ref, watch, computed } from "vue";
+
+import { useRoute } from "vue-router"; // Import to get the current route
+
+import NavigationDrawer from "../components/NavigationDrawer.vue";
+
+// import { useI18n } from "vue-i18n";
+
+// const {t, locale } = useI18n();
+
+// import { useAuthRepository } from "@/repositories/AuthRepository.js";
+
+// const isRtl = ref(locale.value === "fa"); // Assuming 'fa' is the code for Dari
+
+// watch(locale, (newLocale) => {
+
+//     isRtl.value = newLocale === "fa";
+
+// });
+
+// const authRepo = useAuthRepository();
+
+// const drawer = ref(true);
+
+// const rail = ref(authRepo.rail);
+
+
+
+// watch(
+
+//     () => authRepo.rail,
+
+//     (newValue) => {
+
+//         rail.value = newValue;
+
+//     }
+
+// );
+
+
+
+// const dir = computed(() => {
+
+//     if (locale.value === "fa") {
+
+//         return "right"; // Reverse the order for Farsi
+
+//     }
+
+
+
+//     return "left";
+
+// });
+
+
+
+// Use Vue Router's useRoute to determine the current route
+
+const route = useRoute();
+
+const vCardStyle = computed(() => {
+
+    console.log(route.path);
+
+    return route.path === "/dashboard" // Replace 'dashboard' with the actual name of your route
+
+        ? "background-color:#f8f8f8"
+
+        : "background-color:white";
+
+});
+
 </script>
 
+
+
 <style scoped>
-.custom-drawer {
-    background-color: #f5f5f5; /* Light background for a clean look */
-    border-right: 1px solid #ddd; /* Subtle border for separation */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Add a slight shadow for depth */
+
+.scrollable-content {
+
+    max-height: 80vh;
+
+    overflow-y: auto;
+
+    /* direction: ltr; */
+
 }
 
-.v-list-item {
-    transition: all 0.3s ease; /* Smooth hover effect */
+.scrollable-content::-webkit-scrollbar {
+
+    width: 4px;
+
+    display: none;
+
 }
 
-.v-list-item:hover {
-    background-color: #e0e0e0; /* Highlight on hover */
-    border-radius: 8px; /* Rounded corners for a modern look */
+
+
+.scrollable-content::-webkit-scrollbar-track {
+
+    background: #f1f1f1;
+
 }
 
-.v-btn {
-    color: #1976d2; /* Primary color for buttons */
+
+
+.scrollable-content::-webkit-scrollbar-thumb {
+
+    background: #888;
+
+    border-radius: 4px;
+
 }
+
+
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+
+    background: #555;
+
+}
+
 </style>
