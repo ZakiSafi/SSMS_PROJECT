@@ -1,2 +1,8 @@
-@import "tailwindcss";
-@source "../views";
+@tailwind base;
+@tailwind components;
+@tailwind utilities
+
+
+body {
+    font-family: 'Roboto', sans-serif !important;
+}
