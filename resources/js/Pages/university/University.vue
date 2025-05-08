@@ -6,7 +6,6 @@
             <v-divider
                 :thickness="1"
                 class="border-opacity-100"
-                color="success"
             ></v-divider>
 
             <div class="btn-search pt-12 pb-6">
@@ -39,7 +38,7 @@
             </div>
             <!-- v-table server  -->
             <div class="overflow-x-hidden">
-                <v-app>
+                <v-app class="bg-white ">
                     <v-main class="main">
                         <v-row>
                             <v-col>
@@ -144,7 +143,7 @@ const deleteItem = async (item) => {
 };
 // header
 const headers = [
-    { title: "name", key: "name", align: "start", sortable: false },
+    { title: "Name", key: "name", align: "start", sortable: false },
     { title: "pickup", key: "totalAmount", align: "center", sortable: false },
     { title:"phone", key: "phone", align: "center", sortable: false },
 

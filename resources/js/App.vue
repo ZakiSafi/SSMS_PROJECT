@@ -1,11 +1,11 @@
 <template>
-  <v-layout class="rounded rounded-md side" >
+  <v-layout class="rounded rounded-md side bg-white" >
 
       <v-navigation-drawer
           
           
           permanent
-          color="#F8F8F8"
+          color="white"
           floating
           
           class="sidebar"
@@ -18,7 +18,7 @@
 
 
 
-      <v-main class="d-flex flex-col" style="min-height: 300px">
+      <v-main class="d-flex flex-col bg-white" style="min-height: 300px">
 
           <v-card
 
@@ -108,17 +108,17 @@ import NavigationDrawer from "./components/NavigationDrawer.vue";
 
 const route = useRoute();
 
-const vCardStyle = computed(() => {
+// const vCardStyle = computed(() => {
 
-  console.log(route.path);
+//   console.log(route.path);
 
-  return route.path === "/dashboard" // Replace 'dashboard' with the actual name of your route
+//   return route.path === "/dashboard" // Replace 'dashboard' with the actual name of your route
 
-      ? "background-color:#f8f8f8"
+//       ? "background-color:#f8f8f8"
 
-      : "background-color:white";
+//       : "background-color:white";
 
-});
+// });
 
 </script>
 
@@ -126,7 +126,11 @@ const vCardStyle = computed(() => {
 
 <style scoped>
 
+
+
 .scrollable-content {
+
+
 
   max-height: 80vh;
 

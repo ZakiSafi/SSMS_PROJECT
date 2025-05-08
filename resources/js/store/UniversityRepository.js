@@ -33,7 +33,7 @@ export let useUniversityRepository = defineStore('universityRepository', {
                 `universties?page=${page}&perPage=${itemsPerPage}&search=${this.uniSearch}`
             );
             this.universities = response.data.data;
-            this.totalItems = response.data.meta.total;
+            // this.totalItems = response.data.meta.total;
             this.loading = false;
         },
         async FetchUniversity(id) {
