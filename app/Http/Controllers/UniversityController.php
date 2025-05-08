@@ -32,9 +32,9 @@ class UniversityController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(University $university)
+    public function show(University $universities)
     {
-        $university = $this->showRecord($university);
+        $university = $this->showRecord($universities);
         return new UniversityResource($university);
     }
 
@@ -49,9 +49,9 @@ class UniversityController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(University $university)
+    public function destroy(University $universities)
     {
-        $university = University::findOrFail($university->id);
+        $university = University::findOrFail($universities->id);
         return $this->deleteRecord($university);
     }
 }

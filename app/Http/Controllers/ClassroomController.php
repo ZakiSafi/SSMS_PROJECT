@@ -18,8 +18,6 @@ class ClassroomController extends Controller
     {
         $classroom = $this->listRecord($request, $this->model);
         return ClassroomResource::collection($classroom);
-
-
     }
 
     /**
@@ -27,13 +25,13 @@ class ClassroomController extends Controller
      */
     public function store(ClassroomRequest $request)
     {
-        return $this->storeRecord($request,$this->model);
+        return $this->storeRecord($request, $this->model);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show( classroom $classroom)
+    public function show(classroom $classroom)
     {
         return new ClassroomResource($this->showRecord($classroom));
     }
@@ -41,16 +39,16 @@ class ClassroomController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ClassroomRequest $request, Classroom $classroom)
+    public function update(ClassroomRequest $request, Classroom $classRoom)
     {
-        return $this->updateRecord($request, $classroom);
+        return $this->updateRecord($request, $classRoom);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Classroom $classroom)
+    public function destroy(Classroom $classRoom)
     {
-        return $this->deleteRecord($classroom);
+        return $this->deleteRecord($classRoom);
     }
 }
