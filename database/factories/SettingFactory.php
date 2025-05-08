@@ -17,7 +17,11 @@ class SettingFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+           'university_id' => $this->faker->numberBetween(1, 20),
+            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->faker->phoneNumber(),
+            'address' => $this->faker->address(),
+            'image' => $this->faker->imageUrl(640, 480, 'business', true, 'Faker'),
         ];
     }
 }

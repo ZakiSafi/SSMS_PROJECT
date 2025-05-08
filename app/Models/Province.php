@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Province extends Model
 {
     use HasFactory;
+    use HasFactory;
     protected $fillable = [
         'name',
-        
+
     ];
     public function university(): HasMany
     {
