@@ -32,10 +32,10 @@ class UniversityController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(University $universities)
+    public function show(University $university)
     {
-        $university = $this->showRecord($universities);
-        return new UniversityResource($university);
+
+        return new UniversityResource($this->showRecord($university));
     }
 
     /**

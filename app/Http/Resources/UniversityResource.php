@@ -17,7 +17,10 @@ class UniversityResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'province_id' => $this->province_id,
+            'province' => [
+                'id' => $this->province->id,
+                'name' => $this->province->name,
+            ]
         ];
     }
 }

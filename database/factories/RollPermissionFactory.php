@@ -17,7 +17,8 @@ class RollPermissionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->randomElement(['admin', 'editor', 'viewer', 'guest']),
+            'description' => $this->faker->sentence(),
         ];
     }
 }

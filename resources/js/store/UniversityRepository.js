@@ -1,14 +1,11 @@
-import {defineStore} from 'pinia';
-import { reactive,ref } from 'vue';
-import {axios} from '../axios';
+import { defineStore } from "pinia";
+import { reactive, ref } from "vue";
+import { axios } from "../axios";
 
-
-export let useUniversityRepository = defineStore('universityRepository', {
-    state(){
-        return{
-
+export let useUniversityRepository = defineStore("universityRepository", {
+    state() {
+        return {
             isEditMode: ref(false),
-          
 
             search: ref(""),
             serverItems: ref([]),
@@ -21,16 +18,14 @@ export let useUniversityRepository = defineStore('universityRepository', {
 
             uniSearch: ref(""),
             universities: reactive([]),
-
-        }
-
+        };
     },
-    actions:{
+    actions: {
         async FetchUniversities({ page, itemsPerPage }) {
             this.loading = true;
 
             const response = await axios.get(
-                `universties?page=${page}&perPage=${itemsPerPage}&search=${this.uniSearch}`
+                `universities?page=${page}&perPage=${itemsPerPage}&search=${this.uniSearch}`
             );
             this.universities = response.data.data;
             // this.totalItems = response.data.meta.total;
@@ -113,9 +108,5 @@ export let useUniversityRepository = defineStore('universityRepository', {
                 this.error = err;
             }
         },
-
-    }
-
+    },
 });
-     
-

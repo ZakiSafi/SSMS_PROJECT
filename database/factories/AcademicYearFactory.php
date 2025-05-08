@@ -17,7 +17,8 @@ class AcademicYearFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'label' => $this->faker->randomElement(['Spring', 'Autumn', 'Winter', 'Summer']),
+            'year' => $this->faker->year(),
         ];
     }
 }

@@ -17,7 +17,7 @@ class ClassroomFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->randomElement(['First', 'Second', 'Third', 'Fourth']),
         ];
     }
 }

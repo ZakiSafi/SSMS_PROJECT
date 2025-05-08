@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Log;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class LogSeeder extends Seeder
 {
@@ -12,6 +13,6 @@ class LogSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Log::fatory()->count(20)->create();
     }
 }
