@@ -1,8 +1,18 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities
-
+@tailwind utilities;
 
 body {
-    font-family: 'Roboto', sans-serif !important;
+    background-color: #F8F8F8;
+    font-family: 'Roboto', sans-serif;
+}
+
+div.v-data-table-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-search {
+    display: flex;
+    justify-content: space-between;
 }

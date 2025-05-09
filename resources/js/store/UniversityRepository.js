@@ -18,7 +18,16 @@ export let useUniversityRepository = defineStore("universityRepository", {
 
             uniSearch: ref(""),
             universities: reactive([]),
+<<<<<<< HEAD
         };
+=======
+            university: reactive({}),
+            provinces: ref([]),
+
+
+        }
+
+>>>>>>> b4df206cf88418209614f8ac3471f47bbbb90f82
     },
     actions: {
         async FetchUniversities({ page, itemsPerPage }) {
@@ -28,7 +37,7 @@ export let useUniversityRepository = defineStore("universityRepository", {
                 `universities?page=${page}&perPage=${itemsPerPage}&search=${this.uniSearch}`
             );
             this.universities = response.data.data;
-            // this.totalItems = response.data.meta.total;
+            this.totalItems = response.data.meta.total;
             this.loading = false;
         },
         async FetchUniversity(id) {
@@ -48,7 +57,7 @@ export let useUniversityRepository = defineStore("universityRepository", {
                 // Adding a custom header to the Axios request
                 const config = {
                     method: "POST",
-                    url: "universties",
+                    url: "universities",
 
                     data: formData,
                 };
@@ -69,7 +78,7 @@ export let useUniversityRepository = defineStore("universityRepository", {
             try {
                 const config = {
                     method: "PUT",
-                    url: "universties/" + id,
+                    url: "universities/" + id,
 
                     data: data,
                 };
@@ -108,5 +117,21 @@ export let useUniversityRepository = defineStore("universityRepository", {
                 this.error = err;
             }
         },
+<<<<<<< HEAD
     },
+=======
+
+        async FetchProvinces() {
+            try {
+                const response = await axios.get("provinces");
+                this.provinces = response.data.data; 
+            } catch (err) {
+                console.error("Failed to fetch provinces:", err);
+            }
+        },
+        
+
+    }
+
+>>>>>>> b4df206cf88418209614f8ac3471f47bbbb90f82
 });
