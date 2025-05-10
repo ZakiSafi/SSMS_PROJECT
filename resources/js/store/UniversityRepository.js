@@ -113,7 +113,6 @@ export let useUniversityRepository = defineStore("universityRepository", {
                 this.error = err;
             }
         },
-<<<<<<< HEAD
 
         async FetchProvinces() {
             try {
@@ -127,7 +126,4 @@ export let useUniversityRepository = defineStore("universityRepository", {
 
     }
 
-=======
-    },
->>>>>>> ba5efa2594ad23b7b69d8d1223a316f1771d57e7
 });
