@@ -49,9 +49,8 @@ class UniversityController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(University $universities)
+    public function destroy(University $university)
     {
-        $university = University::findOrFail($universities->id);
         return $this->deleteRecord($university);
     }
 }
