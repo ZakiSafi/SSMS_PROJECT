@@ -82,16 +82,16 @@
   }
 
   .menu-item:hover {
-    background-color: #695CFE !important;
+    background-color: #7d72f2 !important;
     color: #fff !important;
   }
 
   .menu-item:hover .v-icon {
-    color: #695CFE !important;
+    color: #7d72f2!important;
   }
 
   .menu-item.v-list-item--active {
-    background-color: #695CFE !important;
+    background-color: #4f46e5 !important;
     color: white !important;
   }
 

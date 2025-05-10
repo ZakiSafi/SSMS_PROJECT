@@ -100,10 +100,6 @@ export let useUniversityRepository = defineStore("universityRepository", {
                 this.error = err;
             }
         },
-<<<<<<< HEAD
-
-=======
->>>>>>> 08088580b1fd5edbd00edaef4f1f42503974122c
         async FetchProvinces() {
             try {
                 const response = await axios.get("provinces");
@@ -112,12 +108,8 @@ export let useUniversityRepository = defineStore("universityRepository", {
                 console.error("Failed to fetch provinces:", err);
             }
         },
-<<<<<<< HEAD
         
 
     }
 
-=======
-    },
->>>>>>> 08088580b1fd5edbd00edaef4f1f42503974122c
 });

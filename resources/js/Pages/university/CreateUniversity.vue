@@ -72,7 +72,6 @@ const UniversityRepository = useUniversityRepository();
 
 onMounted(() => {
     UniversityRepository.FetchProvinces();
-    UniversityRepository.FetchUniversity();
 });
 
 const formRef = ref(null);
@@ -80,7 +79,7 @@ const formRef = ref(null);
 const formData = reactive({
     id: UniversityRepository.university.id,
     name: UniversityRepository.university.name,
-    province_id: UniversityRepository.university.province_id || null,
+    province_id: UniversityRepository.university.province?.id || null,
 });
 
 const rules = {

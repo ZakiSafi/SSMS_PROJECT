@@ -1,5 +1,6 @@
 <template>
   <v-layout class="rounded rounded-md side bg-white" >
+    
 
       <v-navigation-drawer
           
@@ -125,7 +126,6 @@ const route = useRoute();
 
 
 <style scoped>
-
 
 
 .scrollable-content {
