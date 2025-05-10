@@ -66,6 +66,7 @@ class Controller extends BaseController
      */
     public function updateRecord($request, $record)
     {
+     
         $this->deleteImage($record); // Delete existing images from storage
         $record = tap($record)->update($request->validated()); // Update the record with new data
         $this->storeImage($request, $record); // Store new image files

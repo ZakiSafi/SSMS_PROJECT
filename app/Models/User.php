@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'roll_permission_id',
+        'image'
     ];
 
     public function rollPermissions()
