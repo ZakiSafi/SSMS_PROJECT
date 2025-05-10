@@ -19,8 +19,9 @@ class StudentStatisticResource extends JsonResource
             "university_id" => $this->university_id,
             "faculty_id" => $this->name,
             "department_id" => $this->department_id,
-            "classroom_id" => $this->total_students,
-            "gender" => $this->gender,
+            "classroom_id" => $this->classroom_id,
+            "male_total" => $this->male_total,
+            "female_total" => $this->female_total,
             "student_type" => $this->student_type,
         ];
     }

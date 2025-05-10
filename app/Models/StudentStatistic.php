@@ -15,7 +15,8 @@ class StudentStatistic extends Model
         'faculty_id',
         'department_id',
         'classroom_id',
-        'gender',
+        'male_total',
+        'female_total',
         'student_type',
     ];
 
