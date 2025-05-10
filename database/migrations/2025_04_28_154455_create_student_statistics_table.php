@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('academic_year_id')->constrained()->cascadeOnDelete();
             $table->foreignId('university_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('faculty_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('faculty_id')->constrained('faculties')->cascadeOnDelete();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
             $table->enum('gender', ['male', 'female'])->default('male');

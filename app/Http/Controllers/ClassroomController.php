@@ -31,9 +31,9 @@ class ClassroomController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(classroom $classroom)
+    public function show(classroom $classRoom)
     {
-        return new ClassroomResource($this->showRecord($classroom));
+        return new ClassroomResource($this->showRecord($classRoom));
     }
 
     /**
