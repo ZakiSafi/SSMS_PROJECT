@@ -1,101 +1,107 @@
-<template >
+<template>
+  <div class="sidebar-container">
+    <!-- Top menu -->
+    <div class="menu-section">
+      <v-list density="compact" nav>
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-map-marker-radius"
+          title="Provinces"
+          to="/provinces"
+        />
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-account"
+          title="My Account"
+          to="/account"
+        />
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-account-group-outline"
+          title="Users"
+          to="/users"
+        />
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-account-group-outline"
+          title="University"
+          to="/university"
+        />
+      </v-list>
+    </div>
 
-
-
-<div class="d-flex flex-column justify-space-between h-100">
-  <div>
-            <v-list-item>
-              <template v-slot:append>
-                <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
-              </template>
-            </v-list-item>
-
-            <v-list density="compact" nav>
-              <v-list-item class="menu-item" prepend-icon="mdi-home-city" title="Home" value="home" to="/department" />
-              <v-list-item class="menu-item" prepend-icon="mdi-account" title="My Account" value="account" />
-              <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Users" value="users" />
-              <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="university" to="/university" />
-            </v-list>
-          </div>
-
-          <!-- 👇Logout-->
-          <div>
-            <v-divider />
-            <v-list-item
-              prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-              title="Logout"
-              value="logout"
-              nav
-            />
-          </div>
-        </div>
-    
-
-
-
+    <!-- Logout -->
+    <div class="logout-section">
+      <v-divider />
+      <v-list-item
+        class="logout-item"
+        prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
+        title="Logout"
+        value="logout"
+        nav
+      />
+    </div>
+  </div>
 </template>
 
-  <script setup>
-  import { ref } from 'vue'
+<script setup>
+import { ref } from 'vue';
 
-  const drawer = ref(true)
-  const rail = ref(false)
+const drawer = ref(true);
+const rail = ref(false);
 </script>
-  <style scoped>
 
+<style scoped>
+.sidebar-container {
+  height: 100%;
+  background-color: #F8F8F8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 16px;
+}
 
+.menu-section {
+  flex-grow: 1;
+}
 
-  .scrollable-content {
-    background-color: #fff;
-    border-right: 1px solid #e0e0e0;
-    padding: 2px;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.04);
-    height: 70vh;
+.menu-item {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  padding-left: 16px;
+  margin: 4px 8px;
+  color: #333;
+}
 
-    /* Hide scrollbar across browsers */
-    overflow-y: scroll;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
+.menu-item:hover {
+  background-color: #04529D !important;
+  color: #fff !important;
+}
 
-  .scrollable-content::-webkit-scrollbar {
-    display: none;
-  }
+.menu-item:hover .v-icon {
+  color: #fff !important;
+}
 
-  .scrollable-content::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
+.menu-item.v-list-item--active {
+  background-color: #04529D !important;
+  color: white !important;
+}
 
-  .scrollable-content::-webkit-scrollbar-thumb {
-    background: #b1b1b1;
-    border-radius: 4px;
-  }
+.menu-item.v-list-item--active .v-icon {
+  color: white !important;
+}
 
-  .scrollable-content::-webkit-scrollbar-thumb:hover {
-    background: #a6a5a5;
-  }
+.logout-section {
+  padding-bottom: 16px;
+}
 
-  .menu-item {
-    border-radius: 8px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    padding-left: 16px;
-  }
+.logout-item {
+  padding-left: 16px;
+  margin: 4px 8px;
+  cursor: pointer;
+}
 
-  .menu-item:hover {
-    background-color: #7d72f2 !important;
-    color: #fff !important;
-  }
-
-  .menu-item:hover .v-icon {
-    color: #7d72f2!important;
-  }
-
-  .menu-item.v-list-item--active {
-    background-color: #4f46e5 !important;
-    color: white !important;
-  }
-
-  .menu-item.v-list-item--active .v-icon {
-    color: white !important;
-  }
+.logout-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
 </style>

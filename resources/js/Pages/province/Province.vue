@@ -1,9 +1,9 @@
 <template>
-  <CreateUniversity v-if="UniversityRepository.createDialog" />
+  <CreateProvince v-if="ProvinceRepository.createDialog" />
 
   <div class="all-expense rounded-xl ">
     <div class=" rounded-">
-      <AppBar mainTitle="University" subTitle="jawad" />
+      <AppBar pageTitle="Province" />
       
       <!-- Divider between AppBar and content -->
       <v-divider :thickness="1" class="border-opacity-100 " ></v-divider>
@@ -19,7 +19,7 @@
             label="Search"
             append-inner-icon="mdi-magnify"
             hide-details
-            v-model="UniversityRepository.uniSearch"
+            v-model="ProvinceRepository.provinceSearch"
             class="search-field"
           ></v-text-field>
         </div>
@@ -34,13 +34,13 @@
 
       <!-- Data Table Section -->
       <v-data-table-server
-        v-model:items-per-page="UniversityRepository.itemsPerPage"
+        v-model:items-per-page="ProvinceRepository.itemsPerPage"
         :headers="headers"
-        :items-length="UniversityRepository.totalItems"
-        :items="UniversityRepository.universities"
-        :loading="UniversityRepository.loading"
-        :search="UniversityRepository.uniSearch"
-        @update:options="UniversityRepository.FetchUniversities"
+        :items-length="ProvinceRepository.totalItems"
+        :items="ProvinceRepository.provinces"
+        :loading="ProvinceRepository.loading"
+        :search="ProvinceRepository.provinceSearch"
+        @update:options="ProvinceRepository.FetchProvinces"
         class="w-100 mx-auto"
         hover
       >
@@ -70,24 +70,24 @@
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
-import CreateUniversity from "./CreateUniversity.vue";
 import { ref } from "vue";
-import { useUniversityRepository } from "@/store/UniversityRepository";
+import { useProvinceRepository } from "@/store/ProvinceRepository";
+import CreateProvince from "./CreateProvince.vue";
 
-const UniversityRepository = useUniversityRepository();
+const ProvinceRepository = useProvinceRepository();
 
 const CreateDialogShow = () => {
-  UniversityRepository.university = {};
-  UniversityRepository.isEditMode = false;
-  UniversityRepository.createDialog = true;
+  ProvinceRepository.province = {};
+  ProvinceRepository.isEditMode = false;
+  ProvinceRepository.createDialog = true;
 };
 
 const edit = (item) => {
-  UniversityRepository.isEditMode = true;
-  UniversityRepository.university = {};
-  UniversityRepository.FetchUniversity(item.id)
+  ProvinceRepository.isEditMode = true;
+  ProvinceRepository.province = {};
+  ProvinceRepository.FetchProvince(item.id)
     .then(() => {
-      UniversityRepository.createDialog = true;
+      ProvinceRepository.createDialog = true;
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
@@ -95,12 +95,11 @@ const edit = (item) => {
 };
 
 const deleteItem = async (item) => {
-  await UniversityRepository.DeleteUniversity(item.id);
+  await ProvinceRepository.DeleteProvince(item.id);
 };
 
 const headers = [
   { title: "Name", key: "name", align: "start", sortable: false },
-  { title: "Province", key: "province.name", align: "center", sortable: false },
   { title: "Action", key: "action", align: "end", sortable: false },
 ];
 </script>
