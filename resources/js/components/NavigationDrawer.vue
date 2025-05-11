@@ -5,7 +5,7 @@
       <v-list density="compact" nav>
         <v-list-item
           class="menu-item"
-          prepend-icon="mdi-map-marker-radius"
+          prepend-icon="mdi-map-marker"
           title="Provinces"
           to="/provinces"
         />
@@ -58,7 +58,7 @@ const rail = ref(false);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-top: 16px;
+  padding: 16px 8px;
 }
 
 .menu-section {
@@ -67,41 +67,60 @@ const rail = ref(false);
 
 .menu-item {
   border-radius: 8px;
-  transition: all 0.3s ease;
-  padding-left: 16px;
-  margin: 4px 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 4px 0;
   color: #333;
+}
+
+.menu-item .v-icon {
+  color: #04529D; /* Primary color for icons */
+  transition: all 0.3s ease;
+  font-size: 1.5rem; /* Larger icons */
+  margin-right: 12px;
 }
 
 .menu-item:hover {
   background-color: #04529D !important;
   color: #fff !important;
+  transform: translateX(4px);
 }
 
 .menu-item:hover .v-icon {
   color: #fff !important;
+  transform: scale(1.1);
 }
 
 .menu-item.v-list-item--active {
-  background-color: #04529D !important;
-  color: white !important;
+  background-color: rgba(4, 82, 157, 0.1) !important;
+  color: #04529D !important;
+  border-left: 4px solid #04529D;
 }
 
 .menu-item.v-list-item--active .v-icon {
-  color: white !important;
+  color: #04529D !important;
 }
 
 .logout-section {
-  padding-bottom: 16px;
+  padding: 8px 0;
 }
 
-.logout-item {
-  padding-left: 16px;
-  margin: 4px 8px;
-  cursor: pointer;
+
+
+
+
+/* RTL support */
+[dir="rtl"] .menu-item:hover {
+  transform: translateX(-4px);
 }
 
-.logout-item:hover {
-  background-color: rgba(0, 0, 0, 0.04);
+[dir="rtl"] .menu-item.v-list-item--active {
+  border-left: none;
+  border-right: 4px solid #04529D;
+}
+
+[dir="rtl"] .menu-item .v-icon,
+[dir="rtl"] .logout-item .v-icon {
+  margin-right: 0;
+  margin-left: 12px;
 }
 </style>

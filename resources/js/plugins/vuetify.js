@@ -23,7 +23,7 @@ export default createVuetify({
                     secondary: '#7d72f2',
                     background: '#f5f5f5',
                     surface: '#FFFFFF',
-                    head: '#84b2dc'
+                    head: '#B9D3EE'
                 },
             },
         },

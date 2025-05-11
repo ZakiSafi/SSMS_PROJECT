@@ -27,6 +27,7 @@
 body {
   font-family: 'BNazanin', 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
   background-color: #F8F8F8 !important;
+  
 }
 /* RTL specific styles */
 /* [dir="rtl"] body {
@@ -62,7 +63,7 @@ body {
 
 /* Header row styling */
 .v-data-table__thead tr {
-  background-color: #84b2dc;
+  background-color: rgba(4, 82, 157, 0.1);
   box-shadow: inset 4px 0 0 0 var(--primary-color);
   border-bottom: 1px solid white !important;
 

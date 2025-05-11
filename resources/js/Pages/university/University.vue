@@ -3,7 +3,7 @@
 
   <div class="all-expense rounded-xl ">
     <div class=" rounded-">
-      <AppBar mainTitle="University" subTitle="jawad" />
+      <AppBar pageTitle="University"  />
       
       <!-- Divider between AppBar and content -->
       <v-divider :thickness="1" class="border-opacity-100 " ></v-divider>
