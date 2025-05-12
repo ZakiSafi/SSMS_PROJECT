@@ -15,7 +15,7 @@ class StudentStatisticController extends Controller
     private $model = StudentStatistic::class;
     public function index()
     {
-        $studentStatistics = $this->listRecord(request(), $this->model, $with = ['academicYear', 'university', 'faculty', 'department', 'classroom']);
+        $studentStatistics = $this->listRecord(request(), $this->model, ['academicYear', 'university', 'faculty', 'department', 'classroom']);
         return StudentStatisticResource::collection($studentStatistics);
 
     }
@@ -54,5 +54,5 @@ class StudentStatisticController extends Controller
     {
         return $this->deleteRecord($studentStatistic);
     }
-   
+
 }

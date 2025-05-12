@@ -18,10 +18,10 @@ return new class extends Migration
             $table->foreignId('faculty_id')->constrained('faculties')->cascadeOnDelete();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
-            $table->enum('gender', ['male', 'female'])->default('male');
-            $table->enum('student_type', ['new', 'current','graduated'])->default('new');
+            $table->integer('male_total')->default(0); // Total number of male students
+            $table->integer('female_total')->default(0); // Total number of female students
+            $table->enum('student_type', ['new', 'current', 'graduated'])->default('new');
             $table->timestamps();
-
         });
     }
 

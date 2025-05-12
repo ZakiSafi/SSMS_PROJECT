@@ -27,7 +27,8 @@ class StudentStatisticRequest extends FormRequest
             'faculty_id' => 'required|exists:universities,id',
             'department_id' => 'required|exists:universities,id',
             'classroom_id' => 'required|exists:universities,id',
-            'gender' => ' required|in:male,female',
+            'male_total' => ' required|integer|min:0',
+            'female_total' => ' required|integer|min:0',
             'student_type' => 'required|in:new,current,graduated',
         ];
     }
