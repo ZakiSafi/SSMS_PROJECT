@@ -19,11 +19,11 @@ export default createVuetify({
             customTheme: {
                 dark: false,
                 colors: {
-                    primary: '#04529D',
-                    secondary: '#7d72f2',
+                    primary: '#5A67BA',
+                    secondary: '#A6ABC8',
                     background: '#f5f5f5',
                     surface: '#FFFFFF',
-                    head: '#B9D3EE'
+                    head: '#e3e5ee'
                 },
             },
         },

@@ -26,7 +26,7 @@
 /* Base styles with proper font stack */
 body {
   font-family: 'BNazanin', 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-  background-color: #F8F8F8 !important;
+  background-color: #F1F2F7 !important;
   
 }
 /* RTL specific styles */
@@ -37,7 +37,7 @@ body {
 
 /* Table styles - Primary color border solution */
 .v-data-table {
-  --primary-color: #04529D;
+  --primary-color: #5A6ACF;
   --row-spacing: 10px;
 }
 
@@ -63,7 +63,7 @@ body {
 
 /* Header row styling */
 .v-data-table__thead tr {
-  background-color: rgba(4, 82, 157, 0.1);
+  background-color: #e3e5ee;
   box-shadow: inset 4px 0 0 0 var(--primary-color);
   border-bottom: 1px solid white !important;
 

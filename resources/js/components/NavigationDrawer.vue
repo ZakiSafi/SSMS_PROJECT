@@ -12,8 +12,8 @@
         <v-list-item
           class="menu-item"
           prepend-icon="mdi-account"
-          title="My Account"
-          to="/account"
+          title="Departments"
+          to="/departments"
         />
         <v-list-item
           class="menu-item"
@@ -54,7 +54,7 @@ const rail = ref(false);
 <style scoped>
 .sidebar-container {
   height: 100%;
-  background-color: #F8F8F8;
+  background-color: #F1F2F7;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -72,16 +72,11 @@ const rail = ref(false);
   color: #333;
 }
 
-.menu-item .v-icon {
-  color: #04529D; /* Primary color for icons */
-  transition: all 0.3s ease;
-  font-size: 1.5rem; /* Larger icons */
-  margin-right: 12px;
-}
+
 
 .menu-item:hover {
-  background-color: #04529D !important;
-  color: #fff !important;
+  background-color: #04529d1a !important;
+  color: #5A6ACF !important;
   transform: translateX(4px);
 }
 
@@ -91,13 +86,13 @@ const rail = ref(false);
 }
 
 .menu-item.v-list-item--active {
-  background-color: rgba(4, 82, 157, 0.1) !important;
-  color: #04529D !important;
-  border-left: 4px solid #04529D;
+  /* background-color: #707FDD !important; */
+  color: #5A6ACF!important;
+  border-left: 4px solid #5A6ACF;
 }
 
 .menu-item.v-list-item--active .v-icon {
-  color: #04529D !important;
+  color: #5A6ACF !important;
 }
 
 .logout-section {

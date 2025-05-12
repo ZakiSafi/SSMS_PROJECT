@@ -55,26 +55,6 @@
           </v-menu>
         </div>
 
-        <v-btn
-          icon="mdi-crop-free"
-          flat
-          fluid
-          @click="toggleFullscreen()"
-          class="icon bg-head"
-          size="small"
-          height="4.7vh"
-          width="4.7vh"
-        ></v-btn>
-
-        <v-btn
-          icon="mdi-bell-ring-outline"
-          flat
-          fluid
-          class="icon bg-head"
-          size="small"
-          height="4.7vh"
-          width="4.7vh"
-        ></v-btn>
       </div>
     </template>
   </v-card>

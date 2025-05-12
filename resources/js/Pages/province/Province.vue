@@ -12,7 +12,7 @@
       <div class="btn-search pt-12 pb-6 d-flex justify-space-between">
         <div class="text-field w-25">
           <v-text-field
-            :loading="loading"
+            
             color="primary"
             density="compact"
             variant="outlined"
@@ -24,7 +24,7 @@
           ></v-text-field>
         </div>
 
-        <div class="btn">
+        <div >
           &nbsp;
           <v-btn @click="CreateDialogShow" color="primary" variant="flat" class="px-6">
             Create
@@ -51,11 +51,11 @@
             </template>
             <v-list>
               <v-list-item>
-                <v-list-item-title @click="edit(item)" class="cursor-pointer d-flex gap-3 pb-3">
+                <v-list-item-title @click="edit(item)" class="cursor-pointer  pb-3">
                   <v-icon color="tealColor">mdi-square-edit-outline</v-icon>
                   Edit
                 </v-list-item-title>
-                <v-list-item-title @click="deleteItem(item)" class="cursor-pointer d-flex gap-3">
+                <v-list-item-title @click="deleteItem(item)" class="cursor-pointer">
                   <v-icon color="error">mdi-delete-outline</v-icon>
                   Delete
                 </v-list-item-title>

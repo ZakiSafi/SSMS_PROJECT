@@ -1,7 +1,7 @@
 <template>
   <CreateUniversity v-if="UniversityRepository.createDialog" />
 
-  <div class="all-expense rounded-xl ">
+  <div>
     <div class=" rounded-">
       <AppBar pageTitle="University"  />
       

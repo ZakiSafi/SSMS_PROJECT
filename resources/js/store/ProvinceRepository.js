@@ -2,7 +2,7 @@ import {defineStore} from 'pinia';
 import {reactive, ref} from 'vue';
 import {axios} from '../axios';
 
-export let useProvinceRepository = defineStore("provinceRepository", {
+export let useProvinceRepository = defineStore("                                                                                                ", {
     state() {
         return {
             isEditMode: ref(false),
