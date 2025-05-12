@@ -23,7 +23,7 @@ class DepartmentRequest extends FormRequest
     {
         return [
             'name'=> 'required|string|max:255',
-            'faculty_id'=> 'required|exists:faculties,id,'
+            'faculty_id'=> 'required|exists:faculties,id'
         ];
     }
 }

@@ -55,7 +55,6 @@
 
 <script setup>
 import { ref, reactive } from "vue";
-import { onMounted } from "vue";
 import { useProvinceRepository } from "@/store/ProvinceRepository";
 const ProvinceRepository = useProvinceRepository();
 
@@ -66,6 +65,7 @@ const formData = reactive({
     id: ProvinceRepository.province.id,
     name: ProvinceRepository.province.name,
 });
+
 
 const rules = {
     required: (value) => !!value || "This field is required.",

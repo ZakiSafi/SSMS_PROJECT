@@ -28,6 +28,17 @@
                                 density="compact"
                                 :rules="[rules.required]"
                             ></v-text-field>
+                            <v-select
+                                v-model="formData.faculty_id"
+                                :items="DepartmentRepository.faculties"
+                                item-value="id"
+                                item-title="name"
+                                variant="outlined"
+                                label="Faculty"
+                                density="compact"
+                                class="pb-4"
+                                :rules="[rules.required]"
+                            ></v-select>
                         </v-form>
                     </v-card-text>
 
@@ -44,15 +55,24 @@
 
 <script setup>
 import { ref, reactive } from "vue";
+import { onMounted } from "vue";
 import { useDepartmentRepository } from "@/store/DepartmentRepository";
 
 const DepartmentRepository = useDepartmentRepository();
+onMounted(() => {
+    DepartmentRepository.FetchFaculties();
+});
 const formRef = ref(null);
 
 const formData = reactive({
     id: DepartmentRepository.department.id,
     name: DepartmentRepository.department.name,
+    faculty_id: DepartmentRepository.department.faculty?.id || null,
+
 });
+
+
+
 
 const rules = {
     required: (value) => !!value || "This field is required.",

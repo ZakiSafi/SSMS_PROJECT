@@ -15,6 +15,7 @@ export const useDepartmentRepository=defineStore("departmentRepository", {
             departmentSearch: ref(""),
             departments: reactive([]),
             department: reactive({}),
+            faculties: reactive([])
         }},
 
         actions:{
@@ -87,6 +88,16 @@ export const useDepartmentRepository=defineStore("departmentRepository", {
                     // handle error if needed
                 }
             },
+
+            async FetchFaculties() {
+                try {
+                    const response = await axios.get("faculties");
+                    this.faculties = response.data.data;
+                } catch (err) {
+                    console.error("Failed to fetch faculties:", err);
+                }
+            },
+            
         }
 
     },
