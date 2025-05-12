@@ -16,4 +16,9 @@ class Setting extends Model
         'image',
     ];
 
+    public function university()
+    {
+        return $this->belongsTo(University::class);
+    }
+
 }

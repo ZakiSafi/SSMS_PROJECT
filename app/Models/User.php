@@ -26,9 +26,9 @@ class User extends Authenticatable
         'image'
     ];
 
-    public function rollPermissions()
+    public function rollPermission()
     {
-        return $this->belongsTo(RollPermission::class);
+        return $this->belongsTo(RollPermission::class, 'roll_permission_id');
     }
     public function logs()
     {

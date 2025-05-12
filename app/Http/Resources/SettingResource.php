@@ -15,12 +15,15 @@ class SettingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "university_id" => $this->university_id,
+            "university" => [
+                "university_id" => $this->university->id,
+                "name" => $this->university->name,
+            ],
             "email" => $this->email,
             "phone" => $this->phone,
             "address" => $this->address,
             "image" => $this->image,
-            
+
         ];
     }
 }
