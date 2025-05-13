@@ -28,7 +28,7 @@
                         <v-form ref="formRef" class="pt-4">
                             <v-text-field
                                 v-model="formData.name"
-                                variant="outlined"
+                               variant="outlined"
                                 label="name"
                                 class="pb-4"
                                 density="compact"
@@ -40,7 +40,7 @@
                                 :items="UniversityRepository.provinces"
                                 item-value="id"
                                 item-title="name"
-                                variant="outlined"
+                               variant="outlined"
                                 label="Province"
                                 density="compact"
                                 class="pb-4"

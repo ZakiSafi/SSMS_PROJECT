@@ -2,38 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Font imports */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Sono:wght@400;500;600&display=swap');
 
 /* Custom font face with proper font-weight declaration */
 @font-face {
   font-family: 'BNazanin';
-  src: url('~@/assets/fonts/B-NAZANIN.TTF') format('truetype');
-  font-weight: 400; /* Normal weight */
-  font-style: normal;
-  font-display: swap; /* Better loading behavior */
-}
-
-@font-face {
-  font-family: 'BNazanin';
-  src: url('~@/assets/fonts/B-NAZANIN-BOLD.TTF') format('truetype');
-  font-weight: 700; /* Bold weight */
+  src: url('/assets/fonts/B-NAZANIN.TTF') format('truetype');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'BNazanin';
+  src: url('/assets/fonts/B-NAZANIN-BOLD.TTF') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
 /* Base styles with proper font stack */
+
+
 body {
-  font-family: 'BNazanin', 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-  background-color: #F1F2F7 !important;
-  
+  font-family: 'BNazanin', sans-serif !important;
+  background-color: #F8F9FA !important;
 }
 /* RTL specific styles */
-/* [dir="rtl"] body {
+[dir="rtl"] body {
   font-family: 'BNazanin', sans-serif !important;
   font-size: 36px !important;
-} */
+}
 
 /* Table styles - Primary color border solution */
 .v-data-table {
@@ -63,7 +63,7 @@ body {
 
 /* Header row styling */
 .v-data-table__thead tr {
-  background-color: #e3e5ee;
+  background-color: #F1F2F7;
   box-shadow: inset 4px 0 0 0 var(--primary-color);
   border-bottom: 1px solid white !important;
 
@@ -124,4 +124,10 @@ div.v-data-table-footer
     display: flex;
     flex-direction: row-reverse;
     direction: ltr;
+}
+.deleteedit
+{
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
 }

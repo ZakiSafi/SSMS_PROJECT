@@ -1,5 +1,19 @@
 <template>
   <div class="sidebar-container">
+    <div class="logo d-flex pl-6 pb-3">
+
+      <v-list-item
+        
+        prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
+        title="Jawad"
+        
+        
+      />
+      
+      
+    </div>
+    <v-divider :thickness="1"  class="border-opacity-100 full" ></v-divider>
+
     <!-- Top menu -->
     <div class="menu-section">
       <v-list density="compact" nav>
@@ -31,16 +45,7 @@
     </div>
 
     <!-- Logout -->
-    <div class="logout-section">
-      <v-divider />
-      <v-list-item
-        class="logout-item"
-        prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-        title="Logout"
-        value="logout"
-        nav
-      />
-    </div>
+ 
   </div>
 </template>
 
@@ -54,7 +59,7 @@ const rail = ref(false);
 <style scoped>
 .sidebar-container {
   height: 100%;
-  background-color: #F1F2F7;
+  background-color: #F8F9FA;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -66,7 +71,6 @@ const rail = ref(false);
 }
 
 .menu-item {
-  border-radius: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 4px 0;
   color: #333;
@@ -74,7 +78,7 @@ const rail = ref(false);
 
 
 
-.menu-item:hover {
+/* .menu-item:hover {
   background-color: #04529d1a !important;
   color: #5A6ACF !important;
   transform: translateX(4px);
@@ -83,11 +87,12 @@ const rail = ref(false);
 .menu-item:hover .v-icon {
   color: #fff !important;
   transform: scale(1.1);
-}
+} */
 
 .menu-item.v-list-item--active {
   /* background-color: #707FDD !important; */
   color: #5A6ACF!important;
+  font-weight: bolder;
   border-left: 4px solid #5A6ACF;
 }
 
@@ -95,9 +100,9 @@ const rail = ref(false);
   color: #5A6ACF !important;
 }
 
-.logout-section {
-  padding: 8px 0;
-}
+
+
+
 
 
 
