@@ -4,7 +4,6 @@
             v-model="drawer"
             :rail="rail"
             permanent
-            color="#F8F8F8"
 
             floating
 
@@ -30,7 +29,7 @@
 
                 :style="vCardStyle"
 
-                class="min-h-screen d-flex flex-col m-4 ml-4 py-4 px-4 rounded-xl"
+                class="min-h-screen d-flex flex-col m-4 ml-4 py-4 px-4 rounded-xl side"
 
             >
 
@@ -127,7 +126,10 @@ const vCardStyle = computed(() => {
 
 
 <style scoped>
-
+.side 
+{
+    background-color: #770707 !important;
+}
 .scrollable-content {
 
     max-height: 80vh;
