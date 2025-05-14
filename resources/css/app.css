@@ -1,33 +1,36 @@
+/* ✅ Font imports must come first */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sono:wght@400;500;600&display=swap");
+
+/* ✅ Then Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Font imports */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Sono:wght@400;500;600&display=swap');
-
-/* Custom font face with proper font-weight declaration */
+/* ✅ Then the rest of your CSS */
 @font-face {
-  font-family: 'BNazanin';
-  src: url('~@/assets/fonts/B-NAZANIN.TTF') format('truetype');
-  font-weight: 400; /* Normal weight */
-  font-style: normal;
-  font-display: swap; /* Better loading behavior */
+    font-family: "BNazanin";
+    src: url("~@/assets/fonts/B-NAZANIN.TTF") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
-  font-family: 'BNazanin';
-  src: url('~@/assets/fonts/B-NAZANIN-BOLD.TTF') format('truetype');
-  font-weight: 700; /* Bold weight */
-  font-style: normal;
-  font-display: swap;
+    font-family: "BNazanin";
+    src: url("~@/assets/fonts/B-NAZANIN-BOLD.TTF") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
 }
+
+/* ... the rest of your styles */
 
 /* Base styles with proper font stack */
 body {
-  font-family: 'BNazanin', 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-  background-color: #F1F2F7 !important;
-  
+    font-family: "BNazanin", "Poppins", "Segoe UI", Tahoma, Geneva, Verdana,
+        sans-serif !important;
+    background-color: #f1f2f7 !important;
 }
 /* RTL specific styles */
 /* [dir="rtl"] body {
@@ -37,90 +40,83 @@ body {
 
 /* Table styles - Primary color border solution */
 .v-data-table {
-  --primary-color: #5A6ACF;
-  --row-spacing: 10px;
+    --primary-color: #5a6acf;
+    --row-spacing: 10px;
 }
 
 /* Main table row styling */
 .v-data-table__tr {
-  position: relative;
-  border-collapse: separate;
-  border-spacing: 0 var(--row-spacing);
-  margin-bottom: var(--row-spacing);
+    position: relative;
+    border-collapse: separate;
+    border-spacing: 0 var(--row-spacing);
+    margin-bottom: var(--row-spacing);
 }
 
 /* Primary color left border using box-shadow */
 .v-data-table__tr:not(:has(th)) {
-  box-shadow: inset 4px 0 0 0 var(--primary-color);
-  border-bottom: 1px solid white !important;
+    box-shadow: inset 4px 0 0 0 var(--primary-color);
+    border-bottom: 1px solid white !important;
 }
 
 /* RTL support */
 [dir="rtl"] .v-data-table__tr:not(:has(th)) {
-  box-shadow: inset -4px 0 0 0 var(--primary-color);
-  border-bottom: 1px solid white !important;
+    box-shadow: inset -4px 0 0 0 var(--primary-color);
+    border-bottom: 1px solid white !important;
 }
 
 /* Header row styling */
 .v-data-table__thead tr {
-  background-color: #e3e5ee;
-  box-shadow: inset 4px 0 0 0 var(--primary-color);
-  border-bottom: 1px solid white !important;
-
+    background-color: #e3e5ee;
+    box-shadow: inset 4px 0 0 0 var(--primary-color);
+    border-bottom: 1px solid white !important;
 }
 
 [dir="rtl"] .v-data-table__thead tr {
-  box-shadow: inset -4px 0 0 0 var(--primary-color);
-  border-bottom: 1px solid white !important;
-
+    box-shadow: inset -4px 0 0 0 var(--primary-color);
+    border-bottom: 1px solid white !important;
 }
 
 /* Density adjustments */
 .v-table--density-default {
-  --v-table-header-height: 46px !important;
-  --v-table-row-height: 46px !important;
+    --v-table-header-height: 46px !important;
+    --v-table-row-height: 46px !important;
 }
 
 .v-tabs--density-default {
-  --v-tabs-height: 86px !important;
+    --v-tabs-height: 86px !important;
 }
 
 /* Hover effect */
 .v-data-table__td:not(:has(th)) {
-  cursor: pointer;
-  border-bottom: 4.8px solid white !important;
-
+    cursor: pointer;
+    border-bottom: 4.8px solid white !important;
 }
-
 
 /* Navigation drawer */
 .v-navigation-drawer__content {
-  flex: 0 1 auto;
-  height: 100%;
-  max-width: 100%;
-  overflow-y: hidden !important;
+    flex: 0 1 auto;
+    height: 100%;
+    max-width: 100%;
+    overflow-y: hidden !important;
 }
 
 /* Spacing between rows */
 .v-data-table__tbody > tr {
-  margin-bottom: var(--row-spacing);
+    margin-bottom: var(--row-spacing);
 }
 
 /* Cell padding adjustment */
 .v-data-table__td {
-  padding-top: 12px;
-  padding-bottom: 12px;
-
+    padding-top: 12px;
+    padding-bottom: 12px;
 }
 
-div.v-data-table-footer 
-{
+div.v-data-table-footer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
-[dir="rtl"] div.v-data-table-footer 
-{
+[dir="rtl"] div.v-data-table-footer {
     display: flex;
     flex-direction: row-reverse;
     direction: ltr;
