@@ -6,7 +6,7 @@
       <AppBar pageTitle="University"  />
       
       <!-- Divider between AppBar and content -->
-      <v-divider :thickness="1" class="border-opacity-100 " ></v-divider>
+      <v-divider :thickness="1" class="border-opacity-100" ></v-divider>
 
       <!-- Search & Buttons Section -->
       <div class="btn-search pt-12 pb-6 d-flex justify-space-between">
@@ -15,7 +15,7 @@
             :loading="loading"
             color="primary"
             density="compact"
-            variant="outlined"
+           variant="filled"
             label="Search"
             append-inner-icon="mdi-magnify"
             hide-details

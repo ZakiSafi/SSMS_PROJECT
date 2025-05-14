@@ -1,26 +1,26 @@
 <template>
   <v-layout class="rounded rounded-md" flat fluid >
-    
-
+      
+      
       <v-navigation-drawer
-          permanent
-          floating
+      permanent
+      floating
       >
-
+      
       <NavigationDrawer/>
-       
-      </v-navigation-drawer>
-  
-
-
-
-      <v-main class="d-flex flex-col bg-g" style="min-height: 300px">
+      
+    </v-navigation-drawer>
+    
+    
+    
+    
+    <v-main class="d-flex flex-col bg-g" style="min-height: 300px">
 
           <v-card
 
               variant="flat"
-              elevation="1"
-              class="min-h-screen d-flex flex-col m-4 ml-4 py-4 px-4 rounded-xl"
+             
+              class="min-h-screen d-flex flex-col m-4 ml-4 py-4 px-4 "
 
           >
 
