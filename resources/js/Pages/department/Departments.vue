@@ -3,8 +3,8 @@
   <div class="rounded-xl">
     <div>
     <AppBar pageTitle="Department" />
-
     <!-- Divider between AppBar and content -->
+    <v-divider :thickness="1" class="border-opacity-100 "></v-divider>
     <!-- Search and Create Button -->
     <div class="btn-search d-flex justify-space-between pt-12 pb-6">
       <div class="text-field w-25">
