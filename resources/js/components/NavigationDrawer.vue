@@ -1,101 +1,101 @@
-<template >
+<template>
+  <div class="sidebar-container">
+    <div class="logo d-flex pl-6 pb-3">
+
+      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" title="Jawad" />
 
 
+    </div>
+    <v-divider :thickness="1" class="border-opacity-100 full"></v-divider>
 
-<div class="d-flex flex-column justify-space-between h-100">
-  <div>
-            <v-list-item>
-              <template v-slot:append>
-                <v-btn icon="mdi-chevron-left" variant="text" @click.stop="rail = !rail"></v-btn>
-              </template>
-            </v-list-item>
+    <!-- Top menu -->
+    <div class="menu-section">
+      <v-list density="compact" nav>
+        <v-list-item class="menu-item" prepend-icon="mdi-map-marker" title="Provinces" to="/provinces" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account" title="Departments" to="/departments" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Users" to="/users" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="University" to="/university" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Faculty" to="/faculties"/>
+       </v-list>
+    </div>
 
-            <v-list density="compact" nav>
-              <v-list-item class="menu-item" prepend-icon="mdi-home-city" title="Home" value="home" to="/department" />
-              <v-list-item class="menu-item" prepend-icon="mdi-account" title="My Account" value="account" />
-              <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Users" value="users" />
-              <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="university" to="/university" />
-            </v-list>
-          </div>
+    <!-- Logout -->
 
-          <!-- 👇Logout-->
-          <div>
-            <v-divider />
-            <v-list-item
-              prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-              title="Logout"
-              value="logout"
-              nav
-            />
-          </div>
-        </div>
-    
-
-
-
+  </div>
 </template>
 
-  <script setup>
-  import { ref } from 'vue'
+<script setup>
+import { ref } from 'vue';
 
-  const drawer = ref(true)
-  const rail = ref(false)
+const drawer = ref(true);
+const rail = ref(false);
 </script>
-  <style scoped>
+
+<style scoped>
+.sidebar-container {
+  height: 100%;
+  background-color: #F8F9FA;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 8px;
+}
+
+.menu-section {
+  flex-grow: 1;
+}
+
+.menu-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 4px 0;
+  color: #333;
+}
 
 
 
-  .scrollable-content {
-    background-color: #fff;
-    border-right: 1px solid #e0e0e0;
-    padding: 2px;
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.04);
-    height: 70vh;
+/* .menu-item:hover {
+  background-color: #04529d1a !important;
+  color: #5A6ACF !important;
+  transform: translateX(4px);
+}
 
-    /* Hide scrollbar across browsers */
-    overflow-y: scroll;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
+.menu-item:hover .v-icon {
+  color: #fff !important;
+  transform: scale(1.1);
+} */
 
-  .scrollable-content::-webkit-scrollbar {
-    display: none;
-  }
+.menu-item.v-list-item--active {
+  /* background-color: #707FDD !important; */
+  color: #5A6ACF !important;
+  font-weight: bolder;
+  border-left: 4px solid #5A6ACF;
+}
 
-  .scrollable-content::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
+.menu-item.v-list-item--active .v-icon {
+  color: #5A6ACF !important;
+}
 
-  .scrollable-content::-webkit-scrollbar-thumb {
-    background: #b1b1b1;
-    border-radius: 4px;
-  }
 
-  .scrollable-content::-webkit-scrollbar-thumb:hover {
-    background: #a6a5a5;
-  }
 
-  .menu-item {
-    border-radius: 8px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    padding-left: 16px;
-  }
 
-  .menu-item:hover {
-    background-color: #695CFE !important;
-    color: #fff !important;
-  }
 
-  .menu-item:hover .v-icon {
-    color: #695CFE !important;
-  }
 
-  .menu-item.v-list-item--active {
-    background-color: #695CFE !important;
-    color: white !important;
-  }
 
-  .menu-item.v-list-item--active .v-icon {
-    color: white !important;
-  }
+
+
+/* RTL support */
+[dir="rtl"] .menu-item:hover {
+  transform: translateX(-4px);
+}
+
+[dir="rtl"] .menu-item.v-list-item--active {
+  border-left: none;
+  border-right: 4px solid #04529D;
+}
+
+[dir="rtl"] .menu-item .v-icon,
+[dir="rtl"] .logout-item .v-icon {
+  margin-right: 0;
+  margin-left: 12px;
+}
 </style>

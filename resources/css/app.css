@@ -2,17 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* Custom font face with proper font-weight declaration */
+@font-face {
+  font-family: 'BNazanin';
+  src: url('/assets/fonts/B-NAZANIN.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BNazanin';
+  src: url('/assets/fonts/B-NAZANIN-BOLD.TTF') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+/* Base styles with proper font stack */
+
+
 body {
-    background-color: #F8F8F8;
-    font-family: 'Roboto', sans-serif;
+  font-family: 'BNazanin', sans-serif !important;
+  background-color: #F8F9FA !important;
+}
+/* RTL specific styles */
+[dir="rtl"] body {
+  font-family: 'BNazanin', sans-serif !important;
+  font-size: 36px !important;
 }
 
-div.v-data-table-footer {
-    display: flex;
-    justify-content: space-between;
+/* Table styles - Primary color border solution */
+.v-data-table {
+  --primary-color: #5A6ACF;
+  --row-spacing: 10px;
 }
 
-.btn-search {
+/* Main table row styling */
+.v-data-table__tr {
+  position: relative;
+  border-collapse: separate;
+  border-spacing: 0 var(--row-spacing);
+  margin-bottom: var(--row-spacing);
+}
+
+/* Primary color left border using box-shadow */
+.v-data-table__tr:not(:has(th)) {
+  box-shadow: inset 4px 0 0 0 var(--primary-color);
+  border-bottom: 1px solid white !important;
+}
+
+/* RTL support */
+[dir="rtl"] .v-data-table__tr:not(:has(th)) {
+  box-shadow: inset -4px 0 0 0 var(--primary-color);
+  border-bottom: 1px solid white !important;
+}
+
+/* Header row styling */
+.v-data-table__thead tr {
+  background-color: #F1F2F7;
+  box-shadow: inset 4px 0 0 0 var(--primary-color);
+  border-bottom: 1px solid white !important;
+
+}
+
+[dir="rtl"] .v-data-table__thead tr {
+  box-shadow: inset -4px 0 0 0 var(--primary-color);
+  border-bottom: 1px solid white !important;
+
+}
+
+/* Density adjustments */
+.v-table--density-default {
+  --v-table-header-height: 46px !important;
+  --v-table-row-height: 46px !important;
+}
+
+.v-tabs--density-default {
+  --v-tabs-height: 86px !important;
+}
+
+/* Hover effect */
+.v-data-table__td:not(:has(th)) {
+  cursor: pointer;
+  border-bottom: 4.8px solid white !important;
+
+}
+
+
+/* Navigation drawer */
+.v-navigation-drawer__content {
+  flex: 0 1 auto;
+  height: 100%;
+  max-width: 100%;
+  overflow-y: hidden !important;
+}
+
+/* Spacing between rows */
+.v-data-table__tbody > tr {
+  margin-bottom: var(--row-spacing);
+}
+
+/* Cell padding adjustment */
+.v-data-table__td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+
+}
+
+div.v-data-table-footer 
+{
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
+}
+[dir="rtl"] div.v-data-table-footer 
+{
+    display: flex;
+    flex-direction: row-reverse;
+    direction: ltr;
+}
+.deleteedit
+{
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
 }
