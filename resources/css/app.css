@@ -1,9 +1,13 @@
+/* ✅ Font imports must come first */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sono:wght@400;500;600&display=swap");
+
+/* ✅ Then Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-/* Custom font face with proper font-weight declaration */
+/* ✅ Custom fonts */
 @font-face {
   font-family: 'BNazanin';
   src: url('/assets/fonts/B-NAZANIN.TTF') format('truetype');
@@ -20,28 +24,24 @@
   font-display: swap;
 }
 
-
-
-/* Base styles with proper font stack */
-
-
+/* ✅ Base styles with full font stack and background */
 body {
-  font-family: 'BNazanin', sans-serif !important;
-  background-color: #F8F9FA !important;
+  font-family: 'BNazanin', 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  background-color: #f8f9fa !important;
 }
+
 /* RTL specific styles */
 [dir="rtl"] body {
   font-family: 'BNazanin', sans-serif !important;
   font-size: 36px !important;
 }
 
-/* Table styles - Primary color border solution */
+/* Table styles */
 .v-data-table {
-  --primary-color: #5A6ACF;
+  --primary-color: #5a6acf;
   --row-spacing: 10px;
 }
 
-/* Main table row styling */
 .v-data-table__tr {
   position: relative;
   border-collapse: separate;
@@ -49,30 +49,25 @@ body {
   margin-bottom: var(--row-spacing);
 }
 
-/* Primary color left border using box-shadow */
 .v-data-table__tr:not(:has(th)) {
   box-shadow: inset 4px 0 0 0 var(--primary-color);
   border-bottom: 1px solid white !important;
 }
 
-/* RTL support */
 [dir="rtl"] .v-data-table__tr:not(:has(th)) {
   box-shadow: inset -4px 0 0 0 var(--primary-color);
   border-bottom: 1px solid white !important;
 }
 
-/* Header row styling */
 .v-data-table__thead tr {
-  background-color: #F1F2F7;
+  background-color: #f1f2f7;
   box-shadow: inset 4px 0 0 0 var(--primary-color);
   border-bottom: 1px solid white !important;
-
 }
 
 [dir="rtl"] .v-data-table__thead tr {
   box-shadow: inset -4px 0 0 0 var(--primary-color);
   border-bottom: 1px solid white !important;
-
 }
 
 /* Density adjustments */
@@ -89,9 +84,7 @@ body {
 .v-data-table__td:not(:has(th)) {
   cursor: pointer;
   border-bottom: 4.8px solid white !important;
-
 }
-
 
 /* Navigation drawer */
 .v-navigation-drawer__content {
@@ -101,32 +94,32 @@ body {
   overflow-y: hidden !important;
 }
 
-/* Spacing between rows */
+/* Row spacing */
 .v-data-table__tbody > tr {
   margin-bottom: var(--row-spacing);
 }
 
-/* Cell padding adjustment */
+/* Cell padding */
 .v-data-table__td {
   padding-top: 12px;
   padding-bottom: 12px;
-
 }
 
-div.v-data-table-footer 
-{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+/* Table footer */
+div.v-data-table-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
-[dir="rtl"] div.v-data-table-footer 
-{
-    display: flex;
-    flex-direction: row-reverse;
-    direction: ltr;
+
+[dir="rtl"] div.v-data-table-footer {
+  display: flex;
+  flex-direction: row-reverse;
+  direction: ltr;
 }
-.deleteedit
-{
+
+/* Additional styles from origin/jawad */
+.deleteedit {
   display: flex !important;
   flex-direction: column !important;
   width: 100% !important;

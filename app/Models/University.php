@@ -28,4 +28,9 @@ class University extends Model
     {
         return $this->hasMany(StudentStatistic::class);
     }
+
+    public function settings()
+    {
+        return $this->belongsTo(Setting::class);
+    }
 }

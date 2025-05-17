@@ -1,18 +1,20 @@
 <?php
 
-use App\Http\Controllers\AcademicYearController;
-use App\Http\Controllers\ClassroomController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\FacultyController;
-use App\Http\Controllers\LogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProvinceController;
-use App\Http\Controllers\RollPermissionController;
-use App\Http\Controllers\SettingController;
-use App\Http\Controllers\StudentStatisticController;
-use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FacultyController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ProvinceController;
+use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\RollPermissionController;
+use App\Http\Controllers\StudentStatisticController;
+use App\Http\Controllers\reports\UniversityReportController;
+use App\Http\Controllers\reports\ClassRoomReportController;
 
 
 Route::apiResource('provinces', ProvinceController::class);
@@ -27,3 +29,8 @@ Route::apiResource('rollPermissions', RollPermissionController::class);
 Route::apiResource('users', UserController::class);
 Route::put('users/update/{user}', [UserController::class, 'update']);
 Route::apiResource('logs', LogController::class);
+
+Route::prefix('report')->group(function () {
+    Route::get('universityReport', [UniversityReportController::class, '__invoke']);
+    Route::get('classRoomReport', [ClassRoomReportController::class, '__invoke']);
+});

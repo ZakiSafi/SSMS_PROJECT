@@ -22,7 +22,7 @@ class StudentStatisticFactory extends Factory
            'faculty_id' => $this->faker->numberBetween(1, 15),
             'department_id' => $this->faker->numberBetween(1, 10),
             'classroom_id' => $this->faker->numberBetween(1,4),
-            'male_total' => $this->faker->numberBetween(0, 100),
+            'male_total' => $this->faker->numberBetween(30, 100),
             'female_total' => $this->faker->numberBetween(0, 100),
             'student_type' => $this->faker->randomElement(['new', 'current', 'graduated']),
 
