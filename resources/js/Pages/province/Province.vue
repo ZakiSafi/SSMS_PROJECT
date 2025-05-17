@@ -1,8 +1,7 @@
 <template>
   <CreateProvince v-if="ProvinceRepository.createDialog" />
 
-  <div class="all-expense rounded-xl ">
-    <div class=" rounded-">
+    <div>
       <AppBar pageTitle="Province" />
 
       <!-- Divider between AppBar and content -->
@@ -55,7 +54,6 @@
         </template>
       </v-data-table-server>
     </div>
-  </div>
 </template>
 
 <script setup>

@@ -1,6 +1,5 @@
 <template>
   <CreateDepartment v-if="DepartmentRepository.createDialog" />
-  <div class="rounded-xl">
     <div>
     <AppBar pageTitle="Department" />
     <!-- Divider between AppBar and content -->
@@ -57,7 +56,6 @@
         </v-menu>
       </template>
     </v-data-table-server>
-  </div>
   </div>
 </template>
 

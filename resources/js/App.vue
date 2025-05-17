@@ -14,16 +14,14 @@
     
     
     
-    <v-main class="d-flex flex-col bg-g" style="min-height: 300px">
+    <v-main class="d-flex flex-col" style="min-height: 300px">
 
           <v-card
 
               variant="flat"
-             
-              class="min-h-screen d-flex flex-col m-4 ml-4 py-4 px-4 "
+              class="min-h-screen d-flex flex-col m-4 ml-4 py-4 px-4"
 
           >
-
               <router-view></router-view>
 
           </v-card>

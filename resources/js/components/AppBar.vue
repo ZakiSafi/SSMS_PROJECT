@@ -39,11 +39,11 @@
 
           <template v-slot:default="{ isActive }">
             <v-card>
-              <div class="px-2 pt-2 d-flex justify-space-between">
+              <v-card-title class="px-2 pt-2 d-flex justify-space-between">
                 <h3 class="font-weight-bold pl-4">Logout</h3>
                 <v-btn variant="text" class="font-weight-bold " @click="isActive.value = false">
                   <v-icon>mdi-close</v-icon></v-btn>
-              </div>
+              </v-card-title>
 
               <div class="d-flex flex-column  justify-center align-center "><img
                   src="../../../public/assets/Park.jpg" alt=""
