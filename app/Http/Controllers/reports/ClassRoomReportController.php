@@ -23,9 +23,16 @@ class ClassRoomReportController extends Controller
                 'faculties.name as faculty',
                 'departments.name as department',
                 'classrooms.name as classroom',
-                'classrooms.male_students as total_males',
-                'classrooms.female_students as total_females',
-                DB::raw('classrooms.male_students + classrooms.female_students as total_students')
+                DB::raw('SUM(male_total) as total_males'),
+                DB::raw('SUM(female_total) as total_females'),
+                DB::raw('SUM(male_total + female_total) as total_students')
+            )
+            ->groupBy(
+                'academic_years.year',
+                'universities.name',
+                'faculties.name',
+                'departments.name',
+                'classrooms.name'
             )
             ->orderBy('academic_years.year')
             ->get();
