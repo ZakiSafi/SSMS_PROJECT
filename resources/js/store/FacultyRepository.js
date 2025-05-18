@@ -84,22 +84,24 @@ export  const useFacultyRepository=defineStore("facultyRepository",{
             }
         },
 
-        async DeleteFaculty(id){
-            try{
-                const config={
+        async DeleteFaculty(id) {
+            this.isLoading = true;
+            this.error = null;
 
-                    method:"DELETE",
-                    url:"faculties"
+            try {
+                const config = {
+                    method: "DELETE",
+                    url: "faculties/" + id,
                 };
 
                 await axios(config);
-                    this.FetchFaculties({
-                        page: this.page,
-                        itemsPerPage: this.itemsPerPage,
-                    });
-                } catch (err) {
-                    // handle error if needed
-                }
+                this.FetchFaculties({
+                    page: this.page,
+                    itemsPerPage: this.itemsPerPage,
+                });
+            } catch (err) {
+                this.error = err;
+            }
         },
 
         async FetchUniversities() {

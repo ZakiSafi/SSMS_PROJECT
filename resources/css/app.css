@@ -38,7 +38,7 @@ body {
 
 /* Table styles */
 .v-data-table {
-  --primary-color: #5a6acf;
+  --primary-color: #009EE2;
   --row-spacing: 10px;
 }
 
@@ -60,7 +60,7 @@ body {
 }
 
 .v-data-table__thead tr {
-  background-color: #f1f2f7;
+  background-color: #E7F2F5;
   box-shadow: inset 4px 0 0 0 var(--primary-color);
   border-bottom: 1px solid white !important;
 }

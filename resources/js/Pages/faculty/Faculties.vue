@@ -44,11 +44,11 @@
                     </template>
                     <v-list>
                         <v-list-item>
-                            <v-list-item-title @click="edit(item)" class="cursor-pionter pb-3">
+                            <v-list-item-title @click="edit(item)" class="cursor-pointer pb-3">
                                 <v-icon color="tealColor">mdi-square-edit-outline</v-icon>
                                 Edit
                             </v-list-item-title>
-                            <v-list-item-title @onclick="deleteItem(item)" class="cursor-pionter pb-3">
+                            <v-list-item-title @click="deleteItem(item)" class="cursor-pointer">
                                 <v-icon color="error">mdi-delete-outline</v-icon>
                                 Delete
                             </v-list-item-title>
@@ -88,6 +88,7 @@ const edit= (item) =>{
 
 
 const deleteItem = async (item) => {
+   
     await FacultyRepository.DeleteFaculty(item.id);
 };
 
