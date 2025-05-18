@@ -13,15 +13,8 @@
         <!-- Language Switcher -->
         <v-menu transition="scale-transition">
           <template #activator="{ props }">
-            <v-btn
-              icon="mdi-web"
-              flat
-              class="icon bg-head mr-4"
-              size="small"
-              height="4.7vh"
-              width="4.7vh"
-              v-bind="props"
-            ></v-btn>
+            <v-btn icon="mdi-web" flat class="icon bg-head mr-4" size="small" height="4.7vh" width="4.7vh"
+              v-bind="props"></v-btn>
           </template>
 
           <v-list>
@@ -37,36 +30,29 @@
         </v-menu>
 
         <!-- Logout Button -->
-        <v-dialog max-width="500">
+        <v-dialog max-width="400">
           <template v-slot:activator="{ props: activatorProps }">
-            <v-btn
-              flat
-              class="icon bg-head "
-              size="small"
-              height="4.7vh"
-              width="4.7vh"
-              icon="mdi-web"
-              v-bind="activatorProps"
-            >
-              <img
-                src="https://randomuser.me/api/portraits/men/85.jpg"
-                alt="Logout Icon"
-                class="icon-size"
-                height="32"
-                width="32"
-              />
+            <v-btn flat class="icon bg-head " size="small" height="4.7vh" width="4.7vh" icon="mdi-logout"
+              v-bind="activatorProps">
             </v-btn>
           </template>
 
           <template v-slot:default="{ isActive }">
-            <v-card title="Logout Confirmation">
-              <v-card-text>
-                Are you sure you want to logout?
-              </v-card-text>
+            <v-card>
+              <v-card-title class="px-2 pt-2 d-flex justify-space-between">
+                <h3 class="font-weight-bold pl-4">Logout</h3>
+                <v-btn variant="text" class="font-weight-bold " @click="isActive.value = false">
+                  <v-icon>mdi-close</v-icon></v-btn>
+              </v-card-title>
+
+              <div class="d-flex flex-column  justify-center align-center "><img
+                  src="../../../public/assets/Park.jpg" alt=""
+                  class="object-cover w-[6rem] h-[6rem] rounded-full  ">
+                <h3 class="mt-6">Jawad@Gmail.com</h3>
+              </div>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
                 <v-btn text="Logout" @click="handleLogout"></v-btn>
               </v-card-actions>
             </v-card>
@@ -119,7 +105,8 @@ const isRtl = ref(false);
 }
 
 .icon-size {
-  border-radius: 50%; /* Make it circular */
+  border-radius: 50%;
+  /* Make it circular */
   object-fit: cover;
 }
 

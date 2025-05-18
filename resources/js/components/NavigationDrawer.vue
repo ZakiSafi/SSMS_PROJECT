@@ -2,50 +2,25 @@
   <div class="sidebar-container">
     <div class="logo d-flex pl-6 pb-3">
 
-      <v-list-item
-        
-        prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-        title="Jawad"
-        
-        
-      />
-      
-      
+      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" title="Jawad" />
+
+
     </div>
-    <v-divider :thickness="1"  class="border-opacity-100 full" ></v-divider>
+    <v-divider :thickness="1" class="border-opacity-100 full"></v-divider>
 
     <!-- Top menu -->
     <div class="menu-section">
       <v-list density="compact" nav>
-        <v-list-item
-          class="menu-item"
-          prepend-icon="mdi-map-marker"
-          title="Provinces"
-          to="/provinces"
-        />
-        <v-list-item
-          class="menu-item"
-          prepend-icon="mdi-account"
-          title="Departments"
-          to="/departments"
-        />
-        <v-list-item
-          class="menu-item"
-          prepend-icon="mdi-account-group-outline"
-          title="Users"
-          to="/users"
-        />
-        <v-list-item
-          class="menu-item"
-          prepend-icon="mdi-account-group-outline"
-          title="University"
-          to="/university"
-        />
-      </v-list>
+        <v-list-item class="menu-item" prepend-icon="mdi-map-marker" title="Provinces" to="/provinces" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account" title="Departments" to="/departments" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Users" to="/users" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="University" to="/university" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Faculty" to="/faculties"/>
+       </v-list>
     </div>
 
     <!-- Logout -->
- 
+
   </div>
 </template>
 
@@ -91,7 +66,7 @@ const rail = ref(false);
 
 .menu-item.v-list-item--active {
   /* background-color: #707FDD !important; */
-  color: #5A6ACF!important;
+  color: #5A6ACF !important;
   font-weight: bolder;
   border-left: 4px solid #5A6ACF;
 }

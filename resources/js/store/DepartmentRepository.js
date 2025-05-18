@@ -19,7 +19,7 @@ export const useDepartmentRepository=defineStore("departmentRepository", {
         }},
 
         actions:{
-            async FetchDepartment({ page, itemsPerPage }) {
+            async FetchDepartments({ page, itemsPerPage }) {
                 this.loading = true;
                 const response = await axios.get(
                     `departments?page=${page}&perPage=${itemsPerPage}&name=${this.departmentSearch}`
