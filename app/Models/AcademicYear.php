@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AcademicYear extends Model
 {
+
     use HasFactory;
     protected $fillable = ['year', 'label'];
 
