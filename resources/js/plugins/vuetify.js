@@ -20,11 +20,11 @@ export default createVuetify({
                 dark: false,
                 colors: {
                     primary: '#5A6ACF',
-                    // primary: '#5A67BA',
-                    secondary: '#A6ABC8',
+                    primary: '#009EE2',
+                    secondary: '#009EE2',
                     background: '#f5f5f5',
                     surface: '#FFFFFF',
-                    head: '#e3e5ee'
+                    head: '#E7F2F5',
                 },
             },
         },

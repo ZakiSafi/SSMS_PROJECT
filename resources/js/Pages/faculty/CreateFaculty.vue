@@ -85,7 +85,7 @@ const save = async () => {
     const isValid = await formRef.value.validate();
     if (isValid) {
         if (FacultyRepository.isEditMode) {
-            await FacultyRepository.UpdateFaculty(formData.id, formData);
+            await FacultyRepository.UpdateFaculty(formData,formData.id,);
         } else {
             await FacultyRepository.CreateFaculty(formData);
         }
