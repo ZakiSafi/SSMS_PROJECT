@@ -22,13 +22,11 @@ class StudentStatisticRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => 'required|exists:universities,id',
-            'university_id' => 'required|exists:universities,id',
-            'faculty_id' => 'required|exists:universities,id',
-            'department_id' => 'required|exists:universities,id',
-            'classroom' => 'required|exists:universities,id',
-            'male_total' => ' required|integer|min:0',
-            'female_total' => ' required|integer|min:0',
+            'academic_year' => 'required|string', 
+            'department_id' => 'required|exists:departments,id',
+            'classroom' => 'required|string',
+            'male_total' => 'required|integer|min:0',
+            'female_total' => 'required|integer|min:0',
             'student_type' => 'required|in:new,current,graduated',
         ];
     }

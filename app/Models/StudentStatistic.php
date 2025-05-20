@@ -23,10 +23,6 @@ class StudentStatistic extends Model
         'student_type',
     ];
 
-    public function academicYear()
-    {
-        return $this->belongsTo(AcademicYear::class);
-    }
 
     public function university()
     {
@@ -43,8 +39,5 @@ class StudentStatistic extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function classroom()
-    {
-        return $this->belongsTo(Classroom::class);
-    }
+   
 }
