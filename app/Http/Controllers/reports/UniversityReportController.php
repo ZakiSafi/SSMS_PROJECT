@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 // use App\Models\StudentStatistic;
 class UniversityReportController extends Controller
 {
+    
 
     public function __invoke()
     {
