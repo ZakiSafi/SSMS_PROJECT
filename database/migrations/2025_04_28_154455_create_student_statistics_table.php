@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('student_statistics', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academic_year')->constrained()->cascadeOnDelete();
+            $table->year('academic_year');
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('classroom')->constrained()->cascadeOnDelete();
+            $table->string('classroom')->default('first');
             $table->enum('shift', ['day', 'night'])->default('day');
             $table->enum('season', ['spring', 'autumn', 'summer', 'winter'])->default('spring');
             $table->tinyInteger('semester_number')->default(1); // 1 for first semester, 2 for second semester

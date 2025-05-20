@@ -15,27 +15,12 @@ class StudentStatisticResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "academic_year" =>[
-                'academic_year' => $this->academic_year->id,
-                'year' => $this->academic_year->year,
-                'label' => $this->academic_year->label,
-            ],
-            "university" => [
-                "university_id" => $this->university->id,
-                "name" => $this->university->name,
-            ],
-            "faculty" => [
-                "faculty_id" => $this->faculty->id,
-                "name" => $this->faculty->name,
-            ],
+            "academic_year" => $this->academic_year,
             "department" => [
                 "department_id" => $this->department->id,
                 "name" => $this->department->name,
             ],
-            "classroom" => [
-                "classroom" => $this->classroom->id,
-                "name" => $this->classroom->name,
-            ],
+            "classroom" => $this->classroom,
             'semester_number' => $this->semester_number,
             'shift' => $this->shift,
             'season' => $this->season,

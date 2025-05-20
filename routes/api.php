@@ -21,10 +21,8 @@ use App\Http\Controllers\reports\UniversityReportController;
 
 Route::apiResource('provinces', ProvinceController::class);
 Route::apiResource('universities', UniversityController::class);
-Route::apiResource('academicYears', AcademicYearController::class);
 Route::apiResource('faculties', FacultyController::class);
 Route::apiResource('departments', DepartmentController::class);
-Route::apiResource('classRooms', ClassroomController::class);
 Route::apiResource('studentStatistics', StudentStatisticController::class);
 Route::apiResource('settings', SettingController::class);
 Route::apiResource('rollPermissions', RollPermissionController::class);
