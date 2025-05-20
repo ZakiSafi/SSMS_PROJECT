@@ -1,5 +1,4 @@
 <template>
-  
   <div class="sidebar-container">
     <!-- Logo/User Info -->
     <div class="logo d-flex pl-6 pb-3">
@@ -71,21 +70,12 @@
             :prepend-icon="item.icon"
           />
         </v-list-group>
-
-     
       </v-list>
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref} from "vue"
-
-const activeMenu = ref(null);
-
-const toggleMenu = (menu) => {
-    activeMenu.value = activeMenu.value === menu ? null : menu;
-};
 const settingItems = [
   {
     to: "/systemSetting",
@@ -101,33 +91,7 @@ const settingItems = [
   },
 ];
 
-const navItems = ( ) => [
-    {
-        to: "/expense",
-        title: "expense",
-        icon: "mdi mdi-circle-medium",
-        value: "AllExpenses",
-    },
-    {
-        to: "/billExpense",
-        title: "billExpense",
-        icon: "mdi mdi-circle-medium",
-        value: "billExpense",
-    },
 
-    {
-        to: "/expenseProducts",
-        title: "products",
-        icon: "mdi mdi-circle-medium",
-        value: "expense product",
-    },
-    {
-        to: "/expenseCat",
-        title: "categories",
-        icon: "mdi mdi-circle-medium",
-        value: "categories",
-    },
-];
 
 </script>
 
@@ -176,8 +140,6 @@ const navItems = ( ) => [
 :deep(.v-list-item--active) {
   --v-theme-primary: #009EE2;
 }
-
-/* Remove the dropdown arrow */
 
 /* Remove the default dropdown arrow */
 :deep(.v-list-group__header .v-list-item__append i) {
