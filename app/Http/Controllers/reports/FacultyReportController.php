@@ -12,7 +12,7 @@ class FacultyReportController extends Controller
 {
     public function __invoke()
     {
-        $report = StudentStatistic::join('academic_years', 'student_statistics.academic_year_id', '=', 'academic_years.id')
+        $report = StudentStatistic::join('academic_years', 'student_statistics.academic_year', '=', 'academic_years.id')
         ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
         ->join('faculties', 'student_statistics.faculty_id','=', 'faculties.id')
         ->select(
