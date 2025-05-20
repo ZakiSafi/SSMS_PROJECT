@@ -10,11 +10,11 @@ class StudentStatistic extends Model
     use HasFactory;
 
     protected $fillable = [
-        'academic_year_id',
+        'academic_year',
         'university_id',
         'faculty_id',
         'department_id',
-        'classroom_id',
+        'classroom',
         'semester_number',
         'shift',
         'season',

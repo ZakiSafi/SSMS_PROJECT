@@ -9,12 +9,12 @@ use Illuminate\Support\Facades\DB;
 // use App\Models\StudentStatistic;
 class UniversityReportController extends Controller
 {
-    
+
 
     public function __invoke()
     {
         $statistics = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
-            ->join('academic_years', 'student_statistics.academic_year_id', '=', 'academic_years.id')
+            ->join('academic_years', 'student_statistics.academic_year', '=', 'academic_years.id')
             ->select(
                 'academic_years.year as academic_year',
                 'universities.name as university',

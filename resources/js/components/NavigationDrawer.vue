@@ -93,7 +93,7 @@ const route = useRoute();
 
 const settingItems = [
   {
-    to: "/system-settings",
+    to: "/student-statistic",
     title: "System Setting",
     icon: "mdi mdi-circle-medium",
     value: "system",
@@ -163,6 +163,7 @@ const settingItems = [
   padding-left: 32px !important;
   margin: 0 !important;
   min-height: 32px !important;
+  
 }
 
 /* Reduce padding for submenu items */

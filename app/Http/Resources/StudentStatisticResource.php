@@ -16,7 +16,7 @@ class StudentStatisticResource extends JsonResource
     {
         return [
             "academic_year" =>[
-                'academic_year_id' => $this->academic_year->id,
+                'academic_year' => $this->academic_year->id,
                 'year' => $this->academic_year->year,
                 'label' => $this->academic_year->label,
             ],
@@ -33,7 +33,7 @@ class StudentStatisticResource extends JsonResource
                 "name" => $this->department->name,
             ],
             "classroom" => [
-                "classroom_id" => $this->classroom->id,
+                "classroom" => $this->classroom->id,
                 "name" => $this->classroom->name,
             ],
             'semester_number' => $this->semester_number,

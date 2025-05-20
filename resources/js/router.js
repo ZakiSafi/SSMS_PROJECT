@@ -8,6 +8,7 @@ import University from "./Pages/university/University.vue";
 import Provinces from "./Pages/province/Province.vue";
 import Departments from "./Pages/department/Departments.vue";
 import Faculties from "./Pages/faculty/Faculties.vue";
+import StudentStatistics from "./Pages/student/StudentStatistics.vue";
 
 const routes = [
     // Show login first
@@ -23,6 +24,7 @@ const routes = [
             { path: "/provinces", name: "provinces", component: Provinces },
             { path: "/departments", name: "departments", component: Departments },
             { path: "/faculties", name: "faculties", component: Faculties },
+            { path: "/student-statistic", name: "student-statistic", component: StudentStatistics },
         ],
     },
 ];
