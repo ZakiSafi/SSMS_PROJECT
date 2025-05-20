@@ -18,11 +18,11 @@ const routes = [
         path: "/home",
         component: Home,
         children: [
-            { path: "about", name: "about", component: About },
-            { path: "university", name: "university", component: University },
-            { path: "provinces", name: "provinces", component: Provinces },
-            { path: "departments", name: "departments", component: Departments },
-            { path: "faculties", name: "faculties", component: Faculties },
+            { path: "/about", name: "about", component: About },
+            { path: "/university", name: "university", component: University },
+            { path: "/provinces", name: "provinces", component: Provinces },
+            { path: "/departments", name: "departments", component: Departments },
+            { path: "/faculties", name: "faculties", component: Faculties },
         ],
     },
 ];

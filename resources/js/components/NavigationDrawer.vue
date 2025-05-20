@@ -1,4 +1,5 @@
 <template>
+  
   <div class="sidebar-container">
     <!-- Logo/User Info -->
     <div class="logo d-flex pl-6 pb-3">
@@ -17,43 +18,117 @@
           class="menu-item" 
           prepend-icon="mdi-map-marker" 
           title="Provinces" 
-          to="/home/provinces" 
+          to="/provinces" 
           value="provinces"
         />
         <v-list-item 
           class="menu-item" 
           prepend-icon="mdi-account" 
           title="Departments" 
-          to="/home/departments" 
+          to="/departments" 
           value="departments"
         />
         <v-list-item 
           class="menu-item" 
           prepend-icon="mdi-account-group-outline" 
           title="Users" 
-          to="/home/users" 
+          to="/users" 
           value="users"
         />
         <v-list-item 
           class="menu-item" 
           prepend-icon="mdi-school" 
           title="University" 
-          to="/home/university" 
+          to="/university" 
           value="university"
         />
         <v-list-item 
           class="menu-item" 
           prepend-icon="mdi-domain" 
           title="Faculty" 
-          to="/home/faculties" 
+          to="/faculties" 
           value="faculties"
         />
+        
+
+        <v-list-group value="settings">
+          <template #activator="{ props }">
+            <v-list-item
+              v-bind="props"
+              title="Settings"
+              prepend-icon="mdi-cog"
+              class="menu-item"
+            />
+          </template>
+
+          <v-list-item
+            v-for="(item, index) in settingItems"
+            :key="index"
+            :to="item.to"
+            :title="item.title"
+            class="submenu-item menu-item"
+            :value="item.value"
+            :prepend-icon="item.icon"
+          />
+        </v-list-group>
+
+     
       </v-list>
     </div>
   </div>
 </template>
 
 <script setup>
+import {ref} from "vue"
+
+const activeMenu = ref(null);
+
+const toggleMenu = (menu) => {
+    activeMenu.value = activeMenu.value === menu ? null : menu;
+};
+const settingItems = [
+  {
+    to: "/systemSetting",
+    title: "SystemSetting",
+    icon: "mdi mdi-circle-medium",
+    value: "system",
+  },
+  {
+    to: "/rolePermissions",
+    title: "RolePermission",
+    icon: "mdi mdi-circle-medium",
+    value: "roles",
+  },
+];
+
+const navItems = ( ) => [
+    {
+        to: "/expense",
+        title: "expense",
+        icon: "mdi mdi-circle-medium",
+        value: "AllExpenses",
+    },
+    {
+        to: "/billExpense",
+        title: "billExpense",
+        icon: "mdi mdi-circle-medium",
+        value: "billExpense",
+    },
+
+    {
+        to: "/expenseProducts",
+        title: "products",
+        icon: "mdi mdi-circle-medium",
+        value: "expense product",
+    },
+    {
+        to: "/expenseCat",
+        title: "categories",
+        icon: "mdi mdi-circle-medium",
+        value: "categories",
+    },
+];
+
 </script>
 
 <style scoped>
@@ -100,5 +175,31 @@
 /* Active state with new primary color */
 :deep(.v-list-item--active) {
   --v-theme-primary: #009EE2;
+}
+
+/* Remove the dropdown arrow */
+
+/* Remove the default dropdown arrow */
+:deep(.v-list-group__header .v-list-item__append i) {
+  display: none !important;
+}
+
+/* Tighter spacing for submenus */
+.submenu-item {
+  padding-left: 32px !important;
+  margin: 0 !important;
+  min-height: 32px !important;
+}
+
+/* Reduce padding for submenu items */
+:deep(.v-list-group__items .v-list-item) {
+  padding-left: 16px !important;
+  min-height: 32px !important;
+}
+
+/* Reduce the gap between submenu items */
+:deep(.v-list-group__items) {
+  padding-top: 10!important;
+  padding-bottom: 0 !important;
 }
 </style>
