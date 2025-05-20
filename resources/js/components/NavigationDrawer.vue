@@ -13,61 +13,72 @@
     <!-- Sidebar Menu -->
     <div class="menu-section">
       <v-list density="compact" nav>
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-map-marker" 
-          title="Provinces" 
-          to="/provinces" 
+        <!-- Main Items -->
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-map-marker"
+          title="Provinces"
+          to="/provinces"
           value="provinces"
+          :class="{ 'v-list-item--active': route.path === '/provinces' }"
         />
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-account" 
-          title="Departments" 
-          to="/departments" 
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-account"
+          title="Departments"
+          to="/departments"
           value="departments"
+          :class="{ 'v-list-item--active': route.path === '/departments' }"
         />
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-account-group-outline" 
-          title="Users" 
-          to="/users" 
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-account-group-outline"
+          title="Users"
+          to="/users"
           value="users"
+          :class="{ 'v-list-item--active': route.path === '/users' }"
         />
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-school" 
-          title="University" 
-          to="/university" 
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-school"
+          title="University"
+          to="/university"
           value="university"
+          :class="{ 'v-list-item--active': route.path === '/university' }"
         />
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-domain" 
-          title="Faculty" 
-          to="/faculties" 
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-domain"
+          title="Faculty"
+          to="/faculties"
           value="faculties"
+          :class="{ 'v-list-item--active': route.path === '/faculties' }"
         />
-        
 
-        <v-list-group value="settings">
+        <!-- Settings Group -->
+        <v-list-group
+          :value="settingItems.some(item => route.path === item.to)"
+        >
           <template #activator="{ props }">
             <v-list-item
               v-bind="props"
               title="Settings"
               prepend-icon="mdi-cog"
               class="menu-item"
+              :class="{ 'v-list-item--active': settingItems.some(item => route.path === item.to) }"
             />
           </template>
 
+          <!-- Submenu Items -->
           <v-list-item
             v-for="(item, index) in settingItems"
             :key="index"
             :to="item.to"
             :title="item.title"
-            class="submenu-item menu-item"
+            class="submenu-item"
             :value="item.value"
             :prepend-icon="item.icon"
+            :class="{ 'v-list-item--active': route.path === item.to }"
           />
         </v-list-group>
       </v-list>
@@ -76,23 +87,24 @@
 </template>
 
 <script setup>
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
 const settingItems = [
   {
-    to: "/systemSetting",
-    title: "SystemSetting",
+    to: "/system-settings",
+    title: "System Setting",
     icon: "mdi mdi-circle-medium",
     value: "system",
   },
   {
-    to: "/rolePermissions",
-    title: "RolePermission",
+    to: "/role-permissions",
+    title: "Role Permission",
     icon: "mdi mdi-circle-medium",
     value: "roles",
   },
-];
-
-
-
+]
 </script>
 
 <style scoped>
@@ -161,7 +173,7 @@ const settingItems = [
 
 /* Reduce the gap between submenu items */
 :deep(.v-list-group__items) {
-  padding-top: 10!important;
+  padding-top: 10px !important;
   padding-bottom: 0 !important;
 }
 </style>
