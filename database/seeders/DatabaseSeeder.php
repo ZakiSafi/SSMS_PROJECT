@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         ProvinceSeeder::class,
         UniversitySeeder::class,
         FacultySeeder::class,
-        DepartmentSeeder::class,
+        DepartmentSeeder::class, 
         StudentStatisticSeeder::class,
         SettingSeeder::class,
         RollPermissionSeeder::class,
