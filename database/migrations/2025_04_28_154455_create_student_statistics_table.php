@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('student_statistics', function (Blueprint $table) {
             $table->id();
             $table->date('academic_year');
+            $table->foreignId('university_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('faculty_id')->constrained()->cascadeOnDelete();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
             $table->string('classroom')->default('first');
             $table->enum('shift', ['day', 'night'])->default('day');

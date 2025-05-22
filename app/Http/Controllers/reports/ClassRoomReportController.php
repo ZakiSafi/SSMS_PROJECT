@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\reports;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -9,33 +10,24 @@ use Illuminate\Support\Facades\DB;
 
 class ClassRoomReportController extends Controller
 {
-    public function __invoke()
+    public function __invoke(Request $request)
     {
-        $report = StudentStatistic::join('academic_years', 'student_statistics.academic_year', '=', 'academic_years.id')
-            ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
-            ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
+        $year = $request->query('year');
+        $data = DB::table('student_statistics')
             ->join('departments', 'student_statistics.department_id', '=', 'departments.id')
-            ->join('classrooms', 'student_statistics.classroom', '=', 'classrooms.id')
+            ->join('faculties', 'departments.faculty_id', '=', 'faculties.id')
+            ->join('universities', 'faculties.university_id', '=', 'universities.id')
             ->select(
-                'academic_years.year as year',
-                'universities.name as university',
-                'faculties.name as faculty',
-                'departments.name as department',
-                'classrooms.name as classroom',
-                DB::raw('SUM(male_total) as total_males'),
-                DB::raw('SUM(female_total) as total_females'),
-                DB::raw('SUM(male_total + female_total) as total_students')
+                'universities.id as university_id',
+                'universities.name as university_name',
+                'student_statistics.classroom',
+                'student_statistics.shift',
+                DB::raw('SUM(student_statistics.male_total + student_statistics.female_total) as total_students')
             )
-            ->groupBy(
-                'academic_years.year',
-                'universities.name',
-                'faculties.name',
-                'departments.name',
-                'classrooms.name'
-            )
-            ->orderBy('academic_years.year')
+            ->whereYear('student_statistics.academic_year', $year)
+            ->groupBy('universities.id', 'universities.name', 'student_statistics.classroom', 'student_statistics.shift')
             ->get();
 
-        return response()->json($report);
+        return response()->json($data);
     }
 }
