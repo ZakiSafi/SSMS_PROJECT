@@ -19,7 +19,9 @@ class UniversityClassShiftReportController extends Controller
                 'universities.name as university_name',
                 'student_statistics.classroom',
                 'student_statistics.shift',
-                DB::raw('SUM(student_statistics.male_total + student_statistics.female_total) as total_students')
+                DB::raw('SUM(student_statistics.male_total) as Total_males'),
+                DB::raw('SUM(student_statistics.female_total) as Total_Females'),
+                DB::raw('SUM(student_statistics.male_total + student_statistics.female_total) as Total_Students')
             )
             ->whereYear('student_statistics.academic_year', $year)
             ->groupBy(
@@ -28,7 +30,8 @@ class UniversityClassShiftReportController extends Controller
                 'student_statistics.classroom',
                 'student_statistics.shift'
             )
-            ->get();
+            ->get()
+            ->groupBy('universities.name');
 
         return response()->json($data);
     }
