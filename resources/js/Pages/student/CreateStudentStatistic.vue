@@ -23,19 +23,19 @@
                   <date-picker mode="single" :column="1" v-model="formData.academic_year" :styles="styles" locale="fa"
                     type="date" format="YYYY-MM-DD" :locale-config="LocaleConfigs" />
                 </v-col>
-                <!-- <v-col cols="6">
+                <v-col cols="6">
                   <v-select v-model="formData.university_id" :items="StudentStatisticsRepository.universities"
                     item-title="name" item-value="id" label="University" variant="outlined" density="compact"
                     :rules="[rules.required]"  />
                     
-                </v-col> -->
+                </v-col>
 
                 <!-- Row 2 -->
-                <!-- <v-col cols="6">
+                <v-col cols="6">
                   <v-select v-model="formData.faculty_id" :items="StudentStatisticsRepository.faculties"
                     item-title="name" item-value="id" label="Faculty" variant="outlined" density="compact"
                     :rules="[rules.required]" />
-                </v-col> -->
+                </v-col>
                 <v-col cols="6">
                   <v-select v-model="formData.department_id" :items="StudentStatisticsRepository.departments"
                     item-title="name" item-value="id" label="Department" variant="outlined" density="compact"
@@ -120,6 +120,8 @@ const formData = reactive({
 });
 onMounted(() => {
   StudentStatisticsRepository.fetchDepartments();
+  StudentStatisticsRepository.fetchFaculties();
+  StudentStatisticsRepository.fetchUniversities();
 });
 
 const classOptions = [

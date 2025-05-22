@@ -11,6 +11,8 @@ export const useStudentStatisticRepository = defineStore("StudentStatisticReposi
       statistics: reactive([]),
       statistic: reactive({}),
       departments: reactive([]),
+      universities: reactive([]),
+      faculties: reactive([]),
       itemsPerPage: ref(5),
       totalItems: ref(0),
       loading: ref(false),
@@ -78,6 +80,22 @@ export const useStudentStatisticRepository = defineStore("StudentStatisticReposi
         this.departments = response.data.data;
       } catch (error) {
         console.error("Failed to fetch departments:", error);
+      }
+  },
+    async fetchFaculties() {
+      try {
+        const response = await axios.get(`faculties`);
+        this.faculties = response.data.data;
+      } catch (error) {
+        console.error("Failed to fetch faculties:", error);
+      }
+  },
+    async fetchUniversities() {
+      try {
+        const response = await axios.get(`universities`);
+        this.universities = response.data.data;
+      } catch (error) {
+        console.error("Failed to fetch universities:", error);
       }
   },
   }
