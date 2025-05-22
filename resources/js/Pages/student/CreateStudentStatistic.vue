@@ -21,7 +21,7 @@
                 <v-col cols="6">
                   
                   <date-picker mode="single" :column="1" v-model="formData.academic_year" :styles="styles" locale="fa"
-                    type="date" format="jYYYY/jMM/jDD" :locale-config="LocaleConfigs" />
+                    type="date" format="YYYY-MM-DD" :locale-config="LocaleConfigs" />
                 </v-col>
                 <!-- <v-col cols="6">
                   <v-select v-model="formData.university_id" :items="StudentStatisticsRepository.universities"
