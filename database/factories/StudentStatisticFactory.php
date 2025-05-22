@@ -18,6 +18,8 @@ class StudentStatisticFactory extends Factory
     {
         return [
             'academic_year' => $this->faker->date(),
+            'university_id' => $this->faker->numberBetween(1, 15),
+            'faculty_id' => $this->faker->numberBetween(1, 15),
             'department_id' => $this->faker->numberBetween(1, 10),
             'classroom' => $this->faker->numberBetween(1, 4),
             'semester_number' => $this->faker->numberBetween(1, 12),
