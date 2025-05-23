@@ -29,8 +29,7 @@ class UniversityReportController extends Controller
 
         $statistics = $query
             ->groupBy('student_statistics.academic_year', 'universities.name')
-            ->get()
-            ->groupBy('university');
+            ->get();
 
         return response()->json($statistics);
     }

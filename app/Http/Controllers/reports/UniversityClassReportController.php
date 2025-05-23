@@ -32,8 +32,7 @@ class UniversityClassReportController extends Controller
                 'student_statistics.classroom',
                 'student_statistics.shift'
             )
-            ->get()
-            ->groupBy('university_name');
+            ->get();
 
         return response()->json($data);
     }

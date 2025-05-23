@@ -38,8 +38,7 @@ class StudentsTypeBasedController extends Controller
             $statistics = $query->groupBy('student_statistics.academic_year', 'universities.name', 'faculties.name', 'student_statistics.shift',
             'student_statistics.student_type')
             ->orderBy('student_statistics.academic_year', 'desc')
-            ->get()
-            ->groupBY('university');
+            ->get();
             if(!$statistics){
                 return response()->json([
                     'message' => 'No data found for the given criteria.'
