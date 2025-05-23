@@ -1,19 +1,21 @@
 <?php
 
 namespace App\Http\Controllers\reports;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\StudentStatistic;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 
 
 class StudentsTypeBasedController extends Controller
 {
     public function __invoke(Request $request)
     {
+
         $shift = $request->query('shift');
         $type = $request->query('type');
+
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
             ->select(
@@ -33,7 +35,8 @@ class StudentsTypeBasedController extends Controller
             if ($type && $type !== 'all') {
             $query->where('student_statistics.student_type', $type);
             }
-            $statistics = $query->groupBy('student_statistics.academic_year', 'universities.name', 'faculties.name', 'student_statistics.shift')
+            $statistics = $query->groupBy('student_statistics.academic_year', 'universities.name', 'faculties.name', 'student_statistics.shift',
+            'student_statistics.student_type')
             ->orderBy('student_statistics.academic_year', 'desc')
             ->get()
             ->groupBY('university');
