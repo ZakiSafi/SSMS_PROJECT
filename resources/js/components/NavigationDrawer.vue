@@ -13,47 +13,98 @@
     <!-- Sidebar Menu -->
     <div class="menu-section">
       <v-list density="compact" nav>
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-map-marker" 
-          title="Provinces" 
-          to="/home/provinces" 
+        <!-- Main Items -->
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-map-marker"
+          title="Provinces"
+          to="/provinces"
           value="provinces"
+          :class="{ 'v-list-item--active': route.path === '/provinces' }"
         />
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-account" 
-          title="Departments" 
-          to="/home/departments" 
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-account"
+          title="Departments"
+          to="/departments"
           value="departments"
+          :class="{ 'v-list-item--active': route.path === '/departments' }"
         />
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-account-group-outline" 
-          title="Users" 
-          to="/home/users" 
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-account-group-outline"
+          title="Users"
+          to="/users"
           value="users"
+          :class="{ 'v-list-item--active': route.path === '/users' }"
         />
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-school" 
-          title="University" 
-          to="/home/university" 
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-school"
+          title="University"
+          to="/university"
           value="university"
+          :class="{ 'v-list-item--active': route.path === '/university' }"
         />
-        <v-list-item 
-          class="menu-item" 
-          prepend-icon="mdi-domain" 
-          title="Faculty" 
-          to="/home/faculties" 
+        <v-list-item
+          class="menu-item"
+          prepend-icon="mdi-domain"
+          title="Faculty"
+          to="/faculties"
           value="faculties"
+          :class="{ 'v-list-item--active': route.path === '/faculties' }"
         />
+
+        <!-- Settings Group -->
+        <v-list-group
+          :value="settingItems.some(item => route.path === item.to)"
+        >
+          <template #activator="{ props }">
+            <v-list-item
+              v-bind="props"
+              title="Settings"
+              prepend-icon="mdi-cog"
+              class="menu-item"
+              :class="{ 'v-list-item--active': settingItems.some(item => route.path === item.to) }"
+            />
+          </template>
+
+          <!-- Submenu Items -->
+          <v-list-item
+            v-for="(item, index) in settingItems"
+            :key="index"
+            :to="item.to"
+            :title="item.title"
+            class="submenu-item"
+            :value="item.value"
+            :prepend-icon="item.icon"
+            :class="{ 'v-list-item--active': route.path === item.to }"
+          />
+        </v-list-group>
       </v-list>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+const settingItems = [
+  {
+    to: "/student-statistic",
+    title: "System Setting",
+    icon: "mdi mdi-circle-medium",
+    value: "system",
+  },
+  {
+    to: "/role-permissions",
+    title: "Role Permission",
+    icon: "mdi mdi-circle-medium",
+    value: "roles",
+  },
+]
 </script>
 
 <style scoped>
@@ -100,5 +151,30 @@
 /* Active state with new primary color */
 :deep(.v-list-item--active) {
   --v-theme-primary: #009EE2;
+}
+
+/* Remove the default dropdown arrow */
+:deep(.v-list-group__header .v-list-item__append i) {
+  display: none !important;
+}
+
+/* Tighter spacing for submenus */
+.submenu-item {
+  padding-left: 32px !important;
+  margin: 0 !important;
+  min-height: 32px !important;
+  
+}
+
+/* Reduce padding for submenu items */
+:deep(.v-list-group__items .v-list-item) {
+  padding-left: 16px !important;
+  min-height: 32px !important;
+}
+
+/* Reduce the gap between submenu items */
+:deep(.v-list-group__items) {
+  padding-top: 10px !important;
+  padding-bottom: 0 !important;
 }
 </style>

@@ -16,6 +16,8 @@
         "vite": "^6.2.4"
     },
     "dependencies": {
+        "@alireza-ab/vue-persian-datepicker": "^2.3.2",
+        "@alireza-ab/vue3-persian-datepicker": "^1.0.5",
         "@tailwindcss/postcss": "^4.1.5",
         "@vitejs/plugin-vue": "^5.2.3",
         "pinia": "^3.0.2",
@@ -24,3 +26,4 @@
         "vuetify": "^3.8.3"
     }
 }
+

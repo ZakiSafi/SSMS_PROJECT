@@ -17,6 +17,8 @@ use App\Http\Controllers\StudentStatisticController;
 use App\Http\Controllers\reports\FacultyReportController;
 use App\Http\Controllers\reports\ClassRoomReportController;
 use App\Http\Controllers\reports\DepartmentReportController;
+use App\Http\Controllers\reports\UniversityReportController;
+use App\Http\Controllers\reports\UniversityClassReportController;
 use App\Http\Controllers\reports\UniversityClassShiftReportController;
 
 Route::apiResource('provinces', ProvinceController::class);
@@ -31,7 +33,8 @@ Route::put('users/update/{user}', [UserController::class, 'update']);
 Route::apiResource('logs', LogController::class);
 
 Route::prefix('report')->group(function () {
-    Route::get('universitiesClasses', [UniversityClassShiftReportController::class, '__invoke']);
+    Route::get('universitiesClasses', [UniversityClassReportController::class, '__invoke']);
+    Route::get('university', [UniversityReportController::class, '__invoke']);
     // Route::get('classRoomReport', [ClassRoomReportController::class, '__invoke']);
     // Route::get('departmentReport', [DepartmentReportController::class, '__invoke']);
     // Route::get('facultyReport', [FacultyReportController::class, '__invoke']);
