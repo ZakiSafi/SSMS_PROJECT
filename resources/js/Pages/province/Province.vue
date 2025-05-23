@@ -5,6 +5,7 @@
       <AppBar pageTitle="Province" />
 
       <!-- Divider between AppBar and content -->
+       
       <v-divider :thickness="1" class="border-opacity-100 "></v-divider>
 
       <!-- Search & Buttons Section -->

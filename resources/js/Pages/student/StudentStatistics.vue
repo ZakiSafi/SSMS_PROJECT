@@ -33,7 +33,7 @@
       :items="StudentStatisticRepository.statistics"
       :loading="StudentStatisticRepository.loading"
       :search="StudentStatisticRepository.departmentSearch"
-      @update:options="StudentStatisticRepository.FetchStatistics"
+      @update:options="StudentStatisticRepository.fetchStatistics"
       class="w-100 mx-auto"
       hover
     >
@@ -91,11 +91,11 @@
   };
   
   const headers = [
-    { title: "Academic Year", key: "academic_year.name", align: "start", sortable: false },
+    { title: "Academic Year", key: "academic_year", align: "start", sortable: false },
     { title: "University", key: "university.name" },
     { title: "Faculty", key: "faculty.name" },
     { title: "Department", key: "department.name" },
-    { title: "Classroom", key: "classroom.name" },
+    { title: "Classroom", key: "classroom" },
     { title: "Shift", key: "shift" },
     { title: "Season", key: "season" },
     { title: "Semester", key: "semester_number" },

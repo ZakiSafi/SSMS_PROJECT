@@ -1,11 +1,12 @@
 <template>
   <div class="sidebar-container">
     <!-- Logo/User Info -->
-    <div class="logo d-flex pl-6 pb-3">
+    <div class="d-flex pl-4 align-center ">
       <v-list-item
-        prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-        title="Jawad"
-      />
+       ><img
+                  src="../../../public/assets/Park.jpg" alt=""
+                  class="w-[2.9rem] h-[2.9rem] rounded-full object-cover transition-all duration-300"></v-list-item>
+                  <h3 >Jawad</h3>
     </div>
 
     <v-divider :thickness="1" class="border-opacity-100 full"></v-divider>
