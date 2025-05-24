@@ -7,12 +7,13 @@ export const useReportRepository = defineStore("reportRepository", {
     return {
       departments: reactive([]),
       search: ref(""),
+      date:ref(""),
     }
   },
   actions: {
-    async fetchJawad(date=null) {
+    async fetchJawad(date="2024") {
       try {
-        const response = await axios.get(`report/studentsTypeBased?date=${date}`);
+        const response = await axios.get(`report/studentsTypeBased?year=${date}`);
         // Transform the data if needed
         this.departments = response.data.map(item => ({
           ...item,

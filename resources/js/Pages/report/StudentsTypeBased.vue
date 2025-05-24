@@ -2,26 +2,26 @@
   <AppBar pageTitle="Report" />
   <v-divider :thickness="1" class="border-opacity-100" />
     
+  <div class="w-25 pt-4">
+   <date-picker
+                      mode="single"
+                      :column="1"
+                      v-model="ReportRepository.search" 
+                      :styles="styles"
+                      @update:modelValue="onDateChange" 
+                      locale="fa"
+                      type="date"
+                      :locale-config="LocaleConfigs"
+                      input-format="jYYYY/jMM/jDD"
+                      format="YYYY"
+                      
+                  />
+                  </div>
   <div v-if="departments && departments.length" class="table-container">
-    <div class="w-25 pt-4">
-     <date-picker
-                        mode="single"
-                        :column="1"
-                        v-model="ReportRepository.search" 
-                        :styles="styles"
-                        @update:modelValue="onDateChange" 
-                        locale="fa"
-                        type="date"
-                        :locale-config="LocaleConfigs"
-                        input-format="jYYYY/jMM/jDD"
-                        format="YYYY-MM-DD"
-                        
-                    />
-                    </div>
     <!-- Main English heading -->
     <div class="main-heading">
       
-      Statistical Report of Graduates - Semester 2, 2023 Educational Institutions
+      Statistical Report of Graduates - Semester 2, {{ ReportRepository.date }} Educational Institutions
     </div>
     
     <table class="styled-table">
@@ -40,7 +40,7 @@
       <tbody>
         <tr v-for="(item, index) in departments" :key="index">
           <td>{{ index + 1 }}</td>
-          <td>{{ item.universityName || 'University Name' }}</td>
+          <td>{{ item.university || 'University Name' }}</td>
           <td>{{ item.Total_Males }}</td>
           <td>{{ item.Total_Females }}</td>
           <td>{{ item.Total_Students }}</td>
@@ -76,6 +76,8 @@ const departments = computed(() => ReportRepository.departments);
 
 const onDateChange = (date) => {
     console.log('Date range changed:', date);
+    ReportRepository.date=date;
+    
     ReportRepository.fetchJawad(date);
 
   
