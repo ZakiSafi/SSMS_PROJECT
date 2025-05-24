@@ -19,7 +19,7 @@
               <v-row dense>
                 <!-- Row 1 -->
                 <v-col cols="6">
-                  
+      
                   <date-picker mode="single" :column="1" v-model="formData.academic_year" :styles="styles" locale="fa"
                     type="date" format="YYYY-MM-DD" :locale-config="LocaleConfigs" />
                 </v-col>
