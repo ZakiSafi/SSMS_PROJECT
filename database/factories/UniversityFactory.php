@@ -19,7 +19,7 @@ class UniversityFactory extends Factory
     {
         return [
             'name' => fake()->unique()->company(),
-            'teachers' => fake()->numberBetween(1, 100),
+            'teachers' => fake()->numberBetween(1, 1000),
             'type' => fake()->randomElement(['public', 'private']),
             'province_id' => Province::inRandomOrder()->first()->id ?? Province::factory()->create()->id,
         ];
