@@ -4,14 +4,15 @@ import { axios } from '../axios';
 
 export const useReportRepository = defineStore("reportRepository", {
   state() {
+    const currentYear = new Date().getFullYear();
     return {
       departments: reactive([]),
       search: ref(""),
-      date:ref(""),
+      date:ref(currentYear),
     }
   },
   actions: {
-    async fetchJawad(date="2024") {
+    async fetchJawad(date=currentYear) {
       try {
         const response = await axios.get(`report/studentsTypeBased?year=${date}`);
         // Transform the data if needed
