@@ -1,24 +1,27 @@
 import { defineStore } from "pinia";
-import {ref,reactive} from "vue";
-import {axios} from '../axios';
+import { reactive,ref } from "vue";
+import { axios } from '../axios';
 
-export  const useReportRepository=defineStore("reportRepository",{
-    state(){
-        return{
-            search:ref(""),
-            totalItems: ref(0),
-            itemsPerPage: ref(5),
-             departments: reactive([]),
-        }
-    },
-    actions:{
-        async fetchJawad({page,itemsPerPage}){
-            const response= await axios.get(`studentsTypeBased?page=${page}&perPage=${itemsPerPage}$name=${this.search}`);
-            this.departments = response.data.data;
-            this.totalItems = response.data.meta.total;
-        }
-
-
+export const useReportRepository = defineStore("reportRepository", {
+  state() {
+    return {
+      departments: reactive([]),
+      search: ref(""),
     }
-
-})
+  },
+  actions: {
+    async fetchJawad(date=null) {
+      try {
+        const response = await axios.get(`report/studentsTypeBased?date=${date}`);
+        // Transform the data if needed
+        this.departments = response.data.map(item => ({
+          ...item,
+          // Add any transformations here if needed
+        }));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        this.departments = [];
+      }
+    }
+  }
+});
