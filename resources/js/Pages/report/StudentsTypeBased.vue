@@ -23,6 +23,7 @@
       Statistical Report of Graduates - Semester 2, {{ ReportRepository.date }} Educational Institutions
     </div>
 
+
     <!-- Table always rendered -->
     <table class="styled-table">
       <thead>
@@ -38,6 +39,19 @@
         </tr>
       </thead>
       <tbody>
+        <tr v-if="ReportRepository.loading">
+  <td colspan="8" style="padding: 0;">
+    <v-progress-linear
+      color="yellow-darken-2"
+      height="3"
+      indeterminate
+      style="width: 100%"
+    ></v-progress-linear>
+  </td>
+</tr>
+       
+             
+
         <!-- If data is available, show rows -->
         <tr v-if="departments.length" v-for="(item, index) in departments" :key="index">
           <td>{{ index + 1 }}</td>
@@ -88,6 +102,14 @@ const onDateChange = (date) => {
 </script>
 
 <style scoped>
+
+.loading-line {
+  padding: 20px;
+  text-align: center;
+  color: #007bff;
+  font-weight: bold;
+}
+
 .table-container {
   overflow-x: auto;
 
