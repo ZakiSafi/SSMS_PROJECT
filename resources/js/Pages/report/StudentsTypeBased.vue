@@ -1,29 +1,30 @@
 <template>
   <AppBar pageTitle="Report" />
   <v-divider :thickness="1" class="border-opacity-100" />
-    
-  <div v-if="departments && departments.length" class="table-container">
-    <div class="w-25 pt-4">
-     <date-picker
-                        mode="single"
-                        :column="1"
-                        v-model="ReportRepository.search" 
-                        :styles="styles"
-                        @update:modelValue="onDateChange" 
-                        locale="fa"
-                        type="date"
-                        :locale-config="LocaleConfigs"
-                        input-format="jYYYY/jMM/jDD"
-                        format="YYYY-MM-DD"
-                        
-                    />
-                    </div>
-    <!-- Main English heading -->
+
+  <div class="w-25 pt-4">
+    <date-picker
+      mode="single"
+      :column="1"
+      v-model="ReportRepository.search"
+      :styles="styles"
+      @update:modelValue="onDateChange"
+      locale="fa"
+      type="date"
+      :locale-config="LocaleConfigs"
+      input-format="jYYYY"
+      format="YYYY"
+    />
+  </div>
+
+  <div class="table-container">
+    <!-- Heading always visible -->
     <div class="main-heading">
-      
-      Statistical Report of Graduates - Semester 2, 2023 Educational Institutions
+      Statistical Report of Graduates - Semester 2, {{ ReportRepository.date }} Educational Institutions
     </div>
-    
+
+
+    <!-- Table always rendered -->
     <table class="styled-table">
       <thead>
         <tr>
@@ -32,33 +33,48 @@
           <th>Male</th>
           <th>Female</th>
           <th>Total</th>
-          <th>Percantage Of Male</th>
-          <th>Percantage Of Female</th>
+          <th>Percentage Of Male</th>
+          <th>Percentage Of Female</th>
           <th>Considerations</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in departments" :key="index">
+        <tr v-if="ReportRepository.loading">
+  <td colspan="8" style="padding: 0;">
+    <v-progress-linear
+      color="yellow-darken-2"
+      height="3"
+      indeterminate
+      style="width: 100%"
+    ></v-progress-linear>
+  </td>
+</tr>
+       
+             
+
+        <!-- If data is available, show rows -->
+        <tr v-if="departments.length" v-for="(item, index) in departments" :key="index">
           <td>{{ index + 1 }}</td>
-          <td>{{ item.universityName || 'University Name' }}</td>
+          <td>{{ item.university || 'University Name' }}</td>
           <td>{{ item.Total_Males }}</td>
           <td>{{ item.Total_Females }}</td>
           <td>{{ item.Total_Students }}</td>
           <td>{{ ((item.Total_Males / item.Total_Students) * 100).toFixed(2) }}%</td>
           <td>{{ ((item.Total_Females / item.Total_Students) * 100).toFixed(2) }}%</td>
-    
           <td></td>
-          
-          
+        </tr>
+
+        <!-- If no data, show "no data" message inside table -->
+        <tr v-else>
+          <td colspan="8" style="text-align: center; color: #888; padding: 20px;">
+            🚫 No data found for this year.
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
-
-  <div v-else>
-    <p>Loading or no data available...</p>
-  </div>
 </template>
+
 
 <script setup>
 import { onMounted, computed } from "vue";
@@ -76,6 +92,8 @@ const departments = computed(() => ReportRepository.departments);
 
 const onDateChange = (date) => {
     console.log('Date range changed:', date);
+    ReportRepository.date=date;
+    
     ReportRepository.fetchJawad(date);
 
   
@@ -84,6 +102,14 @@ const onDateChange = (date) => {
 </script>
 
 <style scoped>
+
+.loading-line {
+  padding: 20px;
+  text-align: center;
+  color: #007bff;
+  font-weight: bold;
+}
+
 .table-container {
   overflow-x: auto;
 
