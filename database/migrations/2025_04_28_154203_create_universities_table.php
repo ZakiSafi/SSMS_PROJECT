@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('universities', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->integer('teachers');
             $table->enum('type', ['public', 'private']);
             $table->foreignId('province_id')->constrained('provinces')->cascadeOnDelete();
             $table->timestamps();
