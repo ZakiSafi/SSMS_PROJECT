@@ -1,0 +1,104 @@
+import { defineStore } from "pinia";
+import { ref, reactive } from "vue";
+import { axios } from "../axios";
+
+export const useUserRepository = defineStore("userRepository", {
+  state() {
+    return {
+      isEditMode: ref(false),
+      search: ref(""),
+      loadingTable: ref(true),
+      loading: ref(false),
+      totalItems: ref(0),
+      itemsPerPage: ref(5),
+      createDialog: ref(false),
+      userSearch: ref(""),
+      users: reactive([]),
+      user: reactive({}),
+      roles: reactive([]), // This could be RollPermissions or similar
+    };
+  },
+
+  actions: {
+    async fetchUsers({ page, itemsPerPage }) {
+      this.loading = true;
+      const response = await axios.get(
+        `users?page=${page}&perPage=${itemsPerPage}&name=${this.userSearch}`
+      );
+      this.users = response.data.data;
+      this.totalItems = response.data.meta.total;
+      this.loading = false;
+    },
+
+    async fetchUser(id) {
+      try {
+        const response = await axios.get(`users/${id}`);
+        this.user = response.data.data;
+        console.log(this.user);
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+    },
+
+    async createUser(formData) {
+      try {
+        const config = {
+          method: "POST",
+          url: "users",
+          data: formData,
+        };
+        await axios(config);
+        this.createDialog = false;
+        this.fetchUsers({
+          page: this.page,
+          itemsPerPage: this.itemsPerPage,
+        });
+      } catch (err) {
+        console.error("Failed to create user:", err);
+      }
+    },
+
+    async updateUser(id, formData) {
+      try {
+        const config = {
+          method: "PUT",
+          url: `users/${id}`,
+          data: formData,
+        };
+        await axios(config);
+        this.createDialog = false;
+        this.fetchUsers({
+          page: this.page,
+          itemsPerPage: this.itemsPerPage,
+        });
+      } catch (err) {
+        console.error("Failed to update user:", err);
+      }
+    },
+
+    async deleteUser(id) {
+      try {
+        const config = {
+          method: "DELETE",
+          url: `users/${id}`,
+        };
+        await axios(config);
+        this.fetchUsers({
+          page: this.page,
+          itemsPerPage: this.itemsPerPage,
+        });
+      } catch (err) {
+        console.error("Failed to delete user:", err);
+      }
+    },
+
+    async FetchRoles() {
+      try {
+        const response = await axios.get("roll-permissions"); // adjust endpoint if needed
+        this.roles = response.data.data;
+      } catch (err) {
+        console.error("Failed to fetch roles:", err);
+      }
+    },
+  },
+});

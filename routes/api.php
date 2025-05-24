@@ -34,7 +34,7 @@ Route::apiResource('logs', LogController::class);
 Route::prefix('report')->group(function () {
     Route::get('universitiesClasses', [UniversityClassReportController::class, '__invoke']);
     Route::get('university', [UniversityReportController::class, '__invoke']);
-    Route::get('', [StudentsTypeBasedController::class, '__invoke']);
+    Route::get('studentsTypeBased', [StudentsTypeBasedController::class, '__invoke']);
 });
 
 Route::post('login', [AuthController::class, 'login']);

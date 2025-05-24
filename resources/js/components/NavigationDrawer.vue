@@ -2,11 +2,9 @@
   <div class="sidebar-container">
     <!-- Logo/User Info -->
     <div class="d-flex pl-4 align-center ">
-      <v-list-item
-       ><img
-                  src="../../../public/assets/Park.jpg" alt=""
-                  class="w-[2.9rem] h-[2.9rem] rounded-full object-cover transition-all duration-300"></v-list-item>
-                  <h3 >Jawad</h3>
+      <v-list-item><img src="../../../public/assets/Park.jpg" alt=""
+          class="w-[2.9rem] h-[2.9rem] rounded-full object-cover transition-all duration-300"></v-list-item>
+      <h3>Jawad</h3>
     </div>
 
     <v-divider :thickness="1" class="border-opacity-100 full"></v-divider>
@@ -15,73 +13,43 @@
     <div class="menu-section">
       <v-list density="compact" nav>
         <!-- Main Items -->
-        <v-list-item
-          class="menu-item"
-          prepend-icon="mdi-map-marker"
-          title="Provinces"
-          to="/provinces"
-          value="provinces"
-          :class="{ 'v-list-item--active': route.path === '/provinces' }"
-        />
-        <v-list-item
-          class="menu-item"
-          prepend-icon="mdi-account"
-          title="Departments"
-          to="/departments"
-          value="departments"
-          :class="{ 'v-list-item--active': route.path === '/departments' }"
-        />
-        <v-list-item
-          class="menu-item"
-          prepend-icon="mdi-account-group-outline"
-          title="Users"
-          to="/users"
-          value="users"
-          :class="{ 'v-list-item--active': route.path === '/users' }"
-        />
-        <v-list-item
-          class="menu-item"
-          prepend-icon="mdi-school"
-          title="University"
-          to="/university"
-          value="university"
-          :class="{ 'v-list-item--active': route.path === '/university' }"
-        />
-        <v-list-item
-          class="menu-item"
-          prepend-icon="mdi-domain"
-          title="Faculty"
-          to="/faculties"
-          value="faculties"
-          :class="{ 'v-list-item--active': route.path === '/faculties' }"
-        />
+        <v-list-item class="menu-item" prepend-icon="mdi-map-marker" title="Provinces" to="/provinces" value="provinces"
+          :class="{ 'v-list-item--active': route.path === '/provinces' }" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account" title="Departments" to="/departments"
+          value="departments" :class="{ 'v-list-item--active': route.path === '/departments' }" />
+        <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Users" to="/users" value="users"
+          :class="{ 'v-list-item--active': route.path === '/users' }" />
+        <v-list-item class="menu-item" prepend-icon="mdi-school" title="University" to="/university" value="university"
+          :class="{ 'v-list-item--active': route.path === '/university' }" />
+        <v-list-item class="menu-item" prepend-icon="mdi-domain" title="Faculty" to="/faculties" value="faculties"
+          :class="{ 'v-list-item--active': route.path === '/faculties' }" />
 
-        <!-- Settings Group -->
-        <v-list-group
-          :value="settingItems.some(item => route.path === item.to)"
-        >
+         <!-- Reports Group -->
+           <v-list-group >
           <template #activator="{ props }">
-            <v-list-item
-              v-bind="props"
-              title="Settings"
-              prepend-icon="mdi-cog"
-              class="menu-item"
-              :class="{ 'v-list-item--active': settingItems.some(item => route.path === item.to) }"
-            />
+            <v-list-item v-bind="props" title="Reports" prepend-icon="mdi-file-chart" class="menu-item"
+               />
           </template>
 
           <!-- Submenu Items -->
-          <v-list-item
-            v-for="(item, index) in settingItems"
-            :key="index"
-            :to="item.to"
-            :title="item.title"
-            class="submenu-item"
-            :value="item.value"
-            :prepend-icon="item.icon"
-            :class="{ 'v-list-item--active': route.path === item.to }"
-          />
+          <v-list-item v-for="(item, index) in reportItems" :key="index" :to="item.to" :title="item.title"
+            class="submenu-item" :value="item.value" :prepend-icon="item.icon"
+            :class="{ 'v-list-item--active': route.path === item.to }" />
         </v-list-group>
+
+        <!-- Settings Group -->
+        <v-list-group >
+          <template #activator="{ props }">
+            <v-list-item v-bind="props" title="Settings" prepend-icon="mdi-cog" class="menu-item"
+               />
+          </template>
+
+          <!-- Submenu Items -->
+          <v-list-item v-for="(item, index) in settingItems" :key="index" :to="item.to" :title="item.title"
+            class="submenu-item" :value="item.value" :prepend-icon="item.icon"
+            :class="{ 'v-list-item--active': route.path === item.to }" />
+        </v-list-group>
+       
       </v-list>
     </div>
   </div>
@@ -96,16 +64,46 @@ const settingItems = [
   {
     to: "/student-statistic",
     title: "System Setting",
-    icon: "mdi mdi-circle-medium",
+    icon: "mdi-circle-medium",
     value: "system",
   },
   {
     to: "/role-permissions",
     title: "Role Permission",
-    icon: "mdi mdi-circle-medium",
+    icon: "mdi-circle-medium",
     value: "roles",
   },
 ]
+
+
+const reportItems=[
+  {
+    to: "/student-statistic",
+    title: "Student Statistic",
+    icon: "mdi-circle-medium",
+    value: "student-statistic",
+  },
+  {
+    to: "/department-statistic",
+    title: "Department Statistic",
+    icon: "mdi-circle-medium",
+    value: "department-statistic",
+  },
+  {
+    to: "/faculty-statistic",
+    title: "Faculty Statistic",
+    icon: "mdi-circle-medium",
+    value: "faculty-statistic",
+  },
+  {
+    to: "/university-statistic",
+    title: "University Statistic",
+    icon: "mdi-circle-medium",
+    value: "university-statistic",
+  },
+];
+  
+
 </script>
 
 <style scoped>
@@ -164,7 +162,7 @@ const settingItems = [
   padding-left: 32px !important;
   margin: 0 !important;
   min-height: 32px !important;
-  
+
 }
 
 /* Reduce padding for submenu items */
