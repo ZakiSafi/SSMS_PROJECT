@@ -11,6 +11,7 @@ class UniversityReportController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $year = $request->query('year');
         $shift = $request->query('shift');
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
@@ -25,6 +26,10 @@ class UniversityReportController extends Controller
         // If specific shift (day or night) is requested, apply it
         if ($shift && $shift !== 'all') {
             $query->where('student_statistics.shift', $shift);
+        }
+
+        if ($year && $year !== 'all') {
+            $query->whereYear('student_statistics.academic_year', $year);
         }
 
         $statistics = $query

@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Reports;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\StudentStatistic;
@@ -10,6 +11,7 @@ class DepartmentBasedGraduationReportController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $year = $request->query('year');
         $season = $request->query('season');
         $shift = $request->query('shift');
         $type = 'graduated';
@@ -29,10 +31,20 @@ class DepartmentBasedGraduationReportController extends Controller
                 DB::raw('SUM(student_statistics.male_total) as Total_Males'),
                 DB::raw('SUM(student_statistics.female_total) as Total_Females'),
                 DB::raw('SUM(student_statistics.female_total + student_statistics.male_total) as Total_Students')
-            )
-            ->where('student_statistics.student_type', $type)
-            ->where('student_statistics.season', $season)
-            ->where('student_statistics.shift', $shift)
+            );
+        if ($season && $season !== 'all') {
+            $query->where('student_statistics.season', $season);
+        }
+        if ($shift && $shift !== 'all') {
+            $query->where('student_statistics.shift', $shift);
+        }
+
+        if ($year && $year !== 'all') {
+            $query->where('student_statistics.year', $shift);
+        }
+
+        $statistics = $query->where('student_statistics.student_type', $type)
+
             ->groupBy(
                 'student_statistics.academic_year',
                 'student_statistics.student_type',
@@ -44,6 +56,6 @@ class DepartmentBasedGraduationReportController extends Controller
             )
             ->get();
 
-        return response()->json($query);
+        return response()->json($statistics);
     }
 }

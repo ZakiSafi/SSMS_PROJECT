@@ -12,7 +12,7 @@ class StudentsTypeBasedController extends Controller
 {
     public function __invoke(Request $request)
     {
-
+        $year = $request->query('year');
         $shift = $request->query('shift');
         $type = $request->query('type');
 
@@ -30,6 +30,10 @@ class StudentsTypeBasedController extends Controller
             );
             if ($shift && $shift !== 'all') {
             $query->where('student_statistics.shift', $shift);
+            };
+
+            if ($year && $year !== 'all') {
+            $query->whereYear('student_statistics.academic_year', $year);
             };
 
             if ($type && $type !== 'all') {

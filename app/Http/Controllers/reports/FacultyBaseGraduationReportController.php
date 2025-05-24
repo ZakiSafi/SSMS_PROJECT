@@ -12,10 +12,11 @@ class FacultyBaseGraduationReportController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $year = $request->query('year');
         $season = $request->query('season');
         $shift = $request->query('shift');
         $type = 'graduated';
-        
+
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
@@ -29,10 +30,17 @@ class FacultyBaseGraduationReportController extends Controller
                 DB::raw('SUM(student_statistics.male_total) as Total_Males'),
                 DB::raw('SUM(student_statistics.female_total) as Total_Females'),
                 DB::raw('SUM(student_statistics.female_total + student_statistics.male_total) as Total_Students')
-            )
-            ->where('student_statistics.student_type', $type)
-            ->where('student_statistics.season', $season)
-            ->where('student_statistics.shift', $shift)
+            );
+            if ($year && $year !== 'all') {
+                $query->whereYear('student_statistics.academic_year', $year);
+            }
+            if ($season && $season !== 'all') {
+                $query->where('student_statistics.season', $season);
+            }
+            if ($shift && $shift !== 'all') {
+                $query->where('student_statistics.shift', $shift);
+            }
+            $statistics = $query->where('student_statistics.student_type', $type)
             ->groupBy(
                 'student_statistics.academic_year',
                 'student_statistics.student_type',
@@ -43,6 +51,6 @@ class FacultyBaseGraduationReportController extends Controller
             )
             ->get();
 
-        return response()->json($query);
+        return response()->json($statistics);
     }
 }
