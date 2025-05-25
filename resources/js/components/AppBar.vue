@@ -2,10 +2,10 @@
   <v-card :dir="isRtl ? 'rtl' : 'ltr'" :elevation="0" class="rounded-xl">
     <template v-slot:prepend>
       <v-btn icon="mdi-drag" flat fluid class="drag" size="small" @click="toggleSidebar"></v-btn>
-      <div class="text-[12px]">
+      <h1 class="text-[18px]">
         {{ pageTitle }}
         <span v-if="pageSubtitle" class="text-[14px] ">{{ pageSubtitle }}</span>
-      </div>
+      </h1>
     </template>
 
     <template v-slot:append>
