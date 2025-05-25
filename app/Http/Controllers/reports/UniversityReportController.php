@@ -13,6 +13,7 @@ class UniversityReportController extends Controller
     {
         $year = $request->query('year');
         $shift = $request->query('shift');
+        $perPage = $request->query('per_page', 10);
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->select(
@@ -23,7 +24,6 @@ class UniversityReportController extends Controller
                 DB::raw('SUM(male_total + female_total) as Total_Students')
             );
 
-        // If specific shift (day or night) is requested, apply it
         if ($shift && $shift !== 'all') {
             $query->where('student_statistics.shift', $shift);
         }
@@ -32,9 +32,10 @@ class UniversityReportController extends Controller
             $query->whereYear('student_statistics.academic_year', $year);
         }
 
-        $statistics = $query
-            ->groupBy('student_statistics.academic_year', 'universities.name')
-            ->get();
+        $query->groupBy('student_statistics.academic_year', 'universities.name');
+
+        // Pagination applied here
+        $statistics = $query->paginate($perPage);
 
         return response()->json($statistics);
     }
