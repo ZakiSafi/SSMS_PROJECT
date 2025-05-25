@@ -13,7 +13,7 @@ class UniversityReportController extends Controller
     {
         $year = $request->query('year');
         $shift = $request->query('shift');
-        $perPage = $request->query('per_page', 10); // default to 10 per page
+        $perPage = $request->query('per_page', 10);
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->select(
