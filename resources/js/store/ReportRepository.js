@@ -15,18 +15,19 @@ export const useReportRepository = defineStore("reportRepository", {
       search: ref(""),
       date: ref(currentYear),
       loading: ref(false),
+      totalItems: ref(0),
+      selectedItems: ref([]),
+      itemsPerPage: ref(5),
     }
   },
   actions: {
-    async fetchJawad(date = new Date().getFullYear()) {
+    async fetchJawad({ page, itemsPerPage },date = new Date().getFullYear(),) {
       this.loading = true;
-      await wait(400); 
 
       try {
-        const response = await axios.get(`report/studentsTypeBased?year=${date}`);
-        this.departments = response.data.map(item => ({
-          ...item,
-        }));
+        const response = await axios.get(`report/university?year=${date}&page=${page}&perPage=${itemsPerPage}`);
+        this.departments = response.data.data;
+         this.totalItems = response.data.total
       } catch (error) {
         console.error("Error fetching data:", error);
         this.departments = [];
