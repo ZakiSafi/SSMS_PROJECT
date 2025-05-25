@@ -18,62 +18,16 @@
   </div>
 
   <div class="table-container">
-    <!-- Heading always visible -->
     <div class="main-heading">
       Statistical Report of Graduates - Semester 2, {{ ReportRepository.date }} Educational Institutions
     </div>
-
-
-    <!-- Table always rendered -->
-    <table class="styled-table">
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>Higher Education Institution</th>
-          <th>Male</th>
-          <th>Female</th>
-          <th>Total</th>
-          <th>Percentage Of Male</th>
-          <th>Percentage Of Female</th>
-          <th>Considerations</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-if="ReportRepository.loading">
-  <td colspan="8" style="padding: 0;">
-    <v-progress-linear
-      color="yellow-darken-2"
-      height="3"
-      indeterminate
-      style="width: 100%"
-    ></v-progress-linear>
-  </td>
-</tr>
-       
-             
-
-        <!-- If data is available, show rows -->
-        <tr v-if="departments.length" v-for="(item, index) in departments" :key="index">
-          <td>{{ index + 1 }}</td>
-          <td>{{ item.university || 'University Name' }}</td>
-          <td>{{ item.Total_Males }}</td>
-          <td>{{ item.Total_Females }}</td>
-          <td>{{ item.Total_Students }}</td>
-          <td>{{ ((item.Total_Males / item.Total_Students) * 100).toFixed(2) }}%</td>
-          <td>{{ ((item.Total_Females / item.Total_Students) * 100).toFixed(2) }}%</td>
-          <td></td>
-        </tr>
-
-        <!-- If no data, show "no data" message inside table -->
-        <tr v-else>
-          <td colspan="8" style="text-align: center; color: #888; padding: 20px;">
-            🚫 No data found for this year.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <v-data-table-server v-model:items-per-page="ReportRepository.itemsPerPage" :headers="headers"
+        :items-length="ReportRepository.totalItems" :items="ReportRepository.departments"
+        :loading="ReportRepository.loading" :search="ReportRepository.search"
+        @update:options="ReportRepository.fetchJawad" class="w-100 mx-auto" hover></v-data-table-server>
+        </div>
 </template>
+
 
 
 <script setup>
@@ -84,31 +38,25 @@ import {LocaleConfigs} from "../../LocaleConfigs";
 
 const ReportRepository = useReportRepository();
 
-onMounted(() => {
-  ReportRepository.fetchJawad();
-});
 
-const departments = computed(() => ReportRepository.departments);
+
 
 const onDateChange = (date) => {
-    console.log('Date range changed:', date);
-    ReportRepository.date=date;
-    
-    ReportRepository.fetchJawad(date);
+  ReportRepository.date = date;
+  ReportRepository.fetchJawad({ page, itemsPerPage },date);
+}
 
-  
-};
+
+const headers = [
+  { title: "University", key: "university", align: "start", sortable: false },
+  { title: "Action", key: "action", align: "end", sortable: false },
+];
 
 </script>
 
 <style scoped>
 
-.loading-line {
-  padding: 20px;
-  text-align: center;
-  color: #007bff;
-  font-weight: bold;
-}
+
 
 .table-container {
   overflow-x: auto;
