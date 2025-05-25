@@ -28,7 +28,7 @@ export let useProvinceRepository = defineStore("", {
     actions: {
         async FetchProvinces({ page, itemsPerPage }) {
             this.loading = true;
-    
+
             const response = await axios.get(
                 `provinces?page=${page}&perPage=${itemsPerPage}&name=${this.provinceSearch}`
             );
@@ -52,7 +52,7 @@ export let useProvinceRepository = defineStore("", {
                     url: "provinces",
                     data: formData,
                 };
-    
+
                 await axios(config);
                 this.createDialog = false;
                 this.FetchProvinces({
@@ -70,7 +70,7 @@ export let useProvinceRepository = defineStore("", {
                     url: "provinces/" + id,
                     data: data,
                 };
-    
+
                 await axios(config);
                 this.createDialog = false;
                 this.FetchProvinces({
@@ -84,13 +84,13 @@ export let useProvinceRepository = defineStore("", {
         async DeleteProvince(id) {
             this.isLoading = true;
             this.error = null;
-    
+
             try {
                 const config = {
                     method: "DELETE",
                     url: "provinces/" + id,
                 };
-    
+
                 await axios(config);
                 this.FetchProvinces({
                     page: this.page,
@@ -101,6 +101,6 @@ export let useProvinceRepository = defineStore("", {
             }
         }
     }
-    
+
 
 });
