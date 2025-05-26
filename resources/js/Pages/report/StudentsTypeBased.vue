@@ -5,14 +5,15 @@
     <v-divider :thickness="1" class="border-opacity-100" />
 
     <div class="w-25 pt-6 pb-6">
-        <v-select
-        v-model="ReportRepository.date"
-        :items="yearRange"
-        label="Select Year"
-        variant="outlined"
-        density="compact"
-        @change="onDateChange"
-        ></v-select>
+         <v-combobox
+      v-model="ReportRepository.date"
+      :items="yearRange"
+      label="Select or Type Year"
+      variant="outlined"
+      density="compact"
+      @update:modelValue="onDateChange"
+      
+    ></v-combobox>
     </div>
 
     <v-data-table-server
@@ -63,6 +64,18 @@ const onDateChange = (date) => {
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         date
     );
+};
+
+const validateYearInput = (value) => {
+  if (!value) return "Year is required";
+  const yearNum = parseInt(value);
+  if (isNaN(yearNum)) return "Must be a valid year";
+  const minYear = parseInt(currentYear.value) - 10;
+  const maxYear = parseInt(currentYear.value) + 10;
+  if (yearNum < minYear || yearNum > maxYear) {
+    return `Year must be between ${minYear} and ${maxYear}`;
+  }
+  return true;
 };
 
 const headers = [
