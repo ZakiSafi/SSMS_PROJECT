@@ -2,7 +2,7 @@
     <AppBar pageTitle="University Base Graduation Report" />
     <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
-   <div class="w-[24rem] pt-6 pb-6 d-flex align-center">
+   <div class="w-[24rem] pt-6 pb-6  d-flex align-center">
   <v-combobox
     class="mr-4"
     v-model="ReportRepository.date"
@@ -10,6 +10,7 @@
     label="Select or Type Year"
     variant="outlined"
     density="compact"
+    hide-details
     @update:modelValue="onDateChange"
   ></v-combobox>
   
@@ -18,6 +19,7 @@
     :items="['winter','spring']"
     label="Select Session"
     variant="outlined"
+    hide-details
     density="compact"
     @update:modelValue="onDateChange"
   ></v-select>

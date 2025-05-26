@@ -96,10 +96,10 @@ const reportItems=[
     value: "student-teacher-ratio",
   },
   {
-    to: "/university-statistic",
-    title: "University Statistic",
+    to: "/university-classes",
+    title: "UniversitiesClasses",
     icon: "mdi-circle-medium",
-    value: "university-statistic",
+    value: "university-classes",
   },
 ];
   

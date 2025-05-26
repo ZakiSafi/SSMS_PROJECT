@@ -26,8 +26,8 @@ class UniversityClassReportController extends Controller
             DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
             DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),
             )
-            ->whereYear('student_statistics.academic_year', $year)
-            ->where('student_statistics.shift', $shift)
+            ->where('student_statistics.academic_year', "1404")
+            ->where('student_statistics.shift', "day")
             ->groupBy(
                 'student_statistics.university_id',
                 'universities.name',
