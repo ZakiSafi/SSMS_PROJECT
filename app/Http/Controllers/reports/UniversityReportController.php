@@ -33,9 +33,8 @@ class UniversityReportController extends Controller
         }
 
         if ($year && $year !== 'all') {
-            $query->whereYear('student_statistics.academic_year', $year);
+            $query->where('student_statistics.academic_year', $year);
         }
-        
 
         $query->groupBy('student_statistics.academic_year', 'universities.name');
 
