@@ -1,6 +1,6 @@
 <template>
     <AppBar
-        :pageTitle="`Statistical Report of Graduates - Semester 2, ${ReportRepository.date} Educational Institutions`"
+        :pageTitle="`Statistical Data of Students in Public Higher Education Institutions – Day and Night Shifts, Year ${ReportRepository.date}`"
     />
     <v-divider :thickness="1" class="border-opacity-100" />
 
@@ -12,7 +12,7 @@
       variant="outlined"
       density="compact"
       @update:modelValue="onDateChange"
-      
+      :rules="[validateYearInput]"
     ></v-combobox>
     </div>
 

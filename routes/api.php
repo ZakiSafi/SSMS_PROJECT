@@ -41,7 +41,7 @@ Route::prefix('report')->group(function () {
     Route::get('departmentClassBase', [DepartmentClassBasedController::class, '__invoke']);
     Route::get('studentTeacherRatio', [StudentTeacherReportController::class,'__invoke']);
     Route::get('facultyBasedGraduation', [FacultyBaseGraduationReportController::class, '__invoke']);
-    Route::get('departmentBas edGraduation',[DepartmentBasedGraduationReportController::class, '__invoke']);
+    Route::get('departmentBasedGraduation',[DepartmentBasedGraduationReportController::class, '__invoke']);
 });
 
 Route::post('login', [AuthController::class, 'login']);
