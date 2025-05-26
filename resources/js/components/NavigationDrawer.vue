@@ -78,10 +78,10 @@ const settingItems = [
 
 const reportItems=[
   {
-    to: "/student-type-based",
-    title: "Student Type Based",
+    to: "/university-base-report",
+    title: "University Report",
     icon: "mdi-circle-medium",
-    value: "student-type-based",
+    value: "university-base-report",
   },
   {
     to: "/department-statistic",
