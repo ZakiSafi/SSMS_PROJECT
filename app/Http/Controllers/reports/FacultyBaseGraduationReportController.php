@@ -29,18 +29,20 @@ class FacultyBaseGraduationReportController extends Controller
                 'faculties.name as faculty',
                 DB::raw('SUM(student_statistics.male_total) as Total_Males'),
                 DB::raw('SUM(student_statistics.female_total) as Total_Females'),
-                DB::raw('SUM(student_statistics.female_total + student_statistics.male_total) as Total_Students')
+                DB::raw('SUM(student_statistics.female_total + student_statistics.male_total) as Total_Students'),
+                DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
+                DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),
             );
-            if ($year && $year !== 'all') {
-                $query->whereYear('student_statistics.academic_year', $year);
-            }
-            if ($season && $season !== 'all') {
-                $query->where('student_statistics.season', $season);
-            }
-            if ($shift && $shift !== 'all') {
-                $query->where('student_statistics.shift', $shift);
-            }
-            $statistics = $query->where('student_statistics.student_type', $type)
+        if ($year && $year !== 'all') {
+            $query->whereYear('student_statistics.academic_year', $year);
+        }
+        if ($season && $season !== 'all') {
+            $query->where('student_statistics.season', $season);
+        }
+        if ($shift && $shift !== 'all') {
+            $query->where('student_statistics.shift', $shift);
+        }
+        $statistics = $query->where('student_statistics.student_type', $type)
             ->groupBy(
                 'student_statistics.academic_year',
                 'student_statistics.student_type',
