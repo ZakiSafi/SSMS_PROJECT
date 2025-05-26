@@ -21,6 +21,7 @@ use App\Http\Controllers\reports\UniversityClassReportController;
 use App\Http\Controllers\reports\FacultyClassBasedReportController;
 use App\Http\Controllers\reports\FacultyBaseGraduationReportController;
 use App\Http\Controllers\reports\DepartmentBasedGraduationReportController;
+use App\Http\Controllers\reports\UniversityBasedGraduationReportController;
 
 Route::apiResource('provinces', ProvinceController::class);
 Route::apiResource('universities', UniversityController::class);
@@ -39,9 +40,10 @@ Route::prefix('report')->group(function () {
     Route::get('studentsTypeBased', [StudentsTypeBasedController::class, '__invoke']);
     Route::get('facultyClassBased', [FacultyClassBasedReportController::class, '__invoke']);
     Route::get('departmentClassBase', [DepartmentClassBasedController::class, '__invoke']);
-    Route::get('studentTeacherRatio', [StudentTeacherReportController::class,'__invoke']);
+    Route::get('studentTeacherRatio', [StudentTeacherReportController::class, '__invoke']);
     Route::get('facultyBasedGraduation', [FacultyBaseGraduationReportController::class, '__invoke']);
-    Route::get('departmentBas edGraduation',[DepartmentBasedGraduationReportController::class, '__invoke']);
+    Route::get('departmentBas edGraduation', [DepartmentBasedGraduationReportController::class, '__invoke']);
+    Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
 });
 
 Route::post('login', [AuthController::class, 'login']);
