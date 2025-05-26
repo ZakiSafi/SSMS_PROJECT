@@ -20,12 +20,12 @@
         v-model:items-per-page="ReportRepository.itemsPerPage"
         :headers="headers"
         :items-length="ReportRepository.totalItems"
-        :items="ReportRepository.departments"
+        :items="ReportRepository.universities"
         :loading="ReportRepository.loading"
         :search="ReportRepository.search"
         @update:options="
             (options) =>
-                ReportRepository.fetchJawad(options, ReportRepository.date)
+                ReportRepository.fetchUniversity(options, ReportRepository.date)
         "
         class="w-100 mx-auto"
         hover
@@ -60,7 +60,7 @@ const yearRange = computed(() => {
 
 const onDateChange = (date) => {
     ReportRepository.date = date;
-    ReportRepository.fetchJawad(
+    ReportRepository.fetchUniversity(
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         date
     );

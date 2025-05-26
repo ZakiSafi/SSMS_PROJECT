@@ -12,6 +12,7 @@ class UniversityBasedGraduationReportController extends Controller
     {
         $season  = $request->query('season');
         $year = $request->query('year');
+        $perPage = $request->query('perPage', 10);
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->select(
@@ -23,7 +24,7 @@ class UniversityBasedGraduationReportController extends Controller
                 DB::raw('SUM(male_total + female_total) as Total_Students'),
                 DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
                 DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),)
-            ->whereYear('student_statistics.academic_year', $year)
+            ->where('student_statistics.academic_year', $year)
             ->where('student_statistics.student_type', 'graduated')
             ->groupBy(
                 'student_statistics.academic_year',
@@ -31,7 +32,7 @@ class UniversityBasedGraduationReportController extends Controller
                 'student_statistics.season'
 
             )
-            ->get();
+            ->paginate($perPage);
             return response()->json($query);
 
     }

@@ -84,16 +84,16 @@ const reportItems=[
     value: "university-base-report",
   },
   {
-    to: "/department-statistic",
-    title: "Department Statistic",
+    to: "/university-graduation-report",
+    title: "University Graduation Report",
     icon: "mdi-circle-medium",
-    value: "department-statistic",
+    value: "university-graduation-report",
   },
   {
-    to: "/faculty-statistic",
-    title: "Faculty Statistic",
+    to: "/student-teacher-ratio",
+    title: "Student Teacher Ratio",
     icon: "mdi-circle-medium",
-    value: "faculty-statistic",
+    value: "student-teacher-ratio",
   },
   {
     to: "/university-statistic",
