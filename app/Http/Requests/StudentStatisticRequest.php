@@ -22,7 +22,7 @@ class StudentStatisticRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => 'required|date',
+            'academic_year' => 'required|string',
             'university_id' => 'required|exists:universities,id',
             'faculty_id' => 'required|exists:faculties,id',
             'department_id' => 'required|exists:departments,id',
