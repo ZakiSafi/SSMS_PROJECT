@@ -19,15 +19,15 @@
               <v-row dense>
                 <!-- Row 1 -->
                 <v-col cols="6">
-      
-                  <date-picker mode="single" :column="1" v-model="formData.academic_year" :styles="styles" locale="fa"
-                    type="date" format="YYYY-MM-DD" :locale-config="LocaleConfigs" />
+                  <v-select v-model="formData.academic_year" :items="yearRange" label="Academic Year" variant="outlined"
+                    density="compact" :rules="[rules.required]"></v-select>
+
                 </v-col>
                 <v-col cols="6">
                   <v-select v-model="formData.university_id" :items="StudentStatisticsRepository.universities"
                     item-title="name" item-value="id" label="University" variant="outlined" density="compact"
-                    :rules="[rules.required]"  />
-                    
+                    :rules="[rules.required]" />
+
                 </v-col>
 
                 <!-- Row 2 -->
@@ -93,11 +93,27 @@
 
 
 <script setup>
-import { ref, reactive, onMounted, watch } from "vue";
+import { ref, reactive, onMounted, watch, computed } from "vue";
 import { useStudentStatisticRepository } from "@/store/StudentStatisticRepository";
-import {LocaleConfigs} from "../../LocaleConfigs";
+import  persianDate  from "persian-date";
 
 
+const getCurrentPersianYear = () => {
+  return new persianDate().year().toString(); 
+}
+
+const currentYear = ref(getCurrentPersianYear());
+
+const yearRange = computed(() => {
+  const years = [];
+  const startYear = parseInt(currentYear.value) - 10; 
+  const endYear = parseInt(currentYear.value) + 10;
+  
+  for (let i = startYear; i <= endYear; i++) {
+    years.push(i.toString()); 
+  }
+  return years;
+})
 
 const StudentStatisticsRepository = useStudentStatisticRepository();
 
@@ -106,7 +122,7 @@ const formRef = ref(null);
 
 const formData = reactive({
   id: StudentStatisticsRepository.statistic.id,
-  academic_year: StudentStatisticsRepository.statistic.academic_year|| null,
+  academic_year: StudentStatisticsRepository.statistic.academic_year || currentYear,
   university_id: StudentStatisticsRepository.statistic.university_id || null,
   faculty_id: StudentStatisticsRepository.statistic.faculty_id || null,
   department_id: StudentStatisticsRepository.statistic.department_id || null,
@@ -153,3 +169,11 @@ const save = async () => {
   }
 };
 </script>
+
+<style scoped>
+.persian-year-picker {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+
+}
+</style>

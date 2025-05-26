@@ -5,18 +5,14 @@
     <v-divider :thickness="1" class="border-opacity-100" />
 
     <div class="w-25 pt-6 pb-6">
-        <date-picker
-            mode="single"
-            :column="1"
-            v-model="ReportRepository.search"
-            :styles="styles"
-            @update:modelValue="onDateChange"
-            locale="fa"
-            type="date"
-            :locale-config="LocaleConfigs"
-            input-format="jYYYY"
-            format="YYYY"
-        />
+        <v-select
+        v-model="ReportRepository.date"
+        :items="yearRange"
+        label="Select Year"
+        variant="outlined"
+        density="compact"
+        @change="onDateChange"
+        ></v-select>
     </div>
 
     <v-data-table-server
@@ -38,9 +34,28 @@
 <script setup>
 import AppBar from "@/components/AppBar.vue";
 import { useReportRepository } from "@/store/ReportRepository";
-import { LocaleConfigs } from "../../LocaleConfigs";
+import { ref, computed } from "vue";
 
 const ReportRepository = useReportRepository();
+import  persianDate  from "persian-date";
+
+
+const getCurrentPersianYear = () => {
+  return new persianDate().year().toString(); 
+}
+
+const currentYear = ref(getCurrentPersianYear());
+
+const yearRange = computed(() => {
+  const years = [];
+  const startYear = parseInt(currentYear.value) - 10; 
+  const endYear = parseInt(currentYear.value) + 10;
+  
+  for (let i = startYear; i <= endYear; i++) {
+    years.push(i.toString()); 
+  }
+  return years;
+})
 
 const onDateChange = (date) => {
     ReportRepository.date = date;
@@ -55,11 +70,9 @@ const headers = [
     { title: "Total Males", key: "Total_Males", align: "center" },
     { title: "Total Females", key: "Total_Females", align: "center" },
     { title: "Total Students", key: "Total_Students", align: "center" },
-    {
-        title: "Total Students",
-        key: "Total_Males/Total_Students" * 100,
-        align: "center",
-    },
+    { title: "Male Percantage", key: "Male_Percentage", align: "center" },
+    { title: "Female Percantage", key: "Female_Percentage", align: "center" },
+    
 ];
 </script>
 
