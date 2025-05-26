@@ -11,9 +11,10 @@ class UniversityReportController extends Controller
 {
     public function __invoke(Request $request)
     {
+        
         $year = $request->query('year');
         $shift = $request->query('shift');
-        $perPage = $request->query('per_page', 10);
+        $perPage = $request->query('perPage', 10);
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->select(
@@ -28,12 +29,12 @@ class UniversityReportController extends Controller
 
         );
 
-        if ($shift && $shift !== 'all') {
+        if ($shift) {
             $query->where('student_statistics.shift', $shift);
         }
 
-        if ($year && $year !== 'all') {
-            $query->whereYear('student_statistics.academic_year', $year);
+        if ($year) {
+            $query->where('student_statistics.academic_year', $year);
         }
         
 
