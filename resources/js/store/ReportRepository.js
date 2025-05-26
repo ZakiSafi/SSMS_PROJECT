@@ -1,19 +1,14 @@
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
 import { axios } from '../axios';
-
-// Utility delay function
-function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+import persianDate from 'persian-date';
 
 export const useReportRepository = defineStore("reportRepository", {
   state() {
-    const currentYear = new Date().getFullYear();
     return {
       departments: reactive([]),
       search: ref(""),
-      date: ref(currentYear),
+      date: ref(new persianDate().year().toString()), 
       loading: ref(false),
       totalItems: ref(0),
       selectedItems: ref([]),
@@ -21,7 +16,7 @@ export const useReportRepository = defineStore("reportRepository", {
     }
   },
   actions: {
-    async fetchJawad({ page, itemsPerPage },date = new Date().getFullYear(),) {
+    async fetchJawad({ page, itemsPerPage },date = this.date) {
       this.loading = true;
 
       try {
