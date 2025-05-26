@@ -10,7 +10,9 @@ import Provinces from "./Pages/province/Province.vue";
 import Departments from "./Pages/department/Departments.vue";
 import Faculties from "./Pages/faculty/Faculties.vue";
 import StudentStatistics from "./Pages/student/StudentStatistics.vue";
-import UniversityBbaseReport from "./Pages/report/StudentsTypeBased.vue";
+import UniversityBaseReport from "./Pages/report/UniversityBase.vue";
+import UniversityBaseGraduation from "./Pages/report/UniversityBaseGraduation.vue";
+import StudentTeacherRatio from "./Pages/report/StudentTeacherRatio.vue";
 
 const routes = [
     // Show login first
@@ -28,7 +30,9 @@ const routes = [
             { path: "/departments", name: "departments", component: Departments },
             { path: "/faculties", name: "faculties", component: Faculties },
             { path: "/student-statistic", name: "student-statistic", component: StudentStatistics },
-            { path: "/university-base-report", name: "university-base-report", component: UniversityBbaseReport },
+            { path: "/university-base-report", name: "university-base-report", component: UniversityBaseReport },
+            { path: "/university-graduation-report", name: "university-graduation-report", component: UniversityBaseGraduation },
+            { path: "/student-teacher-ratio", name: "student-teacher-ratio", component: StudentTeacherRatio },
         ],
     },
 ];

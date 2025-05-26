@@ -12,6 +12,7 @@ class StudentTeacherReportController extends Controller
     public function __invoke()
     {
         $year = request()->query('year');
+         $perPage = request()->query('perPage', 10);
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->select(
                 'student_statistics.academic_year as year',
@@ -23,7 +24,7 @@ class StudentTeacherReportController extends Controller
 
             );
             if ($year && $year !== 'all') {
-                $query->whereYear('student_statistics.academic_year', $year);
+                $query->where('student_statistics.academic_year', $year);
             }
             $statistics = $query
             ->groupBy(
@@ -31,7 +32,7 @@ class StudentTeacherReportController extends Controller
                 'universities.name',
                 'universities.teachers'
             )
-            ->get();
+            ->paginate($perPage);
         return response()->json($statistics);
 
     }

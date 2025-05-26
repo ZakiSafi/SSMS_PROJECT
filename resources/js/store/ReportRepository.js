@@ -6,29 +6,62 @@ import persianDate from 'persian-date';
 export const useReportRepository = defineStore("reportRepository", {
   state() {
     return {
-      departments: reactive([]),
+      universities: reactive([]),
+      universityBaseGraduation: reactive([]),
+      studentTeacher: reactive([]),
       search: ref(""),
       date: ref(new persianDate().year().toString()), 
+      season: ref("spring"),
       loading: ref(false),
       totalItems: ref(0),
       selectedItems: ref([]),
-      itemsPerPage: ref(5),
+      itemsPerPage: ref(10),
     }
   },
   actions: {
-    async fetchJawad({ page, itemsPerPage },date = this.date) {
+    async fetchUniversity({ page, itemsPerPage },date = this.date) {
       this.loading = true;
 
       try {
         const response = await axios.get(`report/university?year=${date}&page=${page}&perPage=${itemsPerPage}`);
-        this.departments = response.data.data;
+        this.universities = response.data.data;
          this.totalItems = response.data.total
       } catch (error) {
         console.error("Error fetching data:", error);
-        this.departments = [];
+        this.universities = [];
       } finally {
         this.loading = false;
       }
-    }
+    },
+
+    async fetchUniversityBaseGraduation({ page, itemsPerPage }, date = this.date,season=this.season) {
+      this.loading = true;
+
+      try {
+        const response = await axios.get(`report/universityBaseGraduation?year=${date}&season=${season}&page=${page}&perPage=${itemsPerPage}`);
+        this.universityBaseGraduation = response.data.data;
+        this.totalItems = response.data.total;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        this.universityBaseGraduation = [];
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchStudentTeacherRatio({ page, itemsPerPage }, date = this.date) {
+      this.loading = true;
+
+      try {
+        const response = await axios.get(`report/studentTeacherRatio?year=${date}&page=${page}&perPage=${itemsPerPage}`);
+        this.studentTeacher = response.data.data;
+        this.totalItems = response.data.total;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        this.studentTeacher = [];
+      } finally {
+        this.loading = false;
+      }
+    },
   }
 });
