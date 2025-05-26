@@ -1,5 +1,5 @@
 <template>
-    <AppBar pageTitle="University Base Graduation Report" />
+    <AppBar pageTitle="StudentTeacherRatio" />
     <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
    <div class="w-25 pt-6 ">
