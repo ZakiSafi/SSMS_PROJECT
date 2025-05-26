@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Reports;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -30,7 +31,9 @@ class DepartmentBasedGraduationReportController extends Controller
                 'departments.name as department',
                 DB::raw('SUM(student_statistics.male_total) as Total_Males'),
                 DB::raw('SUM(student_statistics.female_total) as Total_Females'),
-                DB::raw('SUM(student_statistics.female_total + student_statistics.male_total) as Total_Students')
+                DB::raw('SUM(student_statistics.female_total + student_statistics.male_total) as Total_Students'),
+                DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
+                DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),
             );
         if ($season && $season !== 'all') {
             $query->where('student_statistics.season', $season);

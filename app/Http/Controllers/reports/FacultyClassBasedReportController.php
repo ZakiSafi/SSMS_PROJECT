@@ -21,6 +21,8 @@ class FacultyClassBasedReportController extends Controller
             DB::raw('Sum(student_statistics.male_total) as Total_Male'),
             DB::raw('Sum(student_statistics.female_total) as Total_Female'),
             DB::raw('Sum(student_statistics.male_total + student_statistics.female_total) as Total_Students'),
+            DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
+            DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),
         )
         ->whereYear('student_statistics.academic_year', $year)
         ->groupBy(
