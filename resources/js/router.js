@@ -13,6 +13,7 @@ import StudentStatistics from "./Pages/student/StudentStatistics.vue";
 import UniversityBaseReport from "./Pages/report/UniversityBase.vue";
 import UniversityBaseGraduation from "./Pages/report/UniversityBaseGraduation.vue";
 import StudentTeacherRatio from "./Pages/report/StudentTeacherRatio.vue";
+import UniversitiesClasses from "./Pages/report/UniversitiesClasses.vue";
 
 const routes = [
     // Show login first
@@ -33,6 +34,7 @@ const routes = [
             { path: "/university-base-report", name: "university-base-report", component: UniversityBaseReport },
             { path: "/university-graduation-report", name: "university-graduation-report", component: UniversityBaseGraduation },
             { path: "/student-teacher-ratio", name: "student-teacher-ratio", component: StudentTeacherRatio },
+            { path: "/university-classes", name: "university-classes", component: UniversitiesClasses },
         ],
     },
 ];

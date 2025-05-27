@@ -12,6 +12,7 @@ class UniversityClassReportController extends Controller
     {
         $year = $request->query('year');
         $shift = $request->query('shift');
+         $perPage = $request->query('perPage', 10);
 
         $results = DB::table('student_statistics')
             ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
@@ -30,7 +31,7 @@ class UniversityClassReportController extends Controller
                 'universities.name',
                 'student_statistics.classroom'
             )
-            ->get();
+            ->paginate($perPage);
 
         // Step 1: Get all unique classrooms
         $allClasses = collect($results)->pluck('classroom')->unique()->sort()->values();

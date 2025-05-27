@@ -4,7 +4,7 @@
     />
     <v-divider :thickness="1" class="border-opacity-100" />
 
-    <div class="w-25 pt-6 pb-6">
+    <div class="w-25 pt-6">
          <v-combobox
       v-model="ReportRepository.date"
       :items="yearRange"
