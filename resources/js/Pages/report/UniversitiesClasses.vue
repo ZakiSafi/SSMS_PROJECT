@@ -2,10 +2,28 @@
   <AppBar pageTitle="University Classes" />
   <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
-  <div class="w-25 pt-6">
-    <v-combobox v-model="ReportRepository.date" :items="yearRange" label="Select Year" variant="outlined"
-      density="compact" @update:modelValue="onDateChange"></v-combobox>
-  </div>
+  <div class="w-[24rem] pt-6 pb-6  d-flex align-center">
+  <v-combobox
+    class="mr-4"
+    v-model="ReportRepository.date"
+    :items="yearRange"
+    label="Select or Type Year"
+    variant="outlined"
+    density="compact"
+    hide-details
+    @update:modelValue="onDateChange"
+  ></v-combobox>
+  
+  <v-select 
+    v-model="ReportRepository.shift"
+    :items="['day','night']"
+    label="Select Shift"
+    variant="outlined"
+    hide-details
+    density="compact"
+    @update:modelValue="onDateChange"
+  ></v-select>
+</div>
 
   <div class="table-container">
     <table class="gender-stats-table">
