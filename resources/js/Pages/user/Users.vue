@@ -28,7 +28,7 @@
       v-model:items-per-page="UserRepository.itemsPerPage"
       :headers="headers"
       :items-length="UserRepository.totalItems"
-      :items="UserRepository.departments"
+      :items="UserRepository.users"
       :loading="UserRepository.loading"
       :search="UserRepository.userSearch"
       @update:options="UserRepository.fetchUsers"
@@ -74,10 +74,10 @@ const createDialogShow = () => {
 
 const edit = (item) => {
   UserRepository.isEditMode = true;
-  UserRepository.department = {};
+  UserRepository.user = {};
   UserRepository.fetchUser(item.id)
     .then(() => {
-      DepartmentRepository.createDialog = true;
+      UserRepository.createDialog = true;
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
@@ -85,13 +85,13 @@ const edit = (item) => {
 };
 
 const deleteItem = async (item) => {
-  await DepartmentRepository.deleteUser(item.id);
+  await UserRepository.deleteUser(item.id);
 };
 
 const headers = [
   { title: "Name", key: "name", align: "start", sortable: false },
   { title: "Email", key: "email", align: "center", sortable: false },
-  { title: "University", key: "university", align: "center", sortable: false },
+  { title: "University", key: "university.name", align: "center", sortable: false },
   { title: "Action", key: "action", align: "end", sortable: false },
 ];
 </script>

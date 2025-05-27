@@ -20,12 +20,6 @@ class UserResource extends JsonResource
             "email" => $this->email,
             "password" => $this->password,
             "image" => $this->image,
-            "roll_permission" => [
-                "id" => $this->rollPermission->id,
-                "name" => $this->rollPermission->name,
-            ],
-           
-
 
         ];
     }
