@@ -24,6 +24,7 @@ use App\Http\Controllers\reports\FacultyBaseGraduationReportController;
 use App\Http\Controllers\reports\DepartmentBasedGraduationReportController;
 use App\Http\Controllers\reports\UniversityBasedGraduationReportController;
 
+Route::middleware('auth:sanctum')->group(function () {
 Route::apiResource('provinces', ProvinceController::class);
 Route::apiResource('faculties', FacultyController::class);
 Route::apiResource('departments', DepartmentController::class);
@@ -45,6 +46,7 @@ Route::prefix('report')->group(function () {
     Route::get('departmentBasedGraduation', [DepartmentBasedGraduationReportController::class, '__invoke']);
     Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
 });
+<<<<<<< HEAD
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('universities', UniversityController::class);
@@ -55,3 +57,12 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
+=======
+// Define the login route (with optional name)
+
+// Protected Sanctum routes
+Route::post('logout', [AuthController::class, 'logout']);
+});
+
+Route::post('login', [AuthController::class, 'login'])->name('login');
+>>>>>>> 5cb70623d4f1bf426c24d1f54f73feacb79036e6

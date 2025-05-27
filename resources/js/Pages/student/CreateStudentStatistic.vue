@@ -19,15 +19,14 @@
               <v-row dense>
                 <!-- Row 1 -->
                 <v-col cols="6">
-                  <v-select v-model="formData.academic_year" :items="yearRange" label="Academic Year" variant="outlined"
-                    density="compact" :rules="[rules.required]"></v-select>
-
+                  <v-select v-model="formData.academic_year" :items="yearRange" label="Academic Year"
+                    variant="outlined" density="compact" :rules="[rules.required]" />
                 </v-col>
+
                 <v-col cols="6">
                   <v-select v-model="formData.university_id" :items="StudentStatisticsRepository.universities"
                     item-title="name" item-value="id" label="University" variant="outlined" density="compact"
                     :rules="[rules.required]" />
-
                 </v-col>
 
                 <!-- Row 2 -->
@@ -36,10 +35,11 @@
                     item-title="name" item-value="id" label="Faculty" variant="outlined" density="compact"
                     :rules="[rules.required]" />
                 </v-col>
+
                 <v-col cols="6">
-                  <v-select v-model="formData.department_id" :items="StudentStatisticsRepository.departments"
+                  <v-select v-model="formData.department_id" :items="filteredDepartments"
                     item-title="name" item-value="id" label="Department" variant="outlined" density="compact"
-                    :rules="[rules.required]" />
+                    :rules="[rules.required]" :disabled="!formData.faculty_id" />
                 </v-col>
 
                 <!-- Row 3 -->
@@ -48,7 +48,6 @@
                     label="Class" variant="outlined" density="compact" />
                 </v-col>
                 <v-col cols="6">
-
                   <v-select v-model="formData.semester_number" :items="availableSemesters" label="Semester"
                     variant="outlined" density="compact" :rules="[rules.required]" :disabled="!formData.classroom" />
                 </v-col>
@@ -65,9 +64,7 @@
                     density="compact" :rules="[rules.required]" />
                 </v-col>
 
-                <!-- Row 4 -->
-
-                <!-- Row 5 -->
+                <!-- Row 4: Total students -->
                 <v-col cols="6">
                   <v-text-field v-model="formData.male_total" label="Total Male Students" type="number"
                     variant="outlined" density="compact" :rules="[rules.required]" />
@@ -91,41 +88,32 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, reactive, onMounted, watch, computed } from "vue";
 import { useStudentStatisticRepository } from "@/store/StudentStatisticRepository";
-import  persianDate  from "persian-date";
+import persianDate from "persian-date";
 
+const StudentStatisticsRepository = useStudentStatisticRepository();
 
-const getCurrentPersianYear = () => {
-  return new persianDate().year().toString(); 
-}
-
+const getCurrentPersianYear = () => new persianDate().year().toString();
 const currentYear = ref(getCurrentPersianYear());
 
 const yearRange = computed(() => {
   const years = [];
-  const startYear = parseInt(currentYear.value) - 10; 
-  const endYear = parseInt(currentYear.value) + 10;
-  
-  for (let i = startYear; i <= endYear; i++) {
-    years.push(i.toString()); 
-  }
+  const start = parseInt(currentYear.value) - 10;
+  const end = parseInt(currentYear.value) + 10;
+  for (let y = start; y <= end; y++) years.push(y.toString());
   return years;
-})
-
-const StudentStatisticsRepository = useStudentStatisticRepository();
-
+});
 
 const formRef = ref(null);
 
 const formData = reactive({
   id: StudentStatisticsRepository.statistic.id,
-  academic_year: StudentStatisticsRepository.statistic.academic_year || currentYear,
-  university_id: StudentStatisticsRepository.statistic.university_id || null,
-  faculty_id: StudentStatisticsRepository.statistic.faculty_id || null,
-  department_id: StudentStatisticsRepository.statistic.department_id || null,
+  academic_year: StudentStatisticsRepository.statistic.academic_year || currentYear.value,
+  university_id: StudentStatisticsRepository.statistic.university?.university_id || null,
+  faculty_id: StudentStatisticsRepository.statistic.faculty?.faculty_id || null,
+  department_id: StudentStatisticsRepository.statistic.department?.department_id || null,
   classroom: StudentStatisticsRepository.statistic.classroom || null,
   shift: StudentStatisticsRepository.statistic.shift || "day",
   season: StudentStatisticsRepository.statistic.season || "spring",
@@ -134,12 +122,20 @@ const formData = reactive({
   female_total: StudentStatisticsRepository.statistic.female_total || 0,
   student_type: StudentStatisticsRepository.statistic.student_type || "new",
 });
-onMounted(() => {
-  StudentStatisticsRepository.fetchDepartments();
-  StudentStatisticsRepository.fetchFaculties();
-  StudentStatisticsRepository.fetchUniversities();
+
+// Filter departments based on selected faculty
+const filteredDepartments = computed(() => {
+  return StudentStatisticsRepository.departments.filter(
+    dept => dept.faculty?.id === formData.faculty_id
+  );
 });
 
+// Reset department when faculty changes
+watch(() => formData.faculty_id, () => {
+  formData.department_id = null;
+});
+
+// Watch classroom and update available semesters
 const classOptions = [
   { id: 1, name: "Class 1", semesters: [1, 2] },
   { id: 2, name: "Class 2", semesters: [3, 4] },
@@ -147,13 +143,18 @@ const classOptions = [
   { id: 4, name: "Class 4", semesters: [7, 8] },
 ];
 
-
 const availableSemesters = ref([]);
-
 watch(() => formData.classroom, (newVal) => {
-  const selected = classOptions.find((c) => c.name === newVal);
+  const selected = classOptions.find(c => c.name === newVal);
   availableSemesters.value = selected ? selected.semesters : [];
 });
+
+onMounted(() => {
+  StudentStatisticsRepository.fetchDepartments();
+  StudentStatisticsRepository.fetchFaculties();
+  StudentStatisticsRepository.fetchUniversities();
+});
+
 const rules = {
   required: (v) => !!v || "This field is required",
 };
@@ -174,6 +175,5 @@ const save = async () => {
 .persian-year-picker {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   direction: rtl;
-
 }
 </style>

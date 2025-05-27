@@ -18,6 +18,7 @@ export const useReportRepository = defineStore("reportRepository", {
       loading: ref(false),
       totalItems: ref(0),
       selectedItems: ref([]),
+      
       itemsPerPage: ref(10),
     }
   },
