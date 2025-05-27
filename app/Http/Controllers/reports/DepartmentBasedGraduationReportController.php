@@ -15,6 +15,7 @@ class DepartmentBasedGraduationReportController extends Controller
         $year = $request->query('year');
         $season = $request->query('season');
         $shift = $request->query('shift');
+        $perPage = $request->query('perPage', 10);
         $type = 'graduated';
 
 
@@ -43,7 +44,7 @@ class DepartmentBasedGraduationReportController extends Controller
         }
 
         if ($year && $year !== 'all') {
-            $query->where('student_statistics.year', $shift);
+            $query->where('student_statistics.academic_year', $shift);
         }
 
         $statistics = $query->where('student_statistics.student_type', $type)
@@ -57,7 +58,7 @@ class DepartmentBasedGraduationReportController extends Controller
                 'faculties.name',
                 'departments.name'
             )
-            ->get();
+            ->paginate($perPage);
 
         return response()->json($statistics);
     }
