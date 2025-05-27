@@ -13,22 +13,25 @@
     <div class="menu-section">
       <v-list density="compact" nav>
         <!-- Main Items -->
-        <v-list-item class="menu-item" prepend-icon="mdi-map-marker" title="Provinces" to="/provinces" value="provinces"
+         <v-list-item class="menu-item" prepend-icon="mdi-home-lightning-bolt-outline" title="Dashboard" to="/dashboard" value="dashboard"
+          :class="{ 'v-list-item--active': route.path === '/dashboard' }" />
+        <v-list-item class="menu-item" prepend-icon="mdi-map-marker-outline" title="Provinces" to="/provinces" value="provinces"
           :class="{ 'v-list-item--active': route.path === '/provinces' }" />
-        <v-list-item class="menu-item" prepend-icon="mdi-account" title="Departments" to="/departments"
-          value="departments" :class="{ 'v-list-item--active': route.path === '/departments' }" />
-        
-        <v-list-item class="menu-item" prepend-icon="mdi-school" title="University" to="/university" value="university"
+          <v-list-item class="menu-item" prepend-icon="mdi-school-outline" title="University" to="/university" value="university"
           :class="{ 'v-list-item--active': route.path === '/university' }" />
-        <v-list-item class="menu-item" prepend-icon="mdi-domain" title="Faculty" to="/faculties" value="faculties"
+          
+          
+          <v-list-item class="menu-item" prepend-icon=" mdi-home-city-outline" title="Faculty" to="/faculties" value="faculties"
           :class="{ 'v-list-item--active': route.path === '/faculties' }" />
+          <v-list-item class="menu-item" prepend-icon="mdi-office-building-outline" title="Departments" to="/departments"
+            value="departments" :class="{ 'v-list-item--active': route.path === '/departments' }" />
           <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Student Statictic" to="/student-statistic" value="system"
           :class="{ 'v-list-item--active': route.path === '/student-statistic' }" />
 
          <!-- Reports Group -->
            <v-list-group >
           <template #activator="{ props }">
-            <v-list-item v-bind="props" title="Reports" prepend-icon="mdi-file-chart" class="menu-item"
+            <v-list-item v-bind="props" title="Reports" prepend-icon="mdi-file-chart-outline" class="menu-item"
                />
           </template>
 
@@ -41,7 +44,7 @@
         <!-- Settings Group -->
         <v-list-group >
           <template #activator="{ props }">
-            <v-list-item v-bind="props" title="Settings" prepend-icon="mdi-cog" class="menu-item"
+            <v-list-item v-bind="props" title="Settings" prepend-icon="mdi-cog-outline" class="menu-item"
                />
           </template>
 

@@ -14,6 +14,8 @@ import UniversityBaseReport from "./Pages/report/UniversityBase.vue";
 import UniversityBaseGraduation from "./Pages/report/UniversityBaseGraduation.vue";
 import StudentTeacherRatio from "./Pages/report/StudentTeacherRatio.vue";
 import UniversitiesClasses from "./Pages/report/UniversitiesClasses.vue";
+import Dashboard from "./Pages/Dashboard.vue";
+import { aliases } from "vuetify/iconsets/fa-svg";
 
 const routes = [
     // Show login first
@@ -25,6 +27,7 @@ const routes = [
         component: Home,
         meta: { authentication: true },
         children: [
+            { path: "/dashboard", name: "dashboard", component: Dashboard ,alias:"/dashboard" },
             { path: "/about", name: "about", component: About },
             { path: "/university", name: "university", component: University },
             { path: "/users", name: "users", component: Users },
