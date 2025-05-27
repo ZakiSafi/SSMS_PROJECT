@@ -19,11 +19,17 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'university_id',
         'email',
         "university_id",
         'password',
         'image'
     ];
+
+    public function university()
+    {
+        return $this->belongsTo(University::class);
+    }
 
     public function rollPermission()
     {

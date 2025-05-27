@@ -27,8 +27,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
-            'university_id' => fake()->numberBetween(1,3), // Assuming you have 10 universities
-            'image' => fake()->imageUrl(640, 480, 'people', true),
+            'university_id' => fake()->numberBetween(1,3), // Assuming you have 3 universities
             'remember_token' => Str::random(10),
         ];
     }
