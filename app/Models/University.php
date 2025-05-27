@@ -16,6 +16,10 @@ class University extends Model
         'province_id',
     ];
 
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
     public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class);
