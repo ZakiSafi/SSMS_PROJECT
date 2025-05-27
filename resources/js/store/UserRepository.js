@@ -14,8 +14,9 @@ export const useUserRepository = defineStore("userRepository", {
       createDialog: ref(false),
       userSearch: ref(""),
       users: reactive([]),
+      universities: reactive([]),
       user: reactive({}),
-      roles: reactive([]), // This could be RollPermissions or similar
+      roles: reactive([]),
     };
   },
 
@@ -92,13 +93,13 @@ export const useUserRepository = defineStore("userRepository", {
       }
     },
 
-    async FetchRoles() {
-      try {
-        const response = await axios.get("roll-permissions"); // adjust endpoint if needed
-        this.roles = response.data.data;
-      } catch (err) {
-        console.error("Failed to fetch roles:", err);
-      }
-    },
+    async fetchUniversities() {
+            try {
+                const response = await axios.get("universities");
+                this.universities = response.data.data;
+            } catch (err) {
+                // handle error if needed
+            }
+        },
   },
 });

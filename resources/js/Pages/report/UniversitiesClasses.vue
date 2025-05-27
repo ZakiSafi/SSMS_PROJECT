@@ -87,6 +87,8 @@
       </tbody>
     </table>
   </div>
+  
+  
 </template>
 
 <script setup>
@@ -125,22 +127,6 @@ onMounted(() => {
     ReportRepository.date, ReportRepository.shift);
 });
 
-const selectedYear = ref(1403);
-const availableYears = [1403, 1402, 1401];
-
-const institutions = ref([
-  {
-    name: 'Group 3',
-    male: { pos: 1010, similar1: 1021, similar4: 1022 },
-    female: { pos: 1010, similar1: 1000, similar4: 1005 },
-    total: { pos: 2020, similar1: 2021, similar4: 2027 }
-  },
-  // Add more institutions as needed
-]);
-
-const formatNumber = (num) => {
-  return num.toLocaleString();
-};
 
 ReportRepository.fetchUniversityClasses();
 </script>
@@ -164,25 +150,15 @@ ReportRepository.fetchUniversityClasses();
 
 .gender-stats-table td {
   padding: 10px 8px;
+
   border: 1px solid #ddd;
 }
 
-.male {
-  color: #1976D2;
-  font-weight: 500;
-}
-
-.female {
-  color: #E91E63;
-  font-weight: 500;
-}
 
 .total {
   font-weight: bold;
   background-color: #f9f9f9;
 }
 
-.gender-stats-table tr:nth-child(even) {
-  background-color: #f8f8f8;
-}
+
 </style>

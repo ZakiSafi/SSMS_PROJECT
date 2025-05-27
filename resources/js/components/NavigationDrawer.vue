@@ -17,12 +17,13 @@
           :class="{ 'v-list-item--active': route.path === '/provinces' }" />
         <v-list-item class="menu-item" prepend-icon="mdi-account" title="Departments" to="/departments"
           value="departments" :class="{ 'v-list-item--active': route.path === '/departments' }" />
-        <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Users" to="/users" value="users"
-          :class="{ 'v-list-item--active': route.path === '/users' }" />
+        
         <v-list-item class="menu-item" prepend-icon="mdi-school" title="University" to="/university" value="university"
           :class="{ 'v-list-item--active': route.path === '/university' }" />
         <v-list-item class="menu-item" prepend-icon="mdi-domain" title="Faculty" to="/faculties" value="faculties"
           :class="{ 'v-list-item--active': route.path === '/faculties' }" />
+          <v-list-item class="menu-item" prepend-icon="mdi-account-group-outline" title="Student Statictic" to="/student-statistic" value="system"
+          :class="{ 'v-list-item--active': route.path === '/student-statistic' }" />
 
          <!-- Reports Group -->
            <v-list-group >
@@ -62,10 +63,10 @@ const route = useRoute();
 
 const settingItems = [
   {
-    to: "/student-statistic",
-    title: "System Setting",
+    to: "/users",
+    title: "Users",
     icon: "mdi-circle-medium",
-    value: "system",
+    value: "users",
   },
   {
     to: "/role-permissions",

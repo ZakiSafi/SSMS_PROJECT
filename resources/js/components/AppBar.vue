@@ -1,7 +1,6 @@
 <template>
   <v-card :dir="isRtl ? 'rtl' : 'ltr'" :elevation="0" class="rounded-xl">
     <template v-slot:prepend>
-      <v-btn icon="mdi-drag" flat fluid class="drag" size="small" @click="toggleSidebar"></v-btn>
       <h1 class="text-[18px]">
         {{ pageTitle }}
         <span v-if="pageSubtitle" class="text-[14px] ">{{ pageSubtitle }}</span>

@@ -90,7 +90,8 @@ const deleteItem = async (item) => {
 
 const headers = [
   { title: "Name", key: "name", align: "start", sortable: false },
-  { title: "Faculty", key: "faculty.name", align: "center", sortable: false },
+  { title: "Email", key: "email", align: "center", sortable: false },
+  { title: "University", key: "university", align: "center", sortable: false },
   { title: "Action", key: "action", align: "end", sortable: false },
 ];
 </script>
