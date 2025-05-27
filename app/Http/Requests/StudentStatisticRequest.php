@@ -13,13 +13,7 @@ class StudentStatisticRequest extends FormRequest
     {
         return true;
     }
-    protected function prepareForValidation()
-    {
-        // Automatically merge the authenticated user's university_id
-        $this->merge([
-            'university_id' => $this->user()->university_id,
-        ]);
-    }
+
     /**
      * Get the validation rules that apply to the request.
      *
