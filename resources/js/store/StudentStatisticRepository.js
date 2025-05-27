@@ -93,7 +93,8 @@ export const useStudentStatisticRepository = defineStore("StudentStatisticReposi
     async fetchUniversities() {
       try {
         const response = await axios.get(`universities`);
-        this.universities = response.data.data;
+        const allUniversities = response.data.data;
+        this.universities = allUniversities.filter(item => Array.isArray(item) === false || item.length > 0);
       } catch (error) {
         console.error("Failed to fetch universities:", error);
       }
