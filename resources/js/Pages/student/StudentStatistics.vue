@@ -1,11 +1,11 @@
 <template>
     <CreateStudentStatistic v-if="StudentStatisticRepository.createDialog" />
-  
+
     <div>
       <AppBar pageTitle="Student Statistics" />
-  
+
       <v-divider :thickness="1" class="border-opacity-100" />
-  
+
       <!-- Search & Create Button -->
       <div class="btn-search pt-12 pb-6 d-flex justify-space-between">
         <div class="text-field w-25">
@@ -19,12 +19,12 @@
             v-model="StudentStatisticRepository.departmentSearch"
           />
         </div>
-  
+
         <v-btn @click="showCreateDialog" color="primary" variant="flat" class="px-6">
           Create
         </v-btn>
       </div>
-  
+
       <!-- Data Table -->
       <v-data-table-server
       v-model:items-per-page="StudentStatisticRepository.itemsPerPage"
@@ -60,20 +60,20 @@
     </v-data-table-server>
     </div>
   </template>
-  
+
   <script setup>
   import AppBar from "@/components/AppBar.vue";
   import CreateStudentStatistic from "./CreateStudentStatistic.vue";
   import { useStudentStatisticRepository } from "../../store/StudentStatisticRepository"
-  
+
   const StudentStatisticRepository = useStudentStatisticRepository();
-  
+
   const showCreateDialog = () => {
     StudentStatisticRepository.statistic = {};
     StudentStatisticRepository.isEditMode = false;
     StudentStatisticRepository.createDialog = true;
   };
-  
+
   const edit = (item) => {
     StudentStatisticRepository.isEditMode = true;
     StudentStatisticRepository.statistic = {};
@@ -85,11 +85,11 @@
         console.error("Error fetching statistic:", error);
       });
   };
-  
+
   const deleteItem = async (item) => {
     await StudentStatisticRepository.deleteStatistic(item.id);
   };
-  
+
   const headers = [
     { title: "Academic Year", key: "academic_year", align: "start", sortable: false },
     { title: "University", key: "university.name" },
@@ -105,6 +105,5 @@
     { title: "Action", key: "action", align: "end", sortable: false },
   ];
   </script>
-  
+
   <style scoped></style>
-  

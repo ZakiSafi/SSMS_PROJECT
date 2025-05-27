@@ -15,10 +15,9 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignIdFor(RollPermission::class);
+            $table->foreignId('university_id')->nullable()->constrained('universities')->nullOnDelete();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('image')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
