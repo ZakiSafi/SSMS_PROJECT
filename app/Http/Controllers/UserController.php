@@ -15,7 +15,7 @@ class UserController extends Controller
     private $model = User::class;
     public function index(Request $request)
     {
-        $users = $this->listRecord($request, $this->model, $with = ['roll_permissions']);
+        $users = $this->listRecord($request, $this->model, ['name', 'email']);
         return UserResource::collection($users);
     }
 

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Jawad</title>
+    <title>SSMS</title>
     <link
         href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css"
         rel="stylesheet" />
