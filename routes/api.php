@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogController;
@@ -13,8 +14,8 @@ use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\RollPermissionController;
 use App\Http\Controllers\StudentStatisticController;
 use App\Http\Controllers\reports\UniversityReportController;
-use App\Http\Controllers\reports\StudentsTypeBasedController;
 
+use App\Http\Controllers\reports\StudentsTypeBasedController;
 use App\Http\Controllers\reports\DepartmentClassBasedController;
 use App\Http\Controllers\reports\StudentTeacherReportController;
 use App\Http\Controllers\reports\UniversityClassReportController;
@@ -45,9 +46,10 @@ Route::prefix('report')->group(function () {
     Route::get('departmentBasedGraduation', [DepartmentBasedGraduationReportController::class, '__invoke']);
     Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
 });
+// Define the login route (with optional name)
+Route::post('login', [AuthController::class, 'login'])->name('login');
 
-Route::post('login', [AuthController::class, 'login']);
-Route::middleware('auth::sanctum')->group(function () {
-    // Route::get('user', [UserController::class, 'show']);
+// Protected Sanctum routes
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
