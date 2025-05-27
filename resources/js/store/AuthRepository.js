@@ -60,8 +60,43 @@ export const useAuthRepository= defineStore("authRepository",{
     }
 },
 
-       
+async logout() {
+    this.loading = true;
+    this.error = null;
+    try {
+        await axios.post('logout');
+        this.user = {};
+        this.isAuthenticated = false;
 
+        toast.success("Logout successful!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+
+        // Wait 1 second before redirect
+        setTimeout(() => {
+            this.router.push("/login");
+        }, 1000);
         
-    }
+    } catch (error) {
+        toast.error("Logout failed! Please try again.", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+
+        this.error = error.response
+            ? error.response.data.message
+            : "An error occurred!";
+    } finally {
+        this.loading = false;}}}
 })

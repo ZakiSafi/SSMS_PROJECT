@@ -40,7 +40,7 @@
             <v-card>
               <v-card-title class="px-2 pt-2 d-flex justify-space-between">
                 <h3 class="font-weight-bold pl-4">Logout</h3>
-                <v-btn variant="text" class="font-weight-bold " @click="isActive.value = false">
+                <v-btn variant="text" class="font-weight-bold " @click="isActive.value = false" >
                   <v-icon>mdi-close</v-icon></v-btn>
               </v-card-title>
 
@@ -64,6 +64,8 @@
 
 <script setup>
 import { ref } from "vue";
+import { useAuthRepository } from "../store/AuthRepository";
+const AuthRepository = useAuthRepository();
 
 const props = defineProps({
   pageTitle: { type: String, default: "" },
@@ -79,8 +81,12 @@ const toggleSidebar = () => console.log("Toggle sidebar");
 const changeLanguage = (lang) => console.log("Change language to", lang);
 const handleLogout = () => {
   console.log("Logging out...");
-  // Add your actual logout logic here
+    AuthRepository.logout();
+
 };
+
+
+
 
 const isRtl = ref(false);
 </script>
