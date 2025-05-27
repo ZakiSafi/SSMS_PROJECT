@@ -17,9 +17,7 @@ class UniversityResource extends JsonResource
     public function toArray($request)
     {
 
-        if ($this->id !== Auth::user()->university_id) {
-            return []; // or return null, or throw error as you prefer
-        }
+       
 
         return [
             'id' => $this->id,
