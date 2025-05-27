@@ -74,13 +74,13 @@
 
           <template v-for="classIndex in 6">
             <td class="male">
-              {{ institution.classes['Class ' + classIndex]?.Total_males || '' }}
+              {{ institution.classes['Class ' + classIndex]?.Total_males || 0 }}
             </td>
             <td class="female">
-              {{ institution.classes['Class ' + classIndex]?.Total_Females || '' }}
+              {{ institution.classes['Class ' + classIndex]?.Total_Females || 0 }}
             </td>
             <td class="total">
-              {{ institution.classes['Class ' + classIndex]?.Total_Students || '' }}
+              {{ institution.classes['Class ' + classIndex]?.Total_Students || 0 }}
             </td>
           </template>
         </tr>

@@ -12,67 +12,80 @@ class UniversityClassReportController extends Controller
     {
         $year = $request->query('year');
         $shift = $request->query('shift');
-         $perPage = $request->query('perPage', 10);
+        $perPage = $request->query('perPage', 10);
 
-        $results = DB::table('student_statistics')
+        // STEP 1: Paginate universities based on filters
+        $universityPaginator = DB::table('student_statistics')
+            ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
+            ->select('student_statistics.university_id', 'universities.name as university_name')
+            ->where('student_statistics.academic_year', $year)
+            ->where('student_statistics.shift', $shift)
+            ->groupBy('student_statistics.university_id', 'universities.name')
+            ->paginate($perPage);
+
+        $universityIds = $universityPaginator->pluck('university_id')->toArray();
+
+        // STEP 2: Fetch all classes for the paginated universities
+        $classResults = DB::table('student_statistics')
             ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->select(
                 'student_statistics.university_id',
                 'universities.name as university_name',
                 'student_statistics.classroom',
+
                 DB::raw('SUM(student_statistics.male_total) as Total_males'),
                 DB::raw('SUM(student_statistics.female_total) as Total_Females'),
                 DB::raw('SUM(student_statistics.male_total + student_statistics.female_total) as Total_Students')
             )
             ->where('student_statistics.academic_year', $year)
             ->where('student_statistics.shift', $shift)
+            ->whereIn('student_statistics.university_id', $universityIds)
             ->groupBy(
                 'student_statistics.university_id',
                 'universities.name',
                 'student_statistics.classroom'
             )
-            ->paginate($perPage);
+            ->get();
 
-        // Step 1: Get all unique classrooms
-        $allClasses = collect($results)
+        // STEP 3: Get all unique classrooms from this result set
+        $allClasses = $classResults
             ->pluck('classroom')
-            ->filter(function ($classroom) {
-                return trim($classroom) !== '';
-            })
+            ->filter(fn($classroom) => trim($classroom) !== '')
             ->unique()
             ->sort()
             ->values();
 
-
-        // Step 2: Group by university
+        // STEP 4: Group class results under each university
         $grouped = [];
 
-        foreach ($results as $row) {
-            $universityId = $row->university_id;
+        foreach ($universityPaginator as $university) {
+            $grouped[$university->university_id] = [
+                'university_id' => $university->university_id,
+                'university_name' => $university->university_name,
+                'classes' => []
+            ];
 
-            // Initialize university block if not already
-            if (!isset($grouped[$universityId])) {
-                $grouped[$universityId] = [
-                    'university_id' => $universityId,
-                    'university_name' => $row->university_name,
-                    'classes' => []
-                ];
-
-                // Pre-fill all classes with null
-                foreach ($allClasses as $class) {
-                    $grouped[$universityId]['classes'][$class] = null;
-                }
+            // Pre-fill classes with null
+            foreach ($allClasses as $class) {
+                $grouped[$university->university_id]['classes'][$class] = null;
             }
+        }
 
-            // Fill in class info
-            $grouped[$universityId]['classes'][$row->classroom] = [
+        foreach ($classResults as $row) {
+            $grouped[$row->university_id]['classes'][$row->classroom] = [
                 'Total_males' => (string) $row->Total_males,
                 'Total_Females' => (string) $row->Total_Females,
                 'Total_Students' => (string) $row->Total_Students,
             ];
         }
 
-        // Return as indexed array
-        return response()->json(array_values($grouped));
+        // STEP 5: Return final JSON with pagination
+        return response()->json([
+            'data' => array_values($grouped),
+            'current_page' => $universityPaginator->currentPage(),
+            'last_page' => $universityPaginator->lastPage(),
+            'per_page' => $universityPaginator->perPage(),
+            'total' => $universityPaginator->total(),
+        ]);
     }
 }
