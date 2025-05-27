@@ -111,9 +111,9 @@ const formRef = ref(null);
 const formData = reactive({
   id: StudentStatisticsRepository.statistic.id,
   academic_year: StudentStatisticsRepository.statistic.academic_year || currentYear.value,
-  university_id: StudentStatisticsRepository.statistic.university_id || null,
-  faculty_id: StudentStatisticsRepository.statistic.faculty_id || null,
-  department_id: StudentStatisticsRepository.statistic.department_id || null,
+  university_id: StudentStatisticsRepository.statistic.university?.university_id || null,
+  faculty_id: StudentStatisticsRepository.statistic.faculty?.faculty_id || null,
+  department_id: StudentStatisticsRepository.statistic.department?.department_id || null,
   classroom: StudentStatisticsRepository.statistic.classroom || null,
   shift: StudentStatisticsRepository.statistic.shift || "day",
   season: StudentStatisticsRepository.statistic.season || "spring",

@@ -86,7 +86,7 @@ const formData = reactive({
   name: UserRepository.user.name,
   email: UserRepository.user.email,
   password: "",
-  university_id: UserRepository.user.university_id || null,
+  university_id: UserRepository.user.university?.id || null,
 
 });
 
