@@ -34,7 +34,15 @@ class UniversityClassReportController extends Controller
             ->paginate($perPage);
 
         // Step 1: Get all unique classrooms
-        $allClasses = collect($results)->pluck('classroom')->unique()->sort()->values();
+        $allClasses = collect($results)
+            ->pluck('classroom')
+            ->filter(function ($classroom) {
+                return trim($classroom) !== '';
+            })
+            ->unique()
+            ->sort()
+            ->values();
+
 
         // Step 2: Group by university
         $grouped = [];
