@@ -17,12 +17,13 @@ import UniversitiesClasses from "./Pages/report/UniversitiesClasses.vue";
 
 const routes = [
     // Show login first
-    { path: "/", name: "Login", component: Login },
+    { path: "/", name: "Login", component: Login, meta:"" },
 
     // All inner pages under /home
     {
         path: "/home",
         component: Home,
+        meta: { authentication: true },
         children: [
             { path: "/about", name: "about", component: About },
             { path: "/university", name: "university", component: University },
@@ -38,10 +39,27 @@ const routes = [
         ],
     },
 ];
-
 const router = createRouter({
     history: createWebHistory(),
     routes,
 });
 
+
+
+router.beforeEach((to, from, next) => {
+  const token = sessionStorage.getItem("token");
+
+  // If the route requires authentication and the user is not logged in
+  if (to.meta.authentication && !token) {
+    next("/");
+  } 
+  // If user is logged in and tries to access login page
+  else if (to.path === "/" && token) {
+    next("/home");
+  } 
+  // Otherwise, allow the navigation
+  else {
+    next();
+  }
+});
 export default router;

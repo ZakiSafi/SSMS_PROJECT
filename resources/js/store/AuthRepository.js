@@ -23,8 +23,15 @@ export const useAuthRepository= defineStore("authRepository",{
 
     try {
         const response = await axios.post('login', credentials);
-        this.user = response.data.date;
+        this.user = response.data.user;
         this.isAuthenticated = true;
+
+        sessionStorage.setItem("token", response.data.token);
+                sessionStorage.setItem(
+                    "user",
+                    JSON.stringify(response.data.user)
+                );
+                
 
         toast.success("Login successful!", {
             position: "top-right",
@@ -61,12 +68,16 @@ export const useAuthRepository= defineStore("authRepository",{
 },
 
 async logout() {
-    this.loading = true;
     this.error = null;
-    try {
-        await axios.post('logout');
-        this.user = {};
-        this.isAuthenticated = false;
+            const formData = {
+                token: sessionStorage.getItem("token"),
+            };
+            try {
+
+                
+            await axios.post('logout', formData);
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("user");
 
         toast.success("Logout successful!", {
             position: "top-right",
@@ -80,7 +91,7 @@ async logout() {
 
         // Wait 1 second before redirect
         setTimeout(() => {
-            this.router.push("/login");
+            this.router.push("/");
         }, 1000);
         
     } catch (error) {

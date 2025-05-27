@@ -1,21 +1,18 @@
 import axios from "axios";
 
-// Function to set the content type
-// const contentType = (appType) => {
-//     axios.defaults.headers.post["Content-Type"] = appType;
-// };
-
 // Set default base URL
 axios.defaults.baseURL = "http://127.0.0.1:8000/api/";
-// axios.defaults.baseURL = "https://omary.arzantelecom.com/api/";
 
-// Retrieve the token from session storage
+// Request interceptor to add token to headers
+axios.interceptors.request.use((config) => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
 
-// Set the Authorization header with the Bearer token
-// axios.defaults.headers.common["Authorization"] =
-//     "Bearer " + sessionStorage.getItem("token");
 
-// Export axios and setContentType
 export { axios };
-
-//

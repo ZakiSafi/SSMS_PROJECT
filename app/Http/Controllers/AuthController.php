@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use function Laravel\Prompts\alert;
 
 class AuthController extends Controller
 {
@@ -21,6 +22,7 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Login successful',
                 'token' => $token,
+                'token_type' => 'Bearer',
                 'user' => $user,
             ]);
         }
@@ -31,8 +33,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        dd('jawad');
-        $request->user()->currentAccessToken()->delete();
+
+        $request->user()->tokens()->delete();
         return response()->json([
             'message' => 'Logout successfully',
         ]);
