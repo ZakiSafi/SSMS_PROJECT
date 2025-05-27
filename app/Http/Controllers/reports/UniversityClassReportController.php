@@ -12,6 +12,7 @@ class UniversityClassReportController extends Controller
     {
         $year = $request->query('year');
         $shift = $request->query('shift');
+         $perPage = $request->query('perPage', 10);
 
         $data = DB::table('student_statistics')
             ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
@@ -26,15 +27,15 @@ class UniversityClassReportController extends Controller
             DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
             DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),
             )
-            ->where('student_statistics.academic_year', "1404")
-            ->where('student_statistics.shift', "day")
+            ->where('student_statistics.academic_year', $year)
+            ->where('student_statistics.shift', $shift)
             ->groupBy(
                 'student_statistics.university_id',
                 'universities.name',
                 'student_statistics.classroom',
                 'student_statistics.shift'
             )
-            ->get();
+            ->paginate($perPage);
 
         return response()->json($data);
     }
