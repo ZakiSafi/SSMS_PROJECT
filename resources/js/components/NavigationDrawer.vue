@@ -2,9 +2,9 @@
   <div class="sidebar-container">
     <!-- Logo/User Info -->
     <div class="d-flex pl-4 align-center ">
-      <v-list-item><img src="../../../public/assets/Park.jpg" alt=""
+      <v-list-item><img src="../../../public/assets/IMG_20230530_185847_332.jpg" alt=""
           class="w-[2.9rem] h-[2.9rem] rounded-full object-cover transition-all duration-300"></v-list-item>
-      <h3>Jawad</h3>
+      <h3>Zakiullah safi</h3>
     </div>
 
     <v-divider :thickness="1" class="border-opacity-100 full"></v-divider>
@@ -19,8 +19,8 @@
           :class="{ 'v-list-item--active': route.path === '/provinces' }" />
           <v-list-item class="menu-item" prepend-icon="mdi-school-outline" title="University" to="/university" value="university"
           :class="{ 'v-list-item--active': route.path === '/university' }" />
-          
-          
+
+
           <v-list-item class="menu-item" prepend-icon=" mdi-home-city-outline" title="Faculty" to="/faculties" value="faculties"
           :class="{ 'v-list-item--active': route.path === '/faculties' }" />
           <v-list-item class="menu-item" prepend-icon="mdi-office-building-outline" title="Departments" to="/departments"
@@ -53,7 +53,7 @@
             class="submenu-item" :value="item.value" :prepend-icon="item.icon"
             :class="{ 'v-list-item--active': route.path === item.to }" />
         </v-list-group>
-       
+
       </v-list>
     </div>
   </div>
@@ -106,7 +106,7 @@ const reportItems=[
     value: "university-classes",
   },
 ];
-  
+
 
 </script>
 

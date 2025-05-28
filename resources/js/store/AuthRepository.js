@@ -1,113 +1,111 @@
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
-import { axios } from '../axios';
+import { axios } from "../axios";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useRouter } from "vue-router";
 
-export const useAuthRepository= defineStore("authRepository",{
-    state(){
+export const useAuthRepository = defineStore("authRepository", {
+    state() {
         return {
             user: reactive({}),
             loading: ref(false),
             error: ref(null),
-            router:useRouter(),
+            router: useRouter(),
             isAuthenticated: ref(false),
-        }
+        };
     },
 
-    actions:{
+    actions: {
         async login(credentials) {
-    this.loading = true;
-    this.error = null;
+            this.loading = true;
+            this.error = null;
 
-    try {
-        const response = await axios.post('login', credentials);
-        this.user = response.data.user;
-        this.isAuthenticated = true;
+            try {
+                const response = await axios.post("login", credentials);
+                this.user = response.data.user;
+                this.isAuthenticated = true;
 
-        sessionStorage.setItem("token", response.data.token);
+                sessionStorage.setItem("token", response.data.token);
                 sessionStorage.setItem(
                     "user",
                     JSON.stringify(response.data.user)
                 );
-                
 
-        toast.success("Login successful!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+                toast.success("Login successful!", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
 
-        // Wait 1 second before redirect
-        setTimeout(() => {
-            this.router.push("/home");
-        }, 1000);
-        
-    } catch (error) {
-        toast.error("Login failed! Please check your credentials.", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+                // Wait 1 second before redirect
+                setTimeout(() => {
+                    this.router.push("/dashboard");
+                }, 1000);
+            } catch (error) {
+                toast.error("Login failed! Please check your credentials.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
 
-        this.error = error.response
-            ? error.response.data.message
-            : "An error occurred!";
-    } finally {
-        this.loading = false;
-    }
-},
+                this.error = error.response
+                    ? error.response.data.message
+                    : "An error occurred!";
+            } finally {
+                this.loading = false;
+            }
+        },
 
-async logout() {
-    this.error = null;
+        async logout() {
+            this.error = null;
             const formData = {
                 token: sessionStorage.getItem("token"),
             };
             try {
+                await axios.post("logout", formData);
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("user");
 
-                
-            await axios.post('logout', formData);
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("user");
+                toast.success("Logout successful!", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
 
-        toast.success("Logout successful!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+                // Wait 1 second before redirect
+                setTimeout(() => {
+                    this.router.push("/");
+                }, 1000);
+            } catch (error) {
+                toast.error("Logout failed! Please try again.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
 
-        // Wait 1 second before redirect
-        setTimeout(() => {
-            this.router.push("/");
-        }, 1000);
-        
-    } catch (error) {
-        toast.error("Logout failed! Please try again.", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-
-        this.error = error.response
-            ? error.response.data.message
-            : "An error occurred!";
-    } finally {
-        this.loading = false;}}}
-})
+                this.error = error.response
+                    ? error.response.data.message
+                    : "An error occurred!";
+            } finally {
+                this.loading = false;
+            }
+        },
+    },
+});

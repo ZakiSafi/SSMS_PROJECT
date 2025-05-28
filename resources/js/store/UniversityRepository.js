@@ -6,7 +6,6 @@ export let useUniversityRepository = defineStore("universityRepository", {
     state() {
         return {
             isEditMode: ref(false),
-
             search: ref(""),
             serverItems: ref([]),
             loadingTable: ref(true),
@@ -108,7 +107,7 @@ export let useUniversityRepository = defineStore("universityRepository", {
                 console.error("Failed to fetch provinces:", err);
             }
         },
-        
+
 
     }
 

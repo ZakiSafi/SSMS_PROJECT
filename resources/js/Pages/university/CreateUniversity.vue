@@ -25,27 +25,52 @@
                     <v-divider class="border-opacity-100 mx-6"></v-divider>
 
                     <v-card-text>
-                        <v-form ref="formRef" class="pt-4">
+                        <v-form
+                            ref="formRef"
+                            class="pt-4"
+                            v-model="formIsValid"
+                        >
                             <v-text-field
                                 v-model="formData.name"
-                               variant="outlined"
-                                label="name"
+                                variant="outlined"
+                                label="Name"
                                 class="pb-4"
                                 density="compact"
-                                :rules="[rules.required]"
-                            ></v-text-field>
+                                :rules="[rules.required, rules.name]"
+                            />
 
                             <v-select
                                 v-model="formData.province_id"
                                 :items="UniversityRepository.provinces"
                                 item-value="id"
                                 item-title="name"
-                               variant="outlined"
+                                variant="outlined"
                                 label="Province"
                                 density="compact"
                                 class="pb-4"
                                 :rules="[rules.required]"
-                            ></v-select>
+                            />
+
+                            <v-select
+                                v-model="formData.type"
+                                :items="['public', 'private']"
+                                item-value="type"
+                                item-title="type"
+                                label="University Type"
+                                variant="outlined"
+                                density="compact"
+                                class="pb-4"
+                                :rules="[rules.required]"
+                            />
+
+                            <v-text-field
+                                v-model="formData.teachers"
+                                variant="outlined"
+                                label="Total Teachers"
+                                class="pb-4"
+                                density="compact"
+                                :rules="[rules.required, rules.numeric]"
+                            />
                         </v-form>
                     </v-card-text>
 
@@ -65,39 +90,47 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import { onMounted } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useUniversityRepository } from "@/store/UniversityRepository";
-const UniversityRepository = useUniversityRepository();
 
+const UniversityRepository = useUniversityRepository();
+const formRef = ref(null);
+const formIsValid = ref(false);
+
+// Fetch provinces and other needed data
 onMounted(() => {
     UniversityRepository.FetchProvinces();
+    UniversityRepository.FetchUniversityTypes?.(); // Optional: only if needed
 });
 
-const formRef = ref(null);
-
+// Initial form data
 const formData = reactive({
-    id: UniversityRepository.university.id,
-    name: UniversityRepository.university.name,
+    id: UniversityRepository.university.id || null,
+    name: UniversityRepository.university.name || "",
     province_id: UniversityRepository.university.province?.id || null,
+    type: UniversityRepository.university.type || null,
+    teachers: UniversityRepository.university.teachers || "",
 });
 
+// Validation rules
 const rules = {
     required: (value) => !!value || "This field is required.",
-
     name: (value) =>
         /^[a-zA-Z\u0600-\u06FF\s]*$/.test(value) ||
         "Please enter a valid name.",
+    numeric: (value) =>
+        /^\d+$/.test(value) || "This field must be a valid number.",
 };
 
+// Save function
 const save = async () => {
-    const isValid = await formRef.value.validate();
-    if (isValid) {
-        if (UniversityRepository.isEditMode) {
-            await UniversityRepository.UpdateUniversity(formData.id, formData);
-        } else {
-            await UniversityRepository.CreateUniversity(formData);
-        }
+    const { valid } = await formRef.value.validate();
+    if (!valid) return;
+
+    if (UniversityRepository.isEditMode) {
+        await UniversityRepository.UpdateUniversity(formData.id, formData);
+    } else {
+        await UniversityRepository.CreateUniversity(formData);
     }
 };
 </script>

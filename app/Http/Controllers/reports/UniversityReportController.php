@@ -14,12 +14,15 @@ class UniversityReportController extends Controller
 
         $year = $request->query('year');
         $shift = $request->query('shift');
+        $type  = $request->query('type');
         $perPage = $request->query('perPage', 10);
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->select(
                 'student_statistics.academic_year as year',
                 'universities.name as university',
+                'universities.type as type',
+                'student_statistics.shift as shift',
                 DB::raw('SUM(male_total) as Total_Males'),
                 DB::raw('SUM(female_total) as Total_Females'),
                 DB::raw('SUM(male_total + female_total) as Total_Students'),
@@ -38,7 +41,11 @@ class UniversityReportController extends Controller
             $query->where('student_statistics.academic_year', $year);
         }
 
-        $query->groupBy('student_statistics.academic_year', 'universities.name');
+        if ($type !== 'all') {
+            $query->where('universities.type', $type);
+        }
+
+        $query->groupBy('student_statistics.academic_year', 'universities.name', 'universities.type', 'student_statistics.shift');
 
         // Pagination applied here
         $statistics = $query->paginate($perPage);

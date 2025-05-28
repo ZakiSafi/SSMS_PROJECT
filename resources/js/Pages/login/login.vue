@@ -8,14 +8,13 @@
         <!-- Right Login Form Section -->
         <div class="relative bg-white">
             <img src="../../../../public/assets/Vector.png" alt="Decoration" class="absolute bottom-0 left-0">
-            <img src="../../../../public/assets/Vector (1).png" alt="Decoration" class="absolute right-0">
             <img src="../../../../public/assets/Group 688.png" alt="Decoration" class="absolute bottom-0 right-0">
             <v-form @submit.prevent="loginFunc" ref="formRef">
             <div class="mt-[64px] mx-auto flex flex-column items-center justify-center  " style="width: 400px;">
                 <h1 class="text-center text-[64px] font-bold text-[#009EE2]">Welcome</h1>
                 <p class="text-center text-medium-emphasis mb-10">Login with Email</p>
 
-                
+
                 <v-text-field
                     v-model="formData.email"
                     label="Email ID"
@@ -23,7 +22,7 @@
                     variant="outlined"
                     color="#009EE2"
                     density="comfortable"
-                    class="w-full" 
+                    class="w-full"
                     rounded="lg"
                     bg-color="#fff"
                     flat
@@ -55,7 +54,7 @@
                 >
                     LOGIN
                 </v-btn>
-            
+
             </div>
             </v-form>
 
