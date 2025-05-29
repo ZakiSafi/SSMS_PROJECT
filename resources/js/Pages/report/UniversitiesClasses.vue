@@ -1,164 +1,182 @@
 <template>
-  <AppBar pageTitle="University Classes" />
-  <v-divider :thickness="1" class="border-opacity-100"></v-divider>
+    <AppBar pageTitle="University Classes" />
+    <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
-  <div class="w-[24rem] pt-6 pb-6  d-flex align-center">
-  <v-combobox
-    class="mr-4"
-    v-model="ReportRepository.date"
-    :items="yearRange"
-    label="Select or Type Year"
-    variant="outlined"
-    density="compact"
-    hide-details
-    @update:modelValue="onDateChange"
-  ></v-combobox>
-  
-  <v-select 
-    v-model="ReportRepository.shift"
-    :items="['day','night']"
-    label="Select Shift"
-    variant="outlined"
-    hide-details
-    density="compact"
-    @update:modelValue="onDateChange"
-  ></v-select>
-</div>
+    <div class="w-[24rem] pt-6 pb-6 d-flex align-center">
+        <v-combobox
+            class="mr-4"
+            v-model="ReportRepository.date"
+            :items="yearRange"
+            label="Select or Type Year"
+            variant="outlined"
+            density="compact"
+            hide-details
+            @update:modelValue="onDateChange"
+        ></v-combobox>
 
-  <div class="table-container">
-    <table class="gender-stats-table">
-      <thead>
-        <tr>
-          <th rowspan="2">University</th>
-          <th colspan="3">Class 1</th>
-          <th colspan="3">Class 2</th>
-          <th colspan="3">Class 3</th>
-          <th colspan="3">Class 4</th>
-          <th colspan="3">Class 5</th>
-          <th colspan="3">Class 6</th>
-          <!-- Add other metrics as needed -->
-        </tr>
-        <tr>
-          <!-- POS subheaders -->
-          <th>Male</th>
-          <th>Female</th>
-          <th>Total</th>
+        <v-select
+            v-model="ReportRepository.shift"
+            :items="['day', 'night']"
+            label="Select Shift"
+            variant="outlined"
+            hide-details
+            density="compact"
+            @update:modelValue="onDateChange"
+        ></v-select>
+    </div>
 
-          <!-- Similar 1 subheaders -->
-          <th>Male</th>
-          <th>Female</th>
-          <th>Total</th>
+    <div class="table-container">
+        <table class="gender-stats-table">
+            <thead>
+                <tr>
+                    <th rowspan="2">University</th>
+                    <th colspan="3">Class 1</th>
+                    <th colspan="3">Class 2</th>
+                    <th colspan="3">Class 3</th>
+                    <th colspan="3">Class 4</th>
+                    <th colspan="3">Class 5</th>
+                    <th colspan="3">Class 6</th>
+                    <!-- Add other metrics as needed -->
+                </tr>
+                <tr>
+                    <!-- POS subheaders -->
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total</th>
 
-          <!-- Similar 4 subheaders -->
-          <th>Male</th>
-          <th>Female</th>
-          <th>Total</th>
+                    <!-- Similar 1 subheaders -->
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total</th>
 
-          <!-- Similar 5 subheaders -->
-          <th>Male</th>
-          <th>Female</th>
-          <th>Total</th>
-          <!-- Similar 6 subheaders -->
-          <th>Male</th>
-          <th>Female</th>
-          <th>Total</th>
-          <!-- Similar 7 subheaders -->
-          <th>Male</th>
-          <th>Female</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(institution, index) in ReportRepository.universityClasses" :key="index">
-          <td>{{ institution.university_name }}</td>
+                    <!-- Similar 4 subheaders -->
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total</th>
 
-          <template v-for="classIndex in 6">
-            <td class="male">
-              {{ institution.classes['Class ' + classIndex]?.Total_males || 0 }}
-            </td>
-            <td class="female">
-              {{ institution.classes['Class ' + classIndex]?.Total_Females || 0 }}
-            </td>
-            <td class="total">
-              {{ institution.classes['Class ' + classIndex]?.Total_Students || 0 }}
-            </td>
-          </template>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  
+                    <!-- Similar 5 subheaders -->
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total</th>
+                    <!-- Similar 6 subheaders -->
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total</th>
+                    <!-- Similar 7 subheaders -->
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    v-for="(
+                        institution, index
+                    ) in ReportRepository.universityClasses"
+                    :key="index"
+                >
+                    <td>{{ institution.university_name }}</td>
+
+                    <template v-for="classIndex in 6">
+                        <td class="male">
+                            {{
+                                institution.classes["Class " + classIndex]
+                                    ?.Total_males || 0
+                            }}
+                        </td>
+                        <td class="female">
+                            {{
+                                institution.classes["Class " + classIndex]
+                                    ?.Total_Females || 0
+                            }}
+                        </td>
+                        <td class="total">
+                            {{
+                                institution.classes["Class " + classIndex]
+                                    ?.Total_Students || 0
+                            }}
+                        </td>
+                    </template>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from "vue";
 import { useReportRepository } from "../../store/ReportRepository";
 
 const ReportRepository = useReportRepository();
 import persianDate from "persian-date";
 
 const getCurrentPersianYear = () => {
-  return new persianDate().year();
-}
+    return new persianDate().year();
+};
 
 const currentYear = ref(getCurrentPersianYear());
 const yearRange = computed(() => {
-  const years = [];
-  const startYear = currentYear.value - 10;
-  const endYear = currentYear.value + 10;
+    const years = [];
+    const startYear = currentYear.value - 10;
+    const endYear = currentYear.value + 10;
 
-  for (let i = startYear; i <= endYear; i++) {
-    years.push(i);
-  }
-  return years;
-})
+    for (let i = startYear; i <= endYear; i++) {
+        years.push(i);
+    }
+    return years;
+});
 
 const onDateChange = () => {
-  ReportRepository.fetchUniversityClasses(
-    { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
-    ReportRepository.date,
-  );
+    ReportRepository.fetchUniversityClasses(
+        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
+        ReportRepository.date
+    );
 };
 
 onMounted(() => {
-  ReportRepository.fetchUniversityClasses({ page: 1, itemsPerPage: ReportRepository.itemsPerPage },
-    ReportRepository.date, ReportRepository.shift);
+    ReportRepository.fetchUniversityClasses(
+        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
+        ReportRepository.date,
+        ReportRepository.shift
+    );
 });
-
 
 ReportRepository.fetchUniversityClasses();
 </script>
 
 <style scoped>
 .table-container {
-  overflow-x: auto;
+    overflow-x: auto;
 }
 
 .gender-stats-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
 }
 
 .gender-stats-table th {
-  background-color: #E7F2F5;
-  padding: 8px;
-  border: 1px solid #ddd;
+    background-color: #e7f2f5;
+    padding: 8px;
+    border: 1px solid #ddd;
 }
 
 .gender-stats-table td {
-  padding: 10px 8px;
+    padding: 10px 8px;
 
-  border: 1px solid #ddd;
+    border: 1px solid #ddd;
 }
-
 
 .total {
-  font-weight: bold;
-  background-color: #f9f9f9;
+    font-size: small;
+    font-weight: bold;
+    color: #333;
+    background-color: #f9f9f9;
 }
 
-
+th {
+    font-size: small;
+    color: #333;
+}
 </style>
