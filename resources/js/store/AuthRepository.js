@@ -45,7 +45,7 @@ export const useAuthRepository= defineStore("authRepository",{
 
         // Wait 1 second before redirect
         setTimeout(() => {
-            this.router.push("/home");
+            this.router.push("/dashboard");
         }, 1000);
         
     } catch (error) {
