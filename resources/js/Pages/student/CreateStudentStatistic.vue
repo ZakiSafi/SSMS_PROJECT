@@ -24,9 +24,9 @@
                 </v-col>
 
                 <v-col cols="6">
-                  <v-select v-model="formData.university_id" :items="StudentStatisticsRepository.universities"
+                  <v-combobox v-model="formData.university_id" :items="StudentStatisticsRepository.universities"
                     item-title="name" item-value="id" label="University" variant="outlined" density="compact"
-                    :rules="[rules.required]" />
+                    :rules="[rules.required]" :return-object="false" />
                 </v-col>
 
                 <!-- Row 2 -->
