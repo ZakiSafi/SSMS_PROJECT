@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\reports;
+
 use App\Http\Controllers\Controller;
 use App\Models\StudentStatistic;
 use Illuminate\Http\Request;
@@ -24,8 +25,12 @@ class FacultyClassBasedReportController extends Controller
                 'universities.name as university_name'
             )
             ->where('student_statistics.academic_year', $year)
-            ->where('student_statistics.season', $season)
-            ->where('universities.name', $university)
+            ->when($season !== 'all', function ($query) use ($season) {
+                return $query->where('student_statistics.season', $season);
+            })
+            ->when($university !== 'all', function ($query) use ($university) {
+                return $query->where('universities.name', $university);
+            })
             ->groupBy('student_statistics.university_id', 'universities.name')
             ->paginate($perPage);
 
@@ -41,8 +46,13 @@ class FacultyClassBasedReportController extends Controller
                 'faculties.name as faculty_name'
             )
             ->where('student_statistics.academic_year', $year)
-            ->where('student_statistics.season', $season)
-            ->where('universities.name', $university)
+            ->where('student_statistics.academic_year', $year)
+            ->when($season !== 'all', function ($query) use ($season) {
+                return $query->where('student_statistics.season', $season);
+            })
+            ->when($university !== 'all', function ($query) use ($university) {
+                return $query->where('universities.name', $university);
+            })
             ->whereIn('student_statistics.university_id', $universityIds)
             ->groupBy('student_statistics.university_id', 'student_statistics.faculty_id', 'faculties.name')
             ->get();
@@ -63,9 +73,12 @@ class FacultyClassBasedReportController extends Controller
                 DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage')
             )
             ->where('student_statistics.academic_year', $year)
-            ->where('student_statistics.season', $season)
-            ->where('universities.name', $university)
-
+            ->when($season !== 'all', function ($query) use ($season) {
+                return $query->where('student_statistics.season', $season);
+            })
+            ->when($university !== 'all', function ($query) use ($university) {
+                return $query->where('universities.name', $university);
+            })
             ->whereIn('student_statistics.university_id', $universityIds)
             ->groupBy(
                 'student_statistics.university_id',
