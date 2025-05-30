@@ -11,28 +11,128 @@ class FacultyClassBasedReportController extends Controller
     public function __invoke(Request $request)
     {
         $year = $request->query('year');
-        $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
-        ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
-        ->select(
-            'universities.name as university',
-            'faculties.name as faculty',
-            'student_statistics.classroom as class',
-            'student_statistics.shift as shift',
-            DB::raw('Sum(student_statistics.male_total) as Total_Male'),
-            DB::raw('Sum(student_statistics.female_total) as Total_Female'),
-            DB::raw('Sum(student_statistics.male_total + student_statistics.female_total) as Total_Students'),
-            DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
-            DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),
-        )
-        ->whereYear('student_statistics.academic_year', $year)
-        ->groupBy(
-            'universities.name',
-            'faculties.name',
-            'student_statistics.classroom',
-            'student_statistics.shift'
-        )
-        ->get();
-        return response()->json($query);
+        $season = $request->query('season');
+        $university = $request->query('university');
+        $perPage = $request->query('perPage', 10);
 
+        // STEP 1: Paginate universities
+        $universityPaginator = DB::table('student_statistics')
+            ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
+            ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
+            ->select(
+                'student_statistics.university_id',
+                'universities.name as university_name'
+            )
+            ->where('student_statistics.academic_year', $year)
+            ->where('student_statistics.season', $season)
+            ->where('universities.name', $university)
+            ->groupBy('student_statistics.university_id', 'universities.name')
+            ->paginate($perPage);
+
+        $universityIds = $universityPaginator->pluck('university_id')->toArray();
+
+        // STEP 2: Get all faculties for the paginated universities
+        $faculties = DB::table('student_statistics')
+            ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
+            ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
+            ->select(
+                'student_statistics.university_id',
+                'student_statistics.faculty_id',
+                'faculties.name as faculty_name'
+            )
+            ->where('student_statistics.academic_year', $year)
+            ->where('student_statistics.season', $season)
+            ->where('universities.name', $university)
+            ->whereIn('student_statistics.university_id', $universityIds)
+            ->groupBy('student_statistics.university_id', 'student_statistics.faculty_id', 'faculties.name')
+            ->get();
+
+        // STEP 3: Get all classroom results
+        $classResults = DB::table('student_statistics')
+            ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
+            ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
+            ->select(
+                'student_statistics.university_id',
+                'student_statistics.faculty_id',
+                'student_statistics.classroom',
+                'student_statistics.shift',
+                DB::raw('SUM(student_statistics.male_total) as Total_Male'),
+                DB::raw('SUM(student_statistics.female_total) as Total_Female'),
+                DB::raw('SUM(student_statistics.male_total + student_statistics.female_total) as Total_Students'),
+                DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
+                DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage')
+            )
+            ->where('student_statistics.academic_year', $year)
+            ->where('student_statistics.season', $season)
+            ->where('universities.name', $university)
+
+            ->whereIn('student_statistics.university_id', $universityIds)
+            ->groupBy(
+                'student_statistics.university_id',
+                'student_statistics.faculty_id',
+                'student_statistics.classroom',
+                'student_statistics.shift'
+            )
+            ->get();
+
+        // STEP 4: Get all unique classrooms
+        $allClasses = $classResults
+            ->pluck('classroom')
+            ->filter(fn($classroom) => trim($classroom) !== '')
+            ->unique()
+            ->sort()
+            ->values();
+
+        // STEP 5: Group data
+        $grouped = [];
+
+        foreach ($universityPaginator as $university) {
+            $grouped[$university->university_id] = [
+                'university' => $university->university_name,
+                'faculties' => []
+            ];
+        }
+
+        foreach ($faculties as $faculty) {
+            $grouped[$faculty->university_id]['faculties'][] = [
+                'faculty_id' => $faculty->faculty_id, // temp key for matching class data
+                'faculty_name' => $faculty->faculty_name,
+                'classes' => collect($allClasses)->mapWithKeys(fn($class) => [$class => null])->toArray()
+            ];
+        }
+
+        foreach ($classResults as $row) {
+            $faculties = &$grouped[$row->university_id]['faculties'];
+
+            foreach ($faculties as &$faculty) {
+                if ($faculty['faculty_id'] == $row->faculty_id) {
+                    $faculty['classes'][$row->classroom] = [
+                        'shift' => $row->shift,
+                        'Total_Male' => (string) $row->Total_Male,
+                        'Total_Female' => (string) $row->Total_Female,
+                        'Total_Students' => (string) $row->Total_Students,
+                        'Male_Percentage' => (string) $row->Male_Percentage,
+                        'Female_Percentage' => (string) $row->Female_Percentage
+                    ];
+                    break;
+                }
+            }
+        }
+
+        // STEP 6: Remove faculty_id before returning
+        foreach ($grouped as &$university) {
+            foreach ($university['faculties'] as &$faculty) {
+                unset($faculty['faculty_id']);
+            }
+        }
+
+        // STEP 7: Return final JSON
+        return response()->json([
+            'data' => array_values($grouped),
+            'current_page' => $universityPaginator->currentPage(),
+            'last_page' => $universityPaginator->lastPage(),
+            'per_page' => $universityPaginator->perPage(),
+            'total' => $universityPaginator->total(),
+        ]);
     }
 }
