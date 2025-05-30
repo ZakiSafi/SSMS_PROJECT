@@ -71,7 +71,8 @@
                             <v-card-title
                                 class="px-2 pt-2 d-flex justify-space-between"
                             >
-                                <h3 class="font-weight-bold pl-4">Logout</h3>
+                            <h3 class="font-weight-bold pl-4">{{ $t("logout") }}</h3>
+
                                 <v-btn
                                     variant="text"
                                     class="font-weight-bold"
@@ -123,7 +124,18 @@ const items = ref([
 ]);
 
 const toggleSidebar = () => console.log("Toggle sidebar");
-const changeLanguage = (lang) => console.log("Change language to", lang);
+
+// localization logic
+import { useI18n } from "vue-i18n";
+const { locale } = useI18n();
+
+const changeLanguage = (lang) => {
+    locale.value = lang;
+    localStorage.setItem("locale", lang);
+    isRtl.value = lang !== "en"; // Make direction RTL for fa and ps
+};
+
+// unitil here
 const handleLogout = () => {
     console.log("Logging out...");
     AuthRepository.logout();

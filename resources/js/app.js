@@ -1,14 +1,34 @@
-import { createApp } from 'vue';
-import './bootstrap.js';
-import App from './App.vue';
-import router from './router';
-import vuetify from './plugins/vuetify';
-import DatePicker from '@alireza-ab/vue3-persian-datepicker';
-import { createPinia } from 'pinia';
+import { createApp } from "vue";
+import "./bootstrap.js";
+import { createI18n } from "vue-i18n";
+import App from "./App.vue";
+import router from "./router";
+import vuetify from "./plugins/vuetify";
+import DatePicker from "@alireza-ab/vue3-persian-datepicker";
+import { createPinia } from "pinia";
+import en from "./locales/en.json";
+import fa from "./locales/fa.json";
+import ps from "./locales/ps.json";
 const app = createApp(App);
 const pinia = createPinia();
-app.component('DatePicker', DatePicker);
+
+// Importing locale files
+const messages = { en, fa, ps };
+
+const savedLocale = localStorage.getItem("locale") || "en";
+
+const i18n = createI18n({
+    legacy: false,
+    locale: savedLocale,
+    fallbackLocale: "en",
+    messages,
+});
+
+//
+app.component("DatePicker", DatePicker);
 app.use(vuetify);
 app.use(pinia);
 app.use(router);
-app.mount('#app');
+// Setting up i18n for internationalization
+app.use(i18n);
+app.mount("#app");
