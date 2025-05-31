@@ -116,10 +116,6 @@ onMounted(() => {
         ReportRepository.shift
     );
 });
-<<<<<<< HEAD
-=======
-
->>>>>>> e0f3100d89370cb0843e20a21f7e71630bfe5c83
 </script>
 
 <style scoped>

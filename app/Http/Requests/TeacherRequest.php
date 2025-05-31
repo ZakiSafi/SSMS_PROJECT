@@ -23,7 +23,8 @@ class TeacherRequest extends FormRequest
     {
         return [
             'university_id' => 'required|exists:univeristies,id',
-            'academic_year_id'
+            'academic_year' => 'required|year',
+            'total_teachers' => 'required|integer|min:0',
         ];
     }
 }

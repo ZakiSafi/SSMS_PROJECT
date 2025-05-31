@@ -16,10 +16,8 @@ return new class extends Migration
             $table->foreignId('university_id')
                 ->constrained('universities')
                 ->onDelete('cascade');
-            $table->foreignId('academic_year_id')
-                ->constrained('academic_years')
-                ->onDelete('cascade');
-                $table->integer('total_teachers')->require;
+            $table->integer('academic_year');
+            $table->integer('total_teachers')->default('0');
             $table->timestamps();
         });
     }

@@ -73,7 +73,9 @@
                             <v-card-title
                                 class="px-2 pt-2 d-flex justify-space-between"
                             >
-                            <h3 class="font-weight-bold pl-4">{{ $t("logout") }}</h3>
+                                <h3 class="font-weight-bold pl-4">
+                                    {{ $t("logout") }}
+                                </h3>
 
                                 <v-btn
                                     variant="text"
@@ -81,7 +83,9 @@
                                     @click="isActive.value = false"
                                     :aria-label="$t('close_dialog')"
                                 >
-                                    <v-icon>{{ $t('mdi-close') }}</v-icon></v-btn
+                                    <v-icon>{{
+                                        $t("mdi-close")
+                                    }}</v-icon></v-btn
                                 >
                             </v-card-title>
 
@@ -128,11 +132,6 @@ const items = ref([
     { title: "dari", lang: "fa", icon: "/assets/dari.png" },
 ]);
 
-<<<<<<< HEAD
-// localization logic
-import { useI18n } from "vue-i18n";
-const { locale, t } = useI18n();
-=======
 const isRtl = ref(false);
 
 // Initialize language from localStorage
@@ -143,7 +142,6 @@ onMounted(() => {
         isRtl.value = savedLang !== "en";
     }
 });
->>>>>>> e0f3100d89370cb0843e20a21f7e71630bfe5c83
 
 const changeLanguage = (lang) => {
     locale.value = lang;
@@ -152,14 +150,9 @@ const changeLanguage = (lang) => {
 };
 
 const handleLogout = () => {
-    console.log(t('logging_out_message'));
+    console.log(t("logging_out_message"));
     AuthRepository.logout();
 };
-<<<<<<< HEAD
-
-const isRtl = ref(localStorage.getItem("locale") !== "en");
-=======
->>>>>>> e0f3100d89370cb0843e20a21f7e71630bfe5c83
 </script>
 
 <style scoped>

@@ -11,12 +11,12 @@ class University extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'teachers',
         'type',
         'province_id',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
@@ -38,5 +38,10 @@ class University extends Model
     public function settings()
     {
         return $this->belongsTo(Setting::class);
+    }
+
+    public function teachers()
+    {
+        return $this->hasMany(Teacher::class);
     }
 }
