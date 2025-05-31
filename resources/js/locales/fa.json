@@ -1,10 +1,20 @@
 {
-    "dashboard": "داشبورد",
+    "Dashboard": "داشبورد",
     "students": "محصلین",
     "faculties": "پوهنځی",
     "departments": "دیپارتمنت ها",
     "classrooms": "صنف ها",
     "statistics": "احصایه",
+    "university Classes": "صنف های پوهنتون",
     "language": "زبان",
-    "logout": "خروج"
+    "logout": "خروج",
+    "Select or Type Year": "سال را انتخاب یا تایپ کنید",
+    "Select Shift": "شیفت را انتخاب کنید",
+    "day": "روز",
+    "night": "شب",
+    "University": "پوهنتون",
+    "Class": "صنف",
+    "Male": "مرد",
+    "Female": "زن",
+    "Total": "مجموع"
 }

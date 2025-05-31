@@ -6,5 +6,15 @@
     "classrooms": "Classrooms",
     "statistics": "Statistics",
     "language": "Language",
-    "logout": "Logout"
+    "logout": "Logout",
+    "University Classes": "University Classes",
+    "Select or Type Year": "Select or Type Year",
+    "Select Shift": "Select Shift",
+    "day": "Day",
+    "night": "Night",
+    "University": "University",
+    "Class": "Class",
+    "Male": "Male",
+    "Female": "Female",
+    "Total": "Total"
 }
