@@ -34,6 +34,7 @@ Route::apiResource('rollPermissions', RollPermissionController::class);
 Route::apiResource('users', UserController::class);
 Route::put('users/update/{user}', [UserController::class, 'update']);
 Route::apiResource('logs', LogController::class);
+Route::apiResource('universities', UniversityController::class);
 
 
 // Define the login route (with optional name)

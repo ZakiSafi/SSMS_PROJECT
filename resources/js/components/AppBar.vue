@@ -2,9 +2,9 @@
     <v-card :dir="isRtl ? 'rtl' : 'ltr'" :elevation="0" class="rounded-xl">
         <template v-slot:prepend>
             <h1 class="text-[18px]">
-                {{ pageTitle }}
+                {{ $t(pageTitle) }}
                 <span v-if="pageSubtitle" class="text-[14px]">{{
-                    pageSubtitle
+                    $t(pageSubtitle)
                 }}</span>
             </h1>
         </template>
@@ -15,20 +15,21 @@
                 <v-menu transition="scale-transition">
                     <template #activator="{ props }">
                         <v-btn
-                            icon="mdi-web"
+                            :icon="$t('mdi-web')"
                             flat
                             class="icon bg-head mx-4"
                             size="small"
                             height="4.7vh"
                             width="4.7vh"
                             v-bind="props"
+                            :title="$t('language_switcher')"
                         ></v-btn>
                     </template>
 
                     <v-list>
                         <v-list-item
                             v-for="item in items"
-                            :key="item.title"
+                            :key="$t(item.title)"
                             @click="changeLanguage(item.lang)"
                         >
                             <div
@@ -37,14 +38,14 @@
                                 <v-list-item-icon>
                                     <img
                                         :src="item.icon"
-                                        alt="Language Icon"
+                                        :alt="$t('language_icon')"
                                         class="icon-size"
                                         height="22"
                                         width="22"
                                     />
                                 </v-list-item-icon>
                                 <v-list-item-title>{{
-                                    item.title
+                                    $t(item.title)
                                 }}</v-list-item-title>
                             </div>
                         </v-list-item>
@@ -60,8 +61,9 @@
                             size="small"
                             height="4.7vh"
                             width="4.7vh"
-                            icon="mdi-logout"
+                            :icon="$t('mdi-logout')"
                             v-bind="activatorProps"
+                            :title="$t('logout_button')"
                         >
                         </v-btn>
                     </template>
@@ -77,8 +79,9 @@
                                     variant="text"
                                     class="font-weight-bold"
                                     @click="isActive.value = false"
+                                    :aria-label="$t('close_dialog')"
                                 >
-                                    <v-icon>mdi-close</v-icon></v-btn
+                                    <v-icon>{{ $t('mdi-close') }}</v-icon></v-btn
                                 >
                             </v-card-title>
 
@@ -87,7 +90,7 @@
                             >
                                 <img
                                     src="../../../public/assets/IMG_20230530_185847_332.jpg"
-                                    alt=""
+                                    :alt="$t('user_avatar')"
                                     class="object-cover w-[6rem] h-[6rem] rounded-full"
                                 />
                                 <h3 class="mt-6">Zakiullahsafi0@gmail.com</h3>
@@ -96,7 +99,7 @@
                             <v-card-actions>
                                 <v-spacer></v-spacer>
                                 <v-btn
-                                    text="Logout"
+                                    :text="$t('logout')"
                                     @click="handleLogout"
                                 ></v-btn>
                             </v-card-actions>
@@ -143,7 +146,7 @@ const changeLanguage = (lang) => {
 };
 
 const handleLogout = () => {
-    console.log("Logging out...");
+    console.log(t('logging_out_message'));
     AuthRepository.logout();
 };
 </script>
