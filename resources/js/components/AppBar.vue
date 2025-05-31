@@ -116,7 +116,7 @@ import { ref, onMounted } from "vue";
 import { useAuthRepository } from "../store/AuthRepository";
 const AuthRepository = useAuthRepository();
 import { useI18n } from "vue-i18n";
-const { locale } = useI18n();
+const { t,locale } = useI18n();
 
 const props = defineProps({
     pageTitle: { type: String, default: "" },
@@ -142,7 +142,7 @@ onMounted(() => {
 const changeLanguage = (lang) => {
     locale.value = lang;
     localStorage.setItem("locale", lang);
-    isRtl.value = lang !== "en"; // Make direction RTL for fa and ps
+    isRtl.value = lang !== "en"; 
 };
 
 const handleLogout = () => {

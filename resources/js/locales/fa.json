@@ -1,12 +1,33 @@
 {
-    "Dashboard": "داشبورد",
-    "students": "محصلین",
-    "faculties": "پوهنځی",
+  "menu": {
+    "dashboard": "داشبورد",
+    "provinces": "ولایات",
+    "university": "پوهنتون",
+    "faculty": "پوهنځی",
     "departments": "دیپارتمنت ها",
-    "classrooms": "صنف ها",
-    "statistics": "احصایه",
-    "university Classes": "صنف های پوهنتون",
-    "language": "زبان",
+    "student_statistic": "آمار محصلین",
+    "reports": "راپورها",
+    "settings": "تنظیمات",
+    "role_permissions": "صلاحیت های نقش",
+    "university_report": "راپور پوهنتون",
+    "university_graduation_report": "راپور فارغ التحصیلی",
+    "student_teacher_ratio": "نسبت محصل به استاد",
+    "university_classes": "صنوف پوهنتون"
+  },
+  "user": {
+    "name": "ذکی الله صافی"
+  },
+  "Dashboard": "داشبورد",
+  "students": "محصلین",
+  "Faculty": "پوهنځی",
+  "provinces": "ولایات",
+  "Department": "دیپارتمنت ها",
+  "classrooms": "صنف ها",
+  "statistics": "احصایه",
+   "student_statistic": "آمار محصلین",
+   "university Classes": "صنف های پوهنتون",
+   "language": "زبان",
+   "users": "کاربران",
     "logout": "خروج",
     "Select or Type Year": "سال را انتخاب یا تایپ کنید",
     "Select Shift": "شیفت را انتخاب کنید",
@@ -16,5 +37,7 @@
     "Class": "صنف",
     "Male": "مرد",
     "Female": "زن",
-    "Total": "مجموع"
+    "Total": "مجموع",
+    "search":"جستجو",
+     "create": "ایجاد کردن"
 }

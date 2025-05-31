@@ -1,4 +1,5 @@
 <template>
+  <div  :dir="dir">
     <AppBar pageTitle="StudentTeacherRatio" />
     <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
@@ -28,6 +29,7 @@
         class="w-100 mx-auto"
         hover
     ></v-data-table-server>
+    </div>
 </template>
 
 <script setup>
@@ -36,6 +38,12 @@ import { useReportRepository } from "@/store/ReportRepository";
 import { ref, computed } from "vue";
 const ReportRepository = useReportRepository();
 import persianDate from "persian-date";
+import { useI18n } from "vue-i18n";
+const { t,locale } = useI18n();
+const dir = computed(() => {
+  return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
+});
+
 
 const getCurrentPersianYear = () => {
   return new persianDate().year(); 

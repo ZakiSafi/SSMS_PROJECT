@@ -25,15 +25,14 @@
                             <v-row dense>
                                 <!-- Row 1 -->
                                 <v-col cols="6">
-                                    <div>
-                                        <label for="academicYear">Select Academic Year:</label>
                                         <DatePicker
                                             v-model="selectedYear"
                                             format="jYYYY"
                                             type="year"
                                             placeholder="Select year"
+                                            rounded
                                         />
-                                    </div>
+                                    
                                 </v-col>
 
                                 <v-col cols="6">

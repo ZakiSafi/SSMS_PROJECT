@@ -1,10 +1,31 @@
 {
+    "menu": {
+    "dashboard": "Dashboard",
+    "provinces": "Provinces",
+    "university": "University",
+    "faculty": "Faculty",
+    "departments": "Departments",
+    "student_statistic": "Student Statistic",
+    "reports": "Reports",
+    "settings": "Settings",
+    "users": "Users",
+    "role_permissions": "Role Permissions",
+    "university_report": "University Report",
+    "university_graduation_report": "University Graduation Report",
+    "student_teacher_ratio": "Student Teacher Ratio",
+    "university_classes": "University Classes"
+  },
+  "user": {
+    "name": "Zakiullah Safi"
+  },
     "dashboard": "Dashboard",
     "students": "Students",
+    "provinces": "Provinces",
     "faculties": "Faculties",
     "departments": "Departments",
     "classrooms": "Classrooms",
     "statistics": "Statistics",
+    "student_statistic": "Student Statistics",
     "language": "Language",
     "logout": "Logout",
     "University Classes": "University Classes",
@@ -13,8 +34,13 @@
     "day": "Day",
     "night": "Night",
     "University": "University",
+    "Faculty": "Faculty",
     "Class": "Class",
     "Male": "Male",
     "Female": "Female",
-    "Total": "Total"
+    "Total": "Total",
+    "users": "Users",
+    "search":"Search",
+    "create":"Create"
+
 }
