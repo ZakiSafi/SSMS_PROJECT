@@ -9,7 +9,7 @@
       <v-divider :thickness="1" class="border-opacity-100 "></v-divider>
 
       <!-- Search & Buttons Section -->
-      <div class="btn-search pt-6 pb-6 d-flex justify-space-between">
+      <div class="pt-6 pb-6 d-flex justify-space-between">
         <div class="text-field w-25">
           <v-text-field color="primary" density="compact" variant="outlined" label="Search"
             append-inner-icon="mdi-magnify" hide-details v-model="ProvinceRepository.provinceSearch"

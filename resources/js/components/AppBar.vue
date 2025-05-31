@@ -10,14 +10,14 @@
         </template>
 
         <template v-slot:append>
-            <div class="d-flex align-center">
+            <div class="d-flex align-center gap-4">
                 <!-- Language Switcher -->
                 <v-menu transition="scale-transition">
                     <template #activator="{ props }">
                         <v-btn
                             :icon="$t('mdi-web')"
                             flat
-                            class="icon bg-head mr-4"
+                            class="icon bg-head mx-4"
                             size="small"
                             height="4.7vh"
                             width="4.7vh"
@@ -112,9 +112,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuthRepository } from "../store/AuthRepository";
 const AuthRepository = useAuthRepository();
+import { useI18n } from "vue-i18n";
+const { locale } = useI18n();
 
 const props = defineProps({
     pageTitle: { type: String, default: "" },
@@ -126,9 +128,22 @@ const items = ref([
     { title: "dari", lang: "fa", icon: "/assets/dari.png" },
 ]);
 
+<<<<<<< HEAD
 // localization logic
 import { useI18n } from "vue-i18n";
 const { locale, t } = useI18n();
+=======
+const isRtl = ref(false);
+
+// Initialize language from localStorage
+onMounted(() => {
+    const savedLang = localStorage.getItem("locale");
+    if (savedLang) {
+        locale.value = savedLang;
+        isRtl.value = savedLang !== "en";
+    }
+});
+>>>>>>> e0f3100d89370cb0843e20a21f7e71630bfe5c83
 
 const changeLanguage = (lang) => {
     locale.value = lang;
@@ -140,8 +155,11 @@ const handleLogout = () => {
     console.log(t('logging_out_message'));
     AuthRepository.logout();
 };
+<<<<<<< HEAD
 
 const isRtl = ref(localStorage.getItem("locale") !== "en");
+=======
+>>>>>>> e0f3100d89370cb0843e20a21f7e71630bfe5c83
 </script>
 
 <style scoped>

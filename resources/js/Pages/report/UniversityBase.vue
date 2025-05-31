@@ -4,37 +4,48 @@
     />
     <v-divider :thickness="1" class="border-opacity-100" />
 
-    <div class="w-full flex flex gap-4 pt-6">
-        <v-combobox
-            v-model="ReportRepository.date"
-            :items="yearRange"
-            label="Select or Type Year"
-            variant="outlined"
-            density="compact"
-            :rules="[validateYearInput]"
-            @update:modelValue="onDateChange"
-        ></v-combobox>
+   <div class="w-full flex justify-between items-start gap-4 pt-6">
+  <!-- Left side: Combobox -->
+  <div class="w-1/5">
+    <v-combobox
+      v-model="ReportRepository.date"
+      :items="yearRange"
+      label="Select or Type Year"
+      variant="outlined"
+      density="compact"
+      :rules="[validateYearInput]"
+      @update:modelValue="onDateChange"
+    ></v-combobox>
+  </div>
 
-        <v-select
-            v-model="ReportRepository.type"
-            :items="['public', 'private']"
-            label="Select University Type"
-            variant="outlined"
-            density="compact"
-            :rules="[validateType]"
-            @update:modelValue="onTypeChange"
-        ></v-select>
-
-        <v-select
-            v-model="ReportRepository.shift"
-            :items="['Day', 'Night']"
-            label="Select Shift"
-            variant="outlined"
-            density="compact"
-            :rules="[validateShift]"
-            @update:modelValue="onShiftChange"
-        ></v-select>
+  <!-- Right side: Two selects side by side -->
+  <div class="w-1/4 flex">
+    <div class="w-1/2">
+      <v-select
+        v-model="ReportRepository.type"
+        :items="['public', 'private']"
+        label="Select University Type"
+        variant="outlined"
+        density="compact"
+        :rules="[validateType]"
+        @update:modelValue="onTypeChange"
+      ></v-select>
     </div>
+    <div class="w-1/2 ml-4">
+      <v-select
+        v-model="ReportRepository.shift"
+        :items="['Day', 'Night']"
+        label="Select Shift"
+        variant="outlined"
+        density="compact"
+        :rules="[validateShift]"
+        @update:modelValue="onShiftChange"
+      ></v-select>
+    </div>
+  </div>
+</div>
+
+
 
     <v-data-table-server
         v-model:items-per-page="ReportRepository.itemsPerPage"
@@ -136,8 +147,5 @@ const headers = [
 </script>
 
 <style scoped>
-.v-data-table {
-    --primary-color: none;
-    --row-spacing: 10px;
-}
+
 </style>

@@ -42,20 +42,21 @@ export const useAuthRepository = defineStore("authRepository", {
                     progress: undefined,
                 });
 
-                // Wait 1 second before redirect
-                setTimeout(() => {
-                    this.router.push("/dashboard");
-                }, 1000);
-            } catch (error) {
-                toast.error("Login failed! Please check your credentials.", {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+        // Wait 1 second before redirect
+        setTimeout(() => {
+            this.router.push("/dashboard");
+        }, 1000);
+        
+    } catch (error) {
+        toast.error("Login failed! Please check your credentials.", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
 
                 this.error = error.response
                     ? error.response.data.message
