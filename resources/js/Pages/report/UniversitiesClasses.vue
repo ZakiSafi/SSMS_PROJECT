@@ -1,10 +1,11 @@
 <template>
+    <div :dir="dir">
     <AppBar :pageTitle="$t('University Classes')" />
     <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
     <div class="w-[24rem] pt-6 pb-6 d-flex align-center">
         <v-combobox
-            class="mr-4"
+            class="mx-4"
             v-model="ReportRepository.date"
             :items="yearRange"
             :label="$t('Select or Type Year')"
@@ -46,43 +47,71 @@
                     </template>
                 </tr>
             </thead>
-            <tbody>
-                <tr
-                    v-for="(institution, index) in ReportRepository.universityClasses"
-                    :key="index"
-                >
-                    <td>{{ institution.university_name }}</td>
+            
+            <!-- Progress bar under thead -->
+            <tr v-if="ReportRepository.loading" class="loading-row">
+                <td colspan="19">
+                    <v-progress-linear
+                        indeterminate
+                        color="primary"
+                        height="4"
+                        class="ma-0"
+                    ></v-progress-linear>
+                </td>
+            </tr>
+            
+          <tbody v-if="ReportRepository.universityClasses.length">
+       
+  <tr
+    v-for="(institution, index) in ReportRepository.universityClasses"
+    :key="index"
+  >
+    <td>{{ institution.university_name }}</td>
 
-                    <template v-for="classIndex in 6" :key="classIndex">
-                        <td class="male">
-                            {{
-                                institution.classes["Class " + classIndex]?.Total_males || 0
-                            }}
-                        </td>
-                        <td class="female">
-                            {{
-                                institution.classes["Class " + classIndex]?.Total_Females || 0
-                            }}
-                        </td>
-                        <td class="total">
-                            {{
-                                institution.classes["Class " + classIndex]?.Total_Students || 0
-                            }}
-                        </td>
-                    </template>
-                </tr>
-            </tbody>
+    <template v-for="classIndex in 6" :key="classIndex">
+      <td class="male">
+        {{
+          institution.classes["Class " + classIndex]?.Total_males || 0
+        }}
+      </td>
+      <td class="female">
+        {{
+          institution.classes["Class " + classIndex]?.Total_Females || 0
+        }}
+      </td>
+      <td class="total">
+        {{
+          institution.classes["Class " + classIndex]?.Total_Students || 0
+        }}
+      </td>
+    </template>
+  </tr>
+</tbody>
+
+<!-- Show message if there is no data -->
+<tbody v-else>
+  <tr>
+    <td colspan="19" class="text-center py-4">
+      {{ $t('No data available') }}
+    </td>
+  </tr>
+</tbody>
+
         </table>
+    </div>
     </div>
 </template>
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
 import { ref, computed, onMounted } from "vue";
-import { useI18n } from 'vue-i18n';
 import { useReportRepository } from "../../store/ReportRepository";
+import { useI18n } from "vue-i18n";
+const { t,locale } = useI18n();
+const dir = computed(() => {
+  return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
+});
 
-const { t } = useI18n();
 const ReportRepository = useReportRepository();
 import persianDate from "persian-date";
 
@@ -137,7 +166,7 @@ onMounted(() => {
 
 .gender-stats-table td {
     padding: 10px 8px;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 
 .total {
@@ -150,5 +179,14 @@ onMounted(() => {
 th {
     font-size: small;
     color: #333;
+}
+
+.loading-row td {
+    padding: 0 !important;
+    border: none !important;
+}
+
+.v-progress-linear {
+    margin: 0;
 }
 </style>

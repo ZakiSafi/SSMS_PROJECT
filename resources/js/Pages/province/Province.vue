@@ -1,8 +1,8 @@
 <template>
   <CreateProvince v-if="ProvinceRepository.createDialog" />
 
-    <div>
-      <AppBar pageTitle="Province" />
+    <div :dir="dir">
+      <AppBar pageTitle="provinces" />
 
       <!-- Divider between AppBar and content -->
        
@@ -11,7 +11,7 @@
       <!-- Search & Buttons Section -->
       <div class="pt-6 pb-6 d-flex justify-space-between">
         <div class="text-field w-25">
-          <v-text-field color="primary" density="compact" variant="outlined" label="Search"
+          <v-text-field color="primary" density="compact" variant="outlined" :label="t('search')"
             append-inner-icon="mdi-magnify" hide-details v-model="ProvinceRepository.provinceSearch"
             class="search-field"></v-text-field>
         </div>
@@ -19,13 +19,15 @@
         <div>
           &nbsp;
           <v-btn @click="CreateDialogShow" color="primary" variant="flat" class="px-6">
-            Create
+            {{ $t('create') }}
           </v-btn>
         </div>
       </div>
 
       <!-- Data Table Section -->
-      <v-data-table-server v-model:items-per-page="ProvinceRepository.itemsPerPage" :headers="headers"
+      <v-data-table-server 
+      :dir="dir"
+      v-model:items-per-page="ProvinceRepository.itemsPerPage" :headers="headers"
         :items-length="ProvinceRepository.totalItems" :items="ProvinceRepository.provinces"
         :loading="ProvinceRepository.loading" :search="ProvinceRepository.provinceSearch"
         @update:options="ProvinceRepository.FetchProvinces" class="w-100 mx-auto" hover>
@@ -59,9 +61,14 @@
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
-import { ref } from "vue";
+import {computed } from "vue";
 import { useProvinceRepository } from "@/store/ProvinceRepository";
 import CreateProvince from "./CreateProvince.vue";
+import { useI18n } from "vue-i18n";
+const { t,locale } = useI18n();
+const dir = computed(() => {
+  return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
+});
 
 const ProvinceRepository = useProvinceRepository();
 

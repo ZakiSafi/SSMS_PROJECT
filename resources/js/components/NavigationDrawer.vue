@@ -2,13 +2,14 @@
     <div class="sidebar-container">
         <!-- Logo/User Info -->
         <div class="d-flex pl-4 align-center">
-            <v-list-item
-                ><img
+            <v-list-item>
+                <img
                     src="../../../public/assets/IMG_20230530_185847_332.jpg"
                     alt=""
                     class="w-[2.9rem] h-[2.9rem] rounded-full object-cover transition-all duration-300"
-            /></v-list-item>
-            <h3>Zakiullah safi</h3>
+                />
+            </v-list-item>
+            <h3>{{ $t('user.name') }}</h3>
         </div>
 
         <v-divider :thickness="1" class="border-opacity-100 full"></v-divider>
@@ -19,8 +20,8 @@
                 <!-- Main Items -->
                 <v-list-item
                     class="menu-item"
+                    :title="$t('menu.dashboard')"
                     prepend-icon="mdi-home-lightning-bolt-outline"
-                    title="Dashboard"
                     to="/dashboard"
                     value="dashboard"
                     :class="{
@@ -30,7 +31,7 @@
                 <v-list-item
                     class="menu-item"
                     prepend-icon="mdi-map-marker-outline"
-                    title="Provinces"
+                    :title="$t('menu.provinces')"
                     to="/provinces"
                     value="provinces"
                     :class="{
@@ -40,18 +41,17 @@
                 <v-list-item
                     class="menu-item"
                     prepend-icon="mdi-school-outline"
-                    title="University"
+                    :title="$t('menu.university')"
                     to="/university"
                     value="university"
                     :class="{
                         'v-list-item--active': route.path === '/university',
                     }"
                 />
-
                 <v-list-item
                     class="menu-item"
-                    prepend-icon=" mdi-home-city-outline"
-                    title="Faculty"
+                    prepend-icon="mdi-home-city-outline"
+                    :title="$t('menu.faculty')"
                     to="/faculties"
                     value="faculties"
                     :class="{
@@ -61,7 +61,7 @@
                 <v-list-item
                     class="menu-item"
                     prepend-icon="mdi-office-building-outline"
-                    title="Departments"
+                    :title="$t('menu.departments')"
                     to="/departments"
                     value="departments"
                     :class="{
@@ -71,7 +71,7 @@
                 <v-list-item
                     class="menu-item"
                     prepend-icon="mdi-account-group-outline"
-                    title="Student Statictic"
+                    :title="$t('menu.student_statistic')"
                     to="/student-statistic"
                     value="system"
                     :class="{
@@ -85,7 +85,7 @@
                     <template #activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                            title="Reports"
+                            :title="$t('menu.reports')"
                             prepend-icon="mdi-file-chart-outline"
                             class="menu-item"
                         />
@@ -96,7 +96,7 @@
                         v-for="(item, index) in reportItems"
                         :key="index"
                         :to="item.to"
-                        :title="item.title"
+                        :title="$t(`menu.${item.translationKey}`)"
                         class="submenu-item"
                         :value="item.value"
                         :prepend-icon="item.icon"
@@ -111,7 +111,7 @@
                     <template #activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                            title="Settings"
+                            :title="$t('menu.settings')"
                             prepend-icon="mdi-cog-outline"
                             class="menu-item"
                         />
@@ -122,7 +122,7 @@
                         v-for="(item, index) in settingItems"
                         :key="index"
                         :to="item.to"
-                        :title="item.title"
+                        :title="$t(`menu.${item.translationKey}`)"
                         class="submenu-item"
                         :value="item.value"
                         :prepend-icon="item.icon"
@@ -138,19 +138,21 @@
 
 <script setup>
 import { useRoute } from "vue-router";
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const route = useRoute();
 
 const settingItems = [
     {
         to: "/users",
-        title: "Users",
+        translationKey: "users",
         icon: "mdi-circle-medium",
         value: "users",
     },
     {
         to: "/role-permissions",
-        title: "Role Permission",
+        translationKey: "role_permissions",
         icon: "mdi-circle-medium",
         value: "roles",
     },
@@ -159,25 +161,25 @@ const settingItems = [
 const reportItems = [
     {
         to: "/university-base-report",
-        title: "University Report",
+        translationKey: "university_report",
         icon: "mdi-circle-medium",
         value: "university-base-report",
     },
     {
         to: "/university-graduation-report",
-        title: "University Graduation Report",
+        translationKey: "university_graduation_report",
         icon: "mdi-circle-medium",
         value: "university-graduation-report",
     },
     {
         to: "/student-teacher-ratio",
-        title: "Student Teacher Ratio",
+        translationKey: "student_teacher_ratio",
         icon: "mdi-circle-medium",
         value: "student-teacher-ratio",
     },
     {
         to: "/university-classes",
-        title: "UniversitiesClasses",
+        translationKey: "university_classes",
         icon: "mdi-circle-medium",
         value: "university-classes",
     },
@@ -185,6 +187,7 @@ const reportItems = [
 </script>
 
 <style scoped>
+
 .sidebar-container {
     height: 100vh;
     background-color: #f8f9fa;
@@ -193,6 +196,13 @@ const reportItems = [
     padding: 16px 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+:deep(.v-list-item__content) {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: initial !important;
+}
+
 
 .menu-section {
     flex-grow: 1;
@@ -225,32 +235,28 @@ const reportItems = [
     border-right: 4px solid #009ee2;
 }
 
-/* Active state with new primary color */
 :deep(.v-list-item--active) {
     --v-theme-primary: #009ee2;
 }
 
-/* Remove the default dropdown arrow */
 :deep(.v-list-group__header .v-list-item__append i) {
     display: none !important;
 }
 
-/* Tighter spacing for submenus */
 .submenu-item {
     padding-left: 32px !important;
     margin: 0 !important;
     min-height: 32px !important;
 }
 
-/* Reduce padding for submenu items */
 :deep(.v-list-group__items .v-list-item) {
     padding-left: 16px !important;
     min-height: 32px !important;
 }
 
-/* Reduce the gap between submenu items */
 :deep(.v-list-group__items) {
     padding-top: 10px !important;
     padding-bottom: 0 !important;
 }
+/* ... rest of your styles ... */
 </style>

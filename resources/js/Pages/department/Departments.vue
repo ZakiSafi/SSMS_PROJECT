@@ -1,6 +1,6 @@
 <template>
   <CreateDepartment v-if="DepartmentRepository.createDialog" />
-    <div>
+    <div :dir="dir">
     <AppBar pageTitle="Department" />
     <!-- Divider between AppBar and content -->
     <v-divider :thickness="1" class="border-opacity-100 "></v-divider>
@@ -10,8 +10,8 @@
         <v-text-field
           color="primary"
           density="compact"
-         variant="filled"
-          label="Search"
+         variant="outlined"
+          :label="t('search')"
           append-inner-icon="mdi-magnify"
           hide-details
           v-model="DepartmentRepository.departmentSearch"
@@ -19,7 +19,7 @@
         />
       </div>
       <div>
-        <v-btn @click="createDialogShow" color="primary" variant="flat" class="px-6">Create</v-btn>
+        <v-btn @click="createDialogShow" color="primary" variant="flat" class="px-6">{{$t('create')}}</v-btn>
       </div>
     </div>
 
@@ -61,8 +61,15 @@
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
+import { computed } from "vue";
 import CreateDepartment from "./CreateDepartment.vue";
 import { useDepartmentRepository } from "@/store/DepartmentRepository";
+import { useI18n } from "vue-i18n";
+const { t,locale } = useI18n();
+const dir = computed(() => {
+  return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
+});
+
 
 const DepartmentRepository = useDepartmentRepository();
 

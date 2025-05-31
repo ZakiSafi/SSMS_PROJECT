@@ -1,22 +1,19 @@
 <template>
   <CreateUniversity v-if="UniversityRepository.createDialog" />
 
-  <div>
-    <div class=" rounded-">
+    <div :dir="dir">
       <AppBar pageTitle="University"  />
-      
       <!-- Divider between AppBar and content -->
       <v-divider :thickness="1" class="border-opacity-100" ></v-divider>
-
       <!-- Search & Buttons Section -->
-      <div class="btn-search pt-12 pb-6 d-flex justify-space-between">
+      <div class="btn-search pt-6 pb-6 d-flex justify-space-between">
         <div class="text-field w-25">
           <v-text-field
             :loading="loading"
             color="primary"
             density="compact"
-           variant="filled"
-            label="Search"
+           variant="outlined"
+            :label="t('search')"
             append-inner-icon="mdi-magnify"
             hide-details
             v-model="UniversityRepository.uniSearch"
@@ -27,13 +24,14 @@
         <div class="btn">
           &nbsp;
           <v-btn @click="CreateDialogShow" color="primary" variant="flat" class="px-6">
-            Create
+            {{ $t('create') }}
           </v-btn>
         </div>
       </div>
 
       <!-- Data Table Section -->
       <v-data-table-server
+      :dir="dir"
         v-model:items-per-page="UniversityRepository.itemsPerPage"
         :headers="headers"
         :items-length="UniversityRepository.totalItems"
@@ -65,14 +63,18 @@
         </template>
       </v-data-table-server>
     </div>
-  </div>
 </template>
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
 import CreateUniversity from "./CreateUniversity.vue";
-import { ref } from "vue";
+import { computed } from "vue";
 import { useUniversityRepository } from "@/store/UniversityRepository";
+import { useI18n } from "vue-i18n";
+const { t,locale } = useI18n();
+const dir = computed(() => {
+  return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
+});
 
 const UniversityRepository = useUniversityRepository();
 

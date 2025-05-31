@@ -1,7 +1,7 @@
 <template>
   <CreateUser v-if="UserRepository.createDialog" />
     <div>
-    <AppBar pageTitle="User" />
+    <AppBar pageTitle="users" />
     <!-- Divider between AppBar and content -->
     <v-divider :thickness="1" class="border-opacity-100 "></v-divider>
     <!-- Search and Create Button -->

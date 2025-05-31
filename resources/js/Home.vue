@@ -8,7 +8,7 @@
         :location="dir"
         >
         
-        <NavigationDrawer/>
+        <NavigationDrawer :dir="isRtl ? 'rtl' : 'ltr'"/>
         
       </v-navigation-drawer>
       
@@ -43,15 +43,14 @@ import NavigationDrawer from "./components/NavigationDrawer.vue";
 import { useI18n } from "vue-i18n";
 const { t, locale } = useI18n();
   
- 
-  const dir = computed(() => {
-    if (locale.value !== "en") {
-        return "right"; 
-    }
-    return "left";
+const isRtl = ref(false);
+const dir = computed(() => {
+  const lang = locale.value;
+  isRtl.value = lang !== "en";
+  return lang !== "en" ? "right" : "left";
 });
-  const route = useRoute();
-  
+const route = useRoute();
+
   
   </script>
   
