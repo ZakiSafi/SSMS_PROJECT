@@ -1,0 +1,10 @@
+{
+    "dashboard": "Dashboard",
+    "students": "Students",
+    "faculties": "Faculties",
+    "departments": "Departments",
+    "classrooms": "Classrooms",
+    "statistics": "Statistics",
+    "language": "Language",
+    "logout": "Logout"
+}
