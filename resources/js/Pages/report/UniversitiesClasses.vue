@@ -142,7 +142,6 @@ onMounted(() => {
     );
 });
 
-ReportRepository.fetchUniversityClasses();
 </script>
 
 <style scoped>

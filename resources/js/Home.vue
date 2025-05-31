@@ -5,6 +5,7 @@
         <v-navigation-drawer
         permanent
         floating
+        :location="dir"
         >
         
         <NavigationDrawer/>
@@ -36,14 +37,19 @@
   
   <script setup>
   
-  import { ref, watch, computed } from "vue";
-  
-  import { useRoute } from "vue-router"; // Import to get the current route
-  
-  import NavigationDrawer from "./components/NavigationDrawer.vue";
+import { ref, watch, computed } from "vue";
+import { useRoute } from "vue-router"; // Import to get the current route
+import NavigationDrawer from "./components/NavigationDrawer.vue";
+import { useI18n } from "vue-i18n";
+const { t, locale } = useI18n();
   
  
-  
+  const dir = computed(() => {
+    if (locale.value !== "en") {
+        return "right"; 
+    }
+    return "left";
+});
   const route = useRoute();
   
   
