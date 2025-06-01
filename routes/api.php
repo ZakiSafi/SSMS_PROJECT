@@ -24,7 +24,7 @@ use App\Http\Controllers\reports\FacultyBaseGraduationReportController;
 use App\Http\Controllers\reports\DepartmentBasedGraduationReportController;
 use App\Http\Controllers\reports\UniversityBasedGraduationReportController;
 
-Route::middleware('auth:sanctum')->group(function () {
+
 Route::apiResource('provinces', ProvinceController::class);
 Route::apiResource('faculties', FacultyController::class);
 Route::apiResource('departments', DepartmentController::class);
@@ -41,10 +41,6 @@ Route::apiResource('universities', UniversityController::class);
 
 // Protected Sanctum routes
 Route::post('logout', [AuthController::class, 'logout']);
-});
-
-Route::post('login', [AuthController::class, 'login'])->name('login');
-
 Route::prefix('report')->group(function () {
     Route::get('universitiesClasses', [UniversityClassReportController::class, '__invoke']);
     Route::get('university', [UniversityReportController::class, '__invoke']);
@@ -56,3 +52,6 @@ Route::prefix('report')->group(function () {
     Route::get('departmentBasedGraduation', [DepartmentBasedGraduationReportController::class, '__invoke']);
     Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
 });
+
+
+Route::post('login', [AuthController::class, 'login'])->name('login');

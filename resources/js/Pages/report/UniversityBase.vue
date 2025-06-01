@@ -4,7 +4,7 @@
     />
     <v-divider :thickness="1" class="border-opacity-100" />
 
-   <div class="w-full flex justify-between items-start gap-4 pt-6">
+<div class="w-full flex justify-between items-start gap-4 pt-6">
   <!-- Left side: Combobox -->
   <div class="w-1/5">
     <v-combobox

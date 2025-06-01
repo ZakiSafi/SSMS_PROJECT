@@ -15,7 +15,7 @@ import UniversityBaseGraduation from "./Pages/report/UniversityBaseGraduation.vu
 import StudentTeacherRatio from "./Pages/report/StudentTeacherRatio.vue";
 import UniversitiesClasses from "./Pages/report/UniversitiesClasses.vue";
 import Dashboard from "./Pages/Dashboard.vue";
-import { aliases } from "vuetify/iconsets/fa-svg";
+import jawad from "./Pages/report/jawad.vue";
 
 const routes = [
     // Show login first
@@ -39,6 +39,7 @@ const routes = [
             { path: "/university-graduation-report", name: "university-graduation-report", component: UniversityBaseGraduation },
             { path: "/student-teacher-ratio", name: "student-teacher-ratio", component: StudentTeacherRatio },
             { path: "/university-classes", name: "university-classes", component: UniversitiesClasses },
+            { path: "/jawad", name: "jawad", component: jawad },
         ],
     },
 ];

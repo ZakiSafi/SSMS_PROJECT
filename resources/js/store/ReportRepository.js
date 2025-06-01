@@ -7,19 +7,20 @@ export const useReportRepository = defineStore("reportRepository", {
     state() {
         return {
             universities: reactive([]),
+            allUniversities: reactive([]),
             universityBaseGraduation: reactive([]),
             studentTeacher: reactive([]),
             universityClasses: reactive([]),
+            jawad: reactive([]),
             search: ref(""),
+            university: ref("all"),
             date: ref(new persianDate().year().toString()),
             season: ref("spring"),
             shift: ref("day"),
             type: ref("public"),
-
             loading: ref(false),
             totalItems: ref(0),
             selectedItems: ref([]),
-
             itemsPerPage: ref(10),
         };
     },
@@ -101,5 +102,35 @@ export const useReportRepository = defineStore("reportRepository", {
                 this.loading = false;
             }
         },
+
+        async fecthJawad({page,itemsPerPage}, date=this.date, season=this.season, university="all"){
+            this.loading=true
+            try{
+                const response= await axios.get(`report/facultyClassBased?year=${date}&season=${season}&university=${university}&page=${page}&perPage=${itemsPerPage}`);
+                this.jawad = response.data.data; 
+                this.totalItems = response.data.total;
+                
+               
+            }
+            catch{
+                console.error("Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:", error);
+                this.jawad = [];
+            }
+            finally{
+                 this.loading=false
+
+            }
+        },
+
+         async fetchUniversities() {
+      try {
+        const response = await axios.get(`universities`);
+        this.allUniversities=response.data.data
+        
+      } catch (error) {
+        console.error("Failed to fetch universities:", error);
+      }
+  },
+
     },
 });
