@@ -20,25 +20,26 @@
 
   <!-- Right side: Two selects side by side -->
   <div class="w-1/4 flex">
-    <div class="w-1/2">
+    <div class="w-2/3">
       <v-select
+    class="mx-4"
         v-model="ReportRepository.season"
         :items="[$t('spring'), $t('autumn')]"
-        :label="$t('Select Season')"
+        :label="$t('select_season')"
         variant="outlined"
         hide-details
         density="compact"
         @update:modelValue="onDateChange"
       ></v-select>
     </div>
-    <div class="w-1/2 ml-4">
+    <div class="w-3/4 ml-4">
         
         <v-combobox
   v-model="ReportRepository.university"
   :items="[...ReportRepository.allUniversities, { name: 'all' }, ]"
   item-title="name"
   item-value="name"
-  :label="$t('Select University')"
+  :label="$t('select_university')"
   variant="outlined"
   hide-details
   density="compact"
@@ -53,7 +54,7 @@
       <table class="gender-stats-table">
         <thead>
           <tr>
-            <th rowspan="2">{{ $t('Univrsity') }}</th>
+            <th rowspan="2">{{ $t('University') }}</th>
             <th rowspan="2">{{ $t('Faculty') }}</th>
             <th colspan="3" v-for="n in 6" :key="'head-'+n">
               {{ $t('Class') }} {{ n }}
@@ -72,10 +73,12 @@
         <tr v-if="ReportRepository.loading" class="loading-row">
           <td colspan="20">
             <v-progress-linear
+           :reverse="dir === 'rtl'"
               indeterminate
               color="primary"
               height="4"
               class="ma-0"
+              
             ></v-progress-linear>
           </td>
         </tr>
@@ -194,7 +197,7 @@ onMounted(() => {
 
 .gender-stats-table td {
     padding: 10px 8px;
-    border-bottom: 1px solid #ddd;
+    border: 1px solid #ddd;
 }
 
 .total {
