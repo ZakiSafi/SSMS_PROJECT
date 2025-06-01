@@ -41,6 +41,8 @@
     "Total": "Total",
     "users": "Users",
     "search":"Search",
-    "create":"Create"
+    "create":"Create",
+    "select_university":"Select University",
+    "select_season":"Select Season"
 
 }

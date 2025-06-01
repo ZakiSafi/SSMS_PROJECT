@@ -58,3 +58,6 @@ Route::prefix('report')->group(function () {
     Route::get('departmentBasedGraduation', [DepartmentBasedGraduationReportController::class, '__invoke']);
     Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
 });
+
+
+Route::post('login', [AuthController::class, 'login'])->name('login');

@@ -183,6 +183,12 @@ const reportItems = [
         icon: "mdi-circle-medium",
         value: "university-classes",
     },
+    {
+        to: "/jawad",
+        translationKey: "university_classes",
+        icon: "mdi-circle-medium",
+        value: "university-classes",
+    },
 ];
 </script>
 
