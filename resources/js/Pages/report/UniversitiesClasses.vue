@@ -47,7 +47,7 @@
                     </template>
                 </tr>
             </thead>
-            
+
             <!-- Progress bar under thead -->
             <tr v-if="ReportRepository.loading" class="loading-row">
                 <td colspan="19">
@@ -59,9 +59,9 @@
                     ></v-progress-linear>
                 </td>
             </tr>
-            
+
           <tbody v-if="ReportRepository.universityClasses.length">
-       
+
   <tr
     v-for="(institution, index) in ReportRepository.universityClasses"
     :key="index"

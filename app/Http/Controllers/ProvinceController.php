@@ -19,7 +19,7 @@ class ProvinceController extends Controller
     {
 
 
-        $provinces =  $this->listRecord($request, $this->model);
+        $provinces =  $this->listRecord($request, $this->model,['name']);
         return ProvinceResource::collection($provinces);
     }
 

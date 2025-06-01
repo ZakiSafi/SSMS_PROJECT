@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('student_statistics', function (Blueprint $table) {
             $table->id();
-            $table->string('academic_year');
+            $table->integer('academic_year');
             $table->foreignId('university_id')->constrained()->cascadeOnDelete();
             $table->foreignId('faculty_id')->constrained()->cascadeOnDelete();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();

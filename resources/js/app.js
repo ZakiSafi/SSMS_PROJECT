@@ -5,7 +5,10 @@ import App from "./App.vue";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
 import { createPinia } from "pinia";
-import i18n from './i18n.js';
+import en from "./locales/en.json";
+import fa from "./locales/fa.json";
+import ps from "./locales/ps.json";
+import DatePicker from "vue3-persian-datetime-picker";
 const app = createApp(App);
 const pinia = createPinia();
 
