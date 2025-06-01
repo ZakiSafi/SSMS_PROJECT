@@ -25,6 +25,7 @@ class UniversityBasedGraduationReportController extends Controller
                 DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
                 DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),)
             ->where('student_statistics.academic_year', $year)
+            ->where('student_statistics.season', $season)
             ->where('student_statistics.student_type', 'graduated')
             ->groupBy(
                 'student_statistics.academic_year',

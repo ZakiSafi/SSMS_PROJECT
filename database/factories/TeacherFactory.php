@@ -19,7 +19,7 @@ class TeacherFactory extends Factory
         $year = [1404, 1405, 1406, 1407, 1408, 1409, 1410];
         return [
 
-            'university_id' => \App\Models\University::factory(),
+            'university_id' => $this->faker->numberBetween(1,30),
             'academic_year' => $this->faker->randomElement($year),
             'total_teachers' => $this->faker->numberBetween(50, 500),
 

@@ -17,7 +17,7 @@ class LogFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => $this->faker->numberBetween(1, 10),
+            'user_id' => 1,
             'action_type' => $this->faker->randomElement(['create', 'update', 'delete']),
             'action_description' => $this->faker->sentence(),
             'table_name' => $this->faker->randomElement(['users', 'provinces', 'universities']),
