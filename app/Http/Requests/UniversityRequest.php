@@ -23,7 +23,6 @@ class UniversityRequest extends FormRequest
     {
         return [
             'name'=> 'required|string|max:255',
-            'teachers' => 'required|integer|min:1',
             'type' => 'required|in:public,private',
             'province_id' => 'required|exists:provinces,id',
         ];

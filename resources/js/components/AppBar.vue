@@ -73,7 +73,9 @@
                             <v-card-title
                                 class="px-2 pt-2 d-flex justify-space-between"
                             >
-                            <h3 class="font-weight-bold pl-4">{{ $t("logout") }}</h3>
+                                <h3 class="font-weight-bold pl-4">
+                                    {{ $t("logout") }}
+                                </h3>
 
                                 <v-btn
                                     variant="text"
@@ -81,7 +83,9 @@
                                     @click="isActive.value = false"
                                     :aria-label="$t('close_dialog')"
                                 >
-                                    <v-icon>{{ $t('mdi-close') }}</v-icon></v-btn
+                                    <v-icon>{{
+                                        $t("mdi-close")
+                                    }}</v-icon></v-btn
                                 >
                             </v-card-title>
 
@@ -146,7 +150,7 @@ const changeLanguage = (lang) => {
 };
 
 const handleLogout = () => {
-    console.log(t('logging_out_message'));
+    console.log(t("logging_out_message"));
     AuthRepository.logout();
 };
 </script>

@@ -17,9 +17,41 @@ class UniversityFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            'name' => fake()->unique()->company(),
-            'teachers' => fake()->numberBetween(1, 1000),
+        $afghanUniversities = [
+            "Kabul University",
+            "Kabul Polytechnic University",
+            "Kabul Medical University",
+            "Kabul Education University",
+            "Kabul University of Science and Technology",
+            "Herat University",
+            "Nangarhar University",
+            "Balkh University",
+            "Mazar-i-Sharif University",
+            "Kandahar University",
+            "Badakhshan University",
+            "Ghazni University",
+            "Bamyan University",
+            "Takhar University",
+            "Laghman University",
+            "Khost University",
+            "Parwan University",
+            "Paktia University",
+            "Panjshir University",
+            "Kunar University",
+            "Samangan University",
+            "Faryab University",
+            "Jawzjan University",
+            "Wardak University",
+            "Kapisa University",
+            "Nuristan University",
+            "Logar University",
+            "Daikundi University",
+            "Farah University",
+            "Urozgan University"
+          ];
+
+            return [
+            'name' => fake()->unique()->randomElement($afghanUniversities),
             'type' => fake()->randomElement(['public', 'private']),
             'province_id' => Province::inRandomOrder()->first()->id ?? Province::factory()->create()->id,
         ];

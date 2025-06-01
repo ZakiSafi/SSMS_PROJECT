@@ -47,7 +47,7 @@
                     </template>
                 </tr>
             </thead>
-            
+
             <!-- Progress bar under thead -->
             <tr v-if="ReportRepository.loading" class="loading-row">
                 <td colspan="19">
@@ -59,9 +59,9 @@
                     ></v-progress-linear>
                 </td>
             </tr>
-            
+
           <tbody v-if="ReportRepository.universityClasses.length">
-       
+
   <tr
     v-for="(institution, index) in ReportRepository.universityClasses"
     :key="index"
@@ -71,17 +71,17 @@
     <template v-for="classIndex in 6" :key="classIndex">
       <td class="male">
         {{
-          institution.classes["Class " + classIndex]?.Total_males || 0
+          institution.classes[classIndex]?.Total_males || 0
         }}
       </td>
       <td class="female">
         {{
-          institution.classes["Class " + classIndex]?.Total_Females || 0
+          institution.classes[classIndex]?.Total_Females || 0
         }}
       </td>
       <td class="total">
         {{
-          institution.classes["Class " + classIndex]?.Total_Students || 0
+          institution.classes[classIndex]?.Total_Students || 0
         }}
       </td>
     </template>

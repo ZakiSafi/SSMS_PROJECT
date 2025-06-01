@@ -16,8 +16,9 @@ class StudentStatisticFactory extends Factory
      */
     public function definition(): array
     {
+        $year = [1404, 1405,1406, 1407];
         return [
-            'academic_year' => $this->faker->year(),
+            'academic_year' => $this->faker->randomElement($year),
             'university_id' => $this->faker->numberBetween(1, 15),
             'faculty_id' => $this->faker->numberBetween(1, 15),
             'department_id' => $this->faker->numberBetween(1, 10),

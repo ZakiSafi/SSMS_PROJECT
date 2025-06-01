@@ -16,7 +16,7 @@ class FacultyController extends Controller
     private $model = Faculty::class;
     public function index(Request $request)
     {
-        $faculty = $this->listRecord($request, $this->model);
+        $faculty = $this->listRecord($request, $this->model,['name']);
         return FacultyResource::collection($faculty);
     }
 

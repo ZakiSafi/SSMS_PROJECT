@@ -86,7 +86,7 @@
               color="primary"
               height="4"
               class="ma-0"
-              
+
             ></v-progress-linear>
           </td>
         </tr>

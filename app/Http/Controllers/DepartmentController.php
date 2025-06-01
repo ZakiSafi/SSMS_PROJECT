@@ -15,7 +15,7 @@ class DepartmentController extends Controller
     private $model = Department::class;
     public function index(Request $reuest)
     {
-        $departments = $this->listRecord($reuest, $this->model);
+        $departments = $this->listRecord($reuest, $this->model,['name']);
         return DepartmentResource::collection($departments);
     }
 

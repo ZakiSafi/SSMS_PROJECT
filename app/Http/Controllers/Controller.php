@@ -13,7 +13,7 @@ class Controller extends BaseController
     use AuthorizesRequests, ValidatesRequests; // Include traits for validation and authorization
 
     public function __construct()
-    {
+{
         /// Constructor logic can be placed here if needed (e.g., middleware)
     }
 
