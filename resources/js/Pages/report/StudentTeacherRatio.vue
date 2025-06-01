@@ -14,7 +14,7 @@
     @update:modelValue="onDateChange"
   ></v-combobox>
 </div>
-    
+
     <v-data-table-server
         v-model:items-per-page="ReportRepository.itemsPerPage"
         :headers="headers"
@@ -46,17 +46,17 @@ const dir = computed(() => {
 
 
 const getCurrentPersianYear = () => {
-  return new persianDate().year(); 
+  return new persianDate().year();
 }
 
 const currentYear = ref(getCurrentPersianYear());
 const yearRange = computed(() => {
   const years = [];
-  const startYear = currentYear.value - 10; 
+  const startYear = currentYear.value - 10;
   const endYear = currentYear.value + 10;
-  
+
   for (let i = startYear; i <= endYear; i++) {
-    years.push(i); 
+    years.push(i);
   }
   return years;
 })
@@ -69,12 +69,12 @@ const onDateChange = () => {
 };
 
 const headers = [
-    { title: "University", key: "university", align: "start", sortable: false },
-    { title: "Teacher", key: "teachers", align: "start" },
-    { title: "Total Student", key: "Total_Students", align: "center" },
-    { title: "ST Ratio ", key: "Students_Per_Teacher_Ratio", align: "center" },
-    
+  { title: "University", key: "university", align: "start", sortable: false },
+  { title: "Teacher", key: "teachers", align: "start" },
+  { title: "Total Student", key: "total_students", align: "center" },
+  { title: "ST Ratio", key: "students_per_teacher_ratio", align: "center" },
 ];
+
 </script>
 
 <style scoped>
