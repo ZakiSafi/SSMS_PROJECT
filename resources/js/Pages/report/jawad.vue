@@ -33,7 +33,7 @@
       ></v-select>
     </div>
     <div class="w-3/4 ml-4">
-        
+
         <v-combobox
   v-model="ReportRepository.university"
   :items="[...ReportRepository.allUniversities, { name: 'all' }, ]"
@@ -78,7 +78,7 @@
               color="primary"
               height="4"
               class="ma-0"
-              
+
             ></v-progress-linear>
           </td>
         </tr>
