@@ -16,6 +16,7 @@ import StudentTeacherRatio from "./Pages/report/StudentTeacherRatio.vue";
 import UniversitiesClasses from "./Pages/report/UniversitiesClasses.vue";
 import Dashboard from "./Pages/Dashboard.vue";
 import jawad from "./Pages/report/jawad.vue";
+import fawad from "./Pages/report/fawad.vue";
 
 const routes = [
     // Show login first
@@ -40,6 +41,7 @@ const routes = [
             { path: "/student-teacher-ratio", name: "student-teacher-ratio", component: StudentTeacherRatio },
             { path: "/university-classes", name: "university-classes", component: UniversitiesClasses },
             { path: "/jawad", name: "jawad", component: jawad },
+            { path: "/fawad", name: "fawad", component: fawad },
         ],
     },
 ];

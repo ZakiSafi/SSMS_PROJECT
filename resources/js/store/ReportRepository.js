@@ -12,8 +12,9 @@ export const useReportRepository = defineStore("reportRepository", {
             studentTeacher: reactive([]),
             universityClasses: reactive([]),
             jawad: reactive([]),
+            fawad: reactive([]),
             search: ref(""),
-            university: ref("all"),
+            university: ref(""),
             date: ref(new persianDate().year().toString()),
             season: ref("spring"),
             shift: ref("day"),
@@ -103,24 +104,47 @@ export const useReportRepository = defineStore("reportRepository", {
             }
         },
 
-       async fetchJawad({ page, itemsPerPage }, date = this.date, season = this.season, university = "all") {
-    this.loading = true;
-    try {
-        // Encode the university to handle special characters like Dari text
-        const encodedUniversity = encodeURIComponent(university);
+        async fecthJawad({page,itemsPerPage}, date=this.date, season=this.season, universityId){
+            console.log("jawadfcgvhbjnkml",this.university)
+            this.loading=true
+            try{
+                const response= await axios.get(`report/facultyClassBased?year=${date}&season=${season}&university=${universityId}&page=${page}&perPage=${itemsPerPage}`);
+                this.jawad = response.data.data;
+                this.totalItems = response.data.total;
 
-        const response = await axios.get(`report/facultyClassBased?year=${date}&season=${season}&university=${encodedUniversity}&page=${page}&perPage=${itemsPerPage}`);
 
-        this.jawad = response.data.data;
-        this.totalItems = response.data.total;
+            }
+            catch{
+                console.error("Error fetching data:", error);
+                this.jawad = [];
+            }
+            finally{
+                 this.loading=false
 
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        this.jawad = [];
-    } finally {
-        this.loading = false;
-    }
-},
+            }
+        },
+
+         async fetchFawad({page,itemsPerPage}, date=this.date, season=this.season, universityId){
+            console.log("jawadfcgvhbjnkml",this.university)
+            this.loading=true
+            try{
+                const response= await axios.get(`report/departmentClassBase?year=${date}&season=${season}&university=${universityId}&page=${page}&perPage=${itemsPerPage}`);
+                this.fawad = response.data.data;
+                this.totalItems = response.data.total;
+
+
+            }
+            catch{
+                console.error("Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:", error);
+                this.jawad = [];
+            }
+            finally{
+                 this.loading=false
+
+            }
+        },
+
+
 
          async fetchUniversities() {
       try {

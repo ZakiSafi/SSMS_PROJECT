@@ -185,15 +185,20 @@ const reportItems = [
     },
     {
         to: "/jawad",
-        translationKey: "university_classes",
+        translationKey:"jawad",
         icon: "mdi-circle-medium",
         value: "university-classes",
     },
+    {
+        to:"/fawad",
+        translationKey:"fawad",
+        icon:"mdi-circular-medium",
+        value:"fawad"
+    }
 ];
 </script>
 
 <style scoped>
-
 .sidebar-container {
     height: 100vh;
     background-color: #f8f9fa;
@@ -201,18 +206,26 @@ const reportItems = [
     flex-direction: column;
     padding: 16px 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.menu-section {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0; /* Crucial for flex scrolling */
+}
+
+.scrollable-list {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 :deep(.v-list-item__content) {
     white-space: normal !important;
     overflow: visible !important;
     text-overflow: initial !important;
-}
-
-
-.menu-section {
-    flex-grow: 1;
-    padding-top: 8px;
 }
 
 .menu-item {
@@ -255,14 +268,20 @@ const reportItems = [
     min-height: 32px !important;
 }
 
-:deep(.v-list-group__items .v-list-item) {
-    padding-left: 16px !important;
-    min-height: 32px !important;
-}
 
 :deep(.v-list-group__items) {
     padding-top: 10px !important;
     padding-bottom: 0 !important;
+    margin-left: 10px;
+    margin-right: 10px;
 }
-/* ... rest of your styles ... */
+
+/* Specifically target the bullet points in submenus */
+:deep(.v-list-group__items .v-list-item .v-list-item__prepend) {
+  width: 20px !important;
+  min-width: 20px !important;
+  margin-inline-end: 4px !important;
+}
+
+
 </style>
