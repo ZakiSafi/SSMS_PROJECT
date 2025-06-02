@@ -26,7 +26,7 @@
                                 <!-- Row 1 -->
                                 <v-col cols="6">
                                         <DatePicker
-                                            v-model="selectedYear"
+                                            v-model="formData.academic_year"
                                             format="jYYYY"
                                             type="year"
                                             placeholder="Select year"
@@ -181,9 +181,7 @@ import DatePicker from "vue3-persian-datetime-picker";
 const StudentStatisticsRepository = useStudentStatisticRepository();
 
 // Academic Year
-const getCurrentPersianYear = () => new persianDate().year().toString();
-const currentYear = ref(getCurrentPersianYear());
-const selectedYear = ref(currentYear.value);
+const currentYear = ref(new persianDate().year().toString());
 
 const formRef = ref(null);
 
@@ -202,10 +200,6 @@ const formData = reactive({
     student_type: StudentStatisticsRepository.statistic.student_type || "new",
 });
 
-// Sync Persian year picker with form data
-watch(selectedYear, (newVal) => {
-    formData.academic_year = newVal;
-});
 
 // Filter departments based on selected faculty
 const filteredDepartments = computed(() => {
