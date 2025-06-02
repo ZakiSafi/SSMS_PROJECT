@@ -185,7 +185,7 @@ const reportItems = [
     },
     {
         to: "/jawad",
-        translationKey: "jawad",
+        translationKey:"jawad",
         icon: "mdi-circle-medium",
         value: "university-classes",
     },
@@ -268,13 +268,20 @@ const reportItems = [
     min-height: 32px !important;
 }
 
-:deep(.v-list-group__items .v-list-item) {
-    padding-left: 16px !important;
-    min-height: 32px !important;
-}
 
 :deep(.v-list-group__items) {
     padding-top: 10px !important;
     padding-bottom: 0 !important;
+    margin-left: 10px;
+    margin-right: 10px;
 }
+
+/* Specifically target the bullet points in submenus */
+:deep(.v-list-group__items .v-list-item .v-list-item__prepend) {
+  width: 20px !important;
+  min-width: 20px !important;
+  margin-inline-end: 4px !important;
+}
+
+
 </style>

@@ -223,7 +223,16 @@ th {
 .v-progress-linear {
   margin: 0;
 }
-
-
-
 </style>
+
+
+
+<!-- | Logic                          | Effect                                                  
+| ------------------------------ | ---------------------------------------------------------- |
+| `fIndex === 0 && dIndex === 0` | Show university name only on very first department         |     
+| `dIndex === 0`                 | Show faculty name only on first department of each faculty |     
+| `rowspan`                      | Merge cells vertically for neat, non-repeating display     |   
+| `v-for="classIndex in 6"`      | Dynamically loop through 6 classes (reduced to 2 here)     |     
+| `?.['Class ' + classIndex]`    | Safe access to dynamic class keys like "Class 1"           |     
+| \`                             |                                                            | 
+ -->
