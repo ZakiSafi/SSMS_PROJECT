@@ -39,21 +39,21 @@
     </div>
     <div class="w-3/4 ml-4">
         
-   <v-combobox
-  v-model="ReportRepository.university"
+ <v-combobox
+  v-model="ReportRepository.university" 
   :items="[
     ...ReportRepository.allUniversities, 
-    { name: $t('all') }
+    { id: 'all', name: $t('all') }
   ]"
-  item-title="name"
-  item-value="id"
+  item-title="name"  
+  item-value="id" 
   :label="$t('select_university')"
   variant="outlined"
   hide-details
   density="compact"
-  return-object="false"
   @update:modelValue="onDateChange"
 />
+
     </div>
   </div>
 </div>
@@ -167,21 +167,22 @@ const yearRange = computed(() => {
 });
 
 const onDateChange = () => {
-    ReportRepository.fetchJawad(
+    const universityId = ReportRepository.university?.id || ReportRepository.university;
+    ReportRepository.fecthJawad(
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,
         ReportRepository.season,
-        ReportRepository.university,
+        universityId,  // Send only the id
     );
 };
 
 onMounted(() => {
     ReportRepository.fetchUniversities();
-    ReportRepository.fetchJawad(
+    ReportRepository.fecthJawad(
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,
         ReportRepository.season,
-        ReportRepository.university,
+        "all",
     );
 });
 </script>

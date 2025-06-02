@@ -43,6 +43,7 @@
     "search":"Search",
     "create":"Create",
     "select_university":"Select University",
-    "select_season":"Select Season"
+    "select_season":"Select Season",
+    "all":"all"
 
 }

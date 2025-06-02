@@ -33,7 +33,7 @@ class DepartmentClassBasedController extends Controller
                 return $query->where('student_statistics.season', $season);
             })
             ->when($universityName !== 'all', function ($query) use ($universityName) {
-                return $query->where('universities.name', $universityName);
+                return $query->where('universities.id', $universityName);
             })
             ->groupBy(
                 'student_statistics.university_id',
