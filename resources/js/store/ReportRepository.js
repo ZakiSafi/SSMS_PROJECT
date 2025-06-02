@@ -103,24 +103,24 @@ export const useReportRepository = defineStore("reportRepository", {
             }
         },
 
-        async fecthJawad({page,itemsPerPage}, date=this.date, season=this.season, university="all"){
-            this.loading=true
-            try{
-                const response= await axios.get(`report/facultyClassBased?year=${date}&season=${season}&university=${university}&page=${page}&perPage=${itemsPerPage}`);
-                this.jawad = response.data.data;
-                this.totalItems = response.data.total;
+       async fetchJawad({ page, itemsPerPage }, date = this.date, season = this.season, university = "all") {
+    this.loading = true;
+    try {
+        // Encode the university to handle special characters like Dari text
+        const encodedUniversity = encodeURIComponent(university);
 
+        const response = await axios.get(`report/facultyClassBased?year=${date}&season=${season}&university=${encodedUniversity}&page=${page}&perPage=${itemsPerPage}`);
 
-            }
-            catch{
-                console.error("Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:", error);
-                this.jawad = [];
-            }
-            finally{
-                 this.loading=false
+        this.jawad = response.data.data;
+        this.totalItems = response.data.total;
 
-            }
-        },
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        this.jawad = [];
+    } finally {
+        this.loading = false;
+    }
+},
 
          async fetchUniversities() {
       try {

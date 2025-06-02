@@ -19,31 +19,39 @@
   </div>
 
   <!-- Right side: Two selects side by side -->
-  <div class="w-1/4 flex">
+  <div class="w-1/3 flex">
     <div class="w-2/3">
       <v-select
-    class="mx-4"
-        v-model="ReportRepository.season"
-        :items="[$t('spring'), $t('autumn')]"
-        :label="$t('select_season')"
-        variant="outlined"
-        hide-details
-        density="compact"
-        @update:modelValue="onDateChange"
-      ></v-select>
+  class="mx-4"
+  v-model="ReportRepository.season"
+  :items="[
+    { title: $t('spring'), value: 'spring' },
+    { title: $t('autumn'), value: 'autumn' }
+  ]"
+  item-title="title"
+  item-value="value"
+  :label="$t('select_season')"
+  variant="outlined"
+  hide-details
+  density="compact"
+  @update:modelValue="onDateChange"
+></v-select>
     </div>
     <div class="w-3/4 ml-4">
 
-        <v-combobox
+   <v-combobox
   v-model="ReportRepository.university"
-  :items="[...ReportRepository.allUniversities, { name: 'all' }, ]"
+  :items="[
+    ...ReportRepository.allUniversities,
+    { name: $t('all') }
+  ]"
   item-title="name"
-  item-value="name"
+  item-value="id"
   :label="$t('select_university')"
   variant="outlined"
   hide-details
   density="compact"
-  :return-object="false"
+  return-object="false"
   @update:modelValue="onDateChange"
 />
     </div>
@@ -159,7 +167,7 @@ const yearRange = computed(() => {
 });
 
 const onDateChange = () => {
-    ReportRepository.fecthJawad(
+    ReportRepository.fetchJawad(
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,
         ReportRepository.season,
@@ -169,7 +177,7 @@ const onDateChange = () => {
 
 onMounted(() => {
     ReportRepository.fetchUniversities();
-    ReportRepository.fecthJawad(
+    ReportRepository.fetchJawad(
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,
         ReportRepository.season,
