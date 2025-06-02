@@ -55,7 +55,7 @@ export const useStudentStatisticRepository = defineStore("StudentStatisticReposi
       }
     },
 
-    async updateStatistic(id, data) {
+    async updateStatistic(data,id) {
       try {
         await axios.put(`studentStatistics/${id}`, data);
         this.createDialog = false;
