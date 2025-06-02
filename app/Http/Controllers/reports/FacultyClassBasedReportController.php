@@ -29,7 +29,7 @@ class FacultyClassBasedReportController extends Controller
                 return $query->where('student_statistics.season', $season);
             })
             ->when($university !== 'all', function ($query) use ($university) {
-                return $query->where('universities.id', $university);
+                return $query->where('universities.name', $university);
             })
             ->groupBy('student_statistics.university_id', 'universities.name')
             ->paginate($perPage);
@@ -51,7 +51,7 @@ class FacultyClassBasedReportController extends Controller
                 return $query->where('student_statistics.season', $season);
             })
             ->when($university !== 'all', function ($query) use ($university) {
-                return $query->where('universities.id', $university);
+                return $query->where('universities.name', $university);
             })
             ->whereIn('student_statistics.university_id', $universityIds)
             ->groupBy('student_statistics.university_id', 'student_statistics.faculty_id', 'faculties.name')
@@ -77,7 +77,7 @@ class FacultyClassBasedReportController extends Controller
                 return $query->where('student_statistics.season', $season);
             })
             ->when($university !== 'all', function ($query) use ($university) {
-                return $query->where('universities.id', $university);
+                return $query->where('universities.name', $university);
             })
             ->whereIn('student_statistics.university_id', $universityIds)
             ->groupBy(
