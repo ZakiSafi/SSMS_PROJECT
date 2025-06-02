@@ -12,139 +12,144 @@ class DepartmentClassBasedController extends Controller
     {
         $year = $request->query('year');
         $season = $request->query('season');
-        $university = $request->query('university');
+        $universityName = $request->query('university');
         $perPage = $request->query('perPage', 10);
 
-        // STEP 1: Paginate universities
-        $universityPaginator = DB::table('student_statistics')
+        // STEP 1: Paginate departments
+        $departmentPaginator = DB::table('student_statistics')
             ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
+            ->join('departments', 'student_statistics.department_id', '=', 'departments.id')
             ->select(
                 'student_statistics.university_id',
-                'universities.name as university_name'
+                'universities.name as university_name',
+                'student_statistics.faculty_id',
+                'faculties.name as faculty_name',
+                'student_statistics.department_id',
+                'departments.name as department_name'
             )
             ->where('student_statistics.academic_year', $year)
             ->when($season !== 'all', function ($query) use ($season) {
                 return $query->where('student_statistics.season', $season);
             })
-            ->when($university !== 'all', function ($query) use ($university) {
-                return $query->where('universities.id', $university);
+            ->when($universityName !== 'all', function ($query) use ($universityName) {
+                return $query->where('universities.id', $universityName);
             })
-            ->groupBy('student_statistics.university_id', 'universities.name')
+            ->groupBy(
+                'student_statistics.university_id',
+                'universities.name',
+                'student_statistics.faculty_id',
+                'faculties.name',
+                'student_statistics.department_id',
+                'departments.name'
+            )
             ->paginate($perPage);
 
-        $universityIds = $universityPaginator->pluck('university_id')->toArray();
+        $departmentIds = $departmentPaginator->pluck('department_id')->toArray();
 
-        // STEP 2: Get all faculties for the paginated universities
-        $faculties = DB::table('student_statistics')
-            ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
-            ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
-            ->select(
-                'student_statistics.university_id',
-                'student_statistics.faculty_id',
-                'faculties.name as faculty_name'
-            )
-            ->where('student_statistics.academic_year', $year)
-            ->where('student_statistics.academic_year', $year)
-            ->when($season !== 'all', function ($query) use ($season) {
-                return $query->where('student_statistics.season', $season);
-            })
-            ->when($university !== 'all', function ($query) use ($university) {
-                return $query->where('universities.id', $university);
-            })
-            ->whereIn('student_statistics.university_id', $universityIds)
-            ->groupBy('student_statistics.university_id', 'student_statistics.faculty_id', 'faculties.name')
-            ->get();
-
-        // STEP 3: Get all classroom results
+        // STEP 2: Fetch class statistics for departments
         $classResults = DB::table('student_statistics')
             ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
+            ->join('departments', 'student_statistics.department_id', '=', 'departments.id')
             ->select(
                 'student_statistics.university_id',
+                'universities.name as university_name',
                 'student_statistics.faculty_id',
+                'faculties.name as faculty_name',
+                'student_statistics.department_id',
+                'departments.name as department_name',
                 'student_statistics.classroom',
                 'student_statistics.shift',
-                DB::raw('SUM(student_statistics.male_total) as Total_Male'),
-                DB::raw('SUM(student_statistics.female_total) as Total_Female'),
-                DB::raw('SUM(student_statistics.male_total + student_statistics.female_total) as Total_Students'),
+                DB::raw('SUM(male_total) as Total_males'),
+                DB::raw('SUM(female_total) as Total_Females'),
+                DB::raw('SUM(male_total + female_total) as Total_Students'),
                 DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
                 DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage')
             )
             ->where('student_statistics.academic_year', $year)
+            ->where('student_statistics.academic_year', $year)
             ->when($season !== 'all', function ($query) use ($season) {
                 return $query->where('student_statistics.season', $season);
             })
-            ->when($university !== 'all', function ($query) use ($university) {
-                return $query->where('universities.id', $university);
+            ->when($universityName !== 'all', function ($query) use ($universityName) {
+                return $query->where('universities.id', $universityName);
             })
-            ->whereIn('student_statistics.university_id', $universityIds)
+            ->whereIn('student_statistics.department_id', $departmentIds)
             ->groupBy(
                 'student_statistics.university_id',
+                'universities.name',
                 'student_statistics.faculty_id',
+                'faculties.name',
+                'student_statistics.department_id',
+                'departments.name',
                 'student_statistics.classroom',
                 'student_statistics.shift'
             )
             ->get();
 
-        // STEP 4: Get all unique classrooms
-        $allClasses = $classResults
-            ->pluck('classroom')
-            ->filter(fn($classroom) => trim($classroom) !== '')
-            ->unique()
-            ->sort()
-            ->values();
+        // STEP 3: Get unique class names
+        $allClasses = $classResults->pluck('classroom')->filter()->unique()->sort()->values();
 
-        // STEP 5: Group data
+        // STEP 4: Build nested structure
         $grouped = [];
 
-        foreach ($universityPaginator as $university) {
-            $grouped[$university->university_id] = [
-                'university' => $university->university_name,
-                'faculties' => []
-            ];
-        }
+        foreach ($departmentPaginator as $dept) {
+            $uniId = $dept->university_id;
+            $facId = $dept->faculty_id;
+            $deptId = $dept->department_id;
 
-        foreach ($faculties as $faculty) {
-            $grouped[$faculty->university_id]['faculties'][] = [
-                'faculty_id' => $faculty->faculty_id, // temp key for matching class data
-                'faculty_name' => $faculty->faculty_name,
+            // University block
+            if (!isset($grouped[$uniId])) {
+                $grouped[$uniId] = [
+                    'university' => $dept->university_name,
+                    'faculties' => []
+                ];
+            }
+
+            // Faculty block
+            if (!isset($grouped[$uniId]['faculties'][$facId])) {
+                $grouped[$uniId]['faculties'][$facId] = [
+                    'faculty' => $dept->faculty_name,
+                    'departments' => []
+                ];
+            }
+
+            // Department block
+            $grouped[$uniId]['faculties'][$facId]['departments'][$deptId] = [
+                'department' => $dept->department_name,
                 'classes' => collect($allClasses)->mapWithKeys(fn($class) => [$class => null])->toArray()
             ];
         }
 
+        // Fill in classes
         foreach ($classResults as $row) {
-            $faculties = &$grouped[$row->university_id]['faculties'];
-
-            foreach ($faculties as &$faculty) {
-                if ($faculty['faculty_id'] == $row->faculty_id) {
-                    $faculty['classes'][$row->classroom] = [
-                        'shift' => $row->shift,
-                        'Total_Male' => (string) $row->Total_Male,
-                        'Total_Female' => (string) $row->Total_Female,
-                        'Total_Students' => (string) $row->Total_Students,
-                        'Male_Percentage' => (string) $row->Male_Percentage,
-                        'Female_Percentage' => (string) $row->Female_Percentage
-                    ];
-                    break;
-                }
-            }
+            $grouped[$row->university_id]['faculties'][$row->faculty_id]['departments'][$row->department_id]['classes'][$row->classroom] = [
+                'shift' => $row->shift,
+                'Total_males' => (string) $row->Total_males,
+                'Total_Females' => (string) $row->Total_Females,
+                'Total_Students' => (string) $row->Total_Students,
+                'Male_Percentage' => (string) $row->Male_Percentage,
+                'Female_Percentage' => (string) $row->Female_Percentage,
+            ];
         }
 
-        // STEP 6: Remove faculty_id before returning
-        foreach ($grouped as &$university) {
-            foreach ($university['faculties'] as &$faculty) {
-                unset($faculty['faculty_id']);
-            }
-        }
+        // Flatten faculty and department indexes to numeric arrays
+        $final = array_map(function ($uni) {
+            $uni['faculties'] = array_values(array_map(function ($fac) {
+                $fac['departments'] = array_values($fac['departments']);
+                return $fac;
+            }, $uni['faculties']));
+            return $uni;
+        }, array_values($grouped));
 
-        // STEP 7: Return final JSON
+        // STEP 5: Return result
         return response()->json([
-            'data' => array_values($grouped),
-            'current_page' => $universityPaginator->currentPage(),
-            'last_page' => $universityPaginator->lastPage(),
-            'per_page' => $universityPaginator->perPage(),
-            'total' => $universityPaginator->total(),
+            'data' => $final,
+            'current_page' => $departmentPaginator->currentPage(),
+            'last_page' => $departmentPaginator->lastPage(),
+            'per_page' => $departmentPaginator->perPage(),
+            'total' => $departmentPaginator->total(),
         ]);
     }
 }
