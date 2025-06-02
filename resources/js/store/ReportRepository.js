@@ -107,10 +107,10 @@ export const useReportRepository = defineStore("reportRepository", {
             this.loading=true
             try{
                 const response= await axios.get(`report/facultyClassBased?year=${date}&season=${season}&university=${university}&page=${page}&perPage=${itemsPerPage}`);
-                this.jawad = response.data.data; 
+                this.jawad = response.data.data;
                 this.totalItems = response.data.total;
-                
-               
+
+
             }
             catch{
                 console.error("Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:", error);
@@ -126,7 +126,7 @@ export const useReportRepository = defineStore("reportRepository", {
       try {
         const response = await axios.get(`universities`);
         this.allUniversities=response.data.data
-        
+
       } catch (error) {
         console.error("Failed to fetch universities:", error);
       }
