@@ -25,12 +25,19 @@
         "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
+        "files": [
+        "app/Helpers/LogActivity.php"
+        ],
+
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
+
+
     },
+
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
