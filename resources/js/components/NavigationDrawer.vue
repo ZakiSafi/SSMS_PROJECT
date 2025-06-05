@@ -187,7 +187,7 @@ const reportItems = [
         to: "/jawad",
         translationKey:"jawad",
         icon: "mdi-circle-medium",
-        value: "university-classes",
+        value: "Faculty Base Report",
     },
     {
         to:"/fawad",

@@ -39,6 +39,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('teachers', TeacherController::class);
 
 
+
+
+
     // Define the login route (with optional name)
 
     // Protected Sanctum routes
@@ -47,6 +50,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
+
+//
+
+Route::post('login', [AuthController::class, 'login'])->name('login');
+// reports
 Route::prefix('report')->group(function () {
     Route::get('universitiesClasses', [UniversityClassReportController::class, '__invoke']);
     Route::get('university', [UniversityReportController::class, '__invoke']);
@@ -58,6 +66,3 @@ Route::prefix('report')->group(function () {
     Route::get('departmentBasedGraduation', [DepartmentBasedGraduationReportController::class, '__invoke']);
     Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
 });
-
-
-Route::post('login', [AuthController::class, 'login'])->name('login');

@@ -38,15 +38,15 @@
 ></v-select>
     </div>
     <div class="w-3/4 ml-4">
-        
+
  <v-combobox
-  v-model="ReportRepository.university" 
+  v-model="ReportRepository.university"
   :items="[
-    ...ReportRepository.allUniversities, 
+    ...ReportRepository.allUniversities,
     { id: 'all', name: $t('all') }
   ]"
-  item-title="name"  
-  item-value="id" 
+  item-title="name"
+  item-value="id"
   :label="$t('select_university')"
   variant="outlined"
   hide-details

@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('university_id')->nullable()->constrained('universities')->nullOnDelete();
             $table->string('action_type');
             $table->text('action_description')->nullable();
             $table->string('table_name')->nullable();
             $table->unsignedBigInteger('record_id')->nullable();
             $table->string('ip_address')->nullable();
+            $table->text('user_agent')->nullable();
             $table->timestamps();
         });
     }
