@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\reports;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use App\Models\StudentStatistic;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +14,7 @@ class FacultyBaseGraduationReportController extends Controller
         $year = $request->query('year');
         $season = $request->query('season');
         $shift = $request->query('shift');
+        $perPage = $request->query('perPage', 10);
         $type = 'graduated';
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
@@ -47,7 +47,6 @@ class FacultyBaseGraduationReportController extends Controller
             $query->whereRaw('LOWER(student_statistics.shift) = ?', [strtolower(trim($shift))]);
         }
 
-
         $statistics = $query->where('student_statistics.student_type', $type)
             ->groupBy(
                 'student_statistics.academic_year',
@@ -59,7 +58,7 @@ class FacultyBaseGraduationReportController extends Controller
                 'faculties.name',
                 'universities.name'
             )
-            ->get();
+            ->paginate($perPage);
 
         $grouped = $statistics->groupBy('university')->map(function ($items, $universityName) {
             return [
@@ -80,10 +79,17 @@ class FacultyBaseGraduationReportController extends Controller
                 })->values()
             ];
         })->values();
+
         if ($grouped->isEmpty()) {
             return response()->json(['message' => 'No data found'], 404);
         }
 
-        return response()->json($grouped);
+        return response()->json([
+            'data' => $grouped,
+            'total' => $statistics->total(),
+            'per_page' => $statistics->perPage(),
+            'current_page' => $statistics->currentPage(),
+            'last_page' => $statistics->lastPage(),
+        ]);
     }
 }

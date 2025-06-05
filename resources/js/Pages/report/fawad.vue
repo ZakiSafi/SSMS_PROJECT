@@ -161,7 +161,7 @@
   });
 
   const onDateChange = () => {
-    const universityId = ReportRepository.university?.id || ReportRepository.university;
+    const universityId = ReportRepository.university?.id || 'all';
     ReportRepository.fetchFawad(
       { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
       ReportRepository.date,
@@ -185,16 +185,13 @@
   .table-container {
     overflow-x: auto;
   }
+  .gender-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
 
-const onDateChange = () => {
-  const universityId = ReportRepository.university?.id || "all";
-  ReportRepository.fetchFawad(
-    { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
-    ReportRepository.date,
-    ReportRepository.season,
-    universityId
-  );
-};
+
 
   .gender-stats-table th {
     background-color: #e7f2f5;

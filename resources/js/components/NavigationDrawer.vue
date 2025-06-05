@@ -197,10 +197,10 @@ const reportItems = [
     },
 
     {
-        to:"/farhad",
-        translationKey:"farhad",
+        to:"/faculty-graduation",
+        translationKey:"faculty_graduation",
         icon: "mdi-circle-medium",
-        value:"farhad"
+        value:"faculty-graduation"
     }
 ];
 </script>

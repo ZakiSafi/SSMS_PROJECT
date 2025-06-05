@@ -38,16 +38,16 @@
 ></v-select>
     </div>
     <div class="w-3/4 ml-4">
-        
+
  <v-combobox
-  v-model="ReportRepository.university" 
-  :items="[
-    ...ReportRepository.allUniversities, 
-    { id: 'all', name: $t('all') }
+  v-model="ReportRepository.shift"
+   :items="[
+    { title: $t('day'), value: 'day' },
+    { title: $t('night'), value: 'shift' }
   ]"
-  item-title="name"  
-  item-value="id" 
-  :label="$t('select_university')"
+  item-title="name"
+  item-value="id"
+  :label="$t('shift')"
   variant="outlined"
   hide-details
   density="compact"
@@ -62,24 +62,17 @@
       <table class="gender-stats-table">
         <thead>
           <tr>
-            <th rowspan="2">{{ $t('University') }}</th>
-            <th rowspan="2">{{ $t('Faculty') }}</th>
-            <th colspan="3" v-for="n in 6" :key="'head-'+n">
-              {{ $t('Class') }} {{ n }}
-            </th>
-          </tr>
-          <tr>
-            <template v-for="n in 6" :key="'subhead-'+n">
-              <th>{{ $t('Male') }}</th>
-              <th>{{ $t('Female') }}</th>
-              <th>{{ $t('Total') }}</th>
-            </template>
+            <th >{{ $t('University') }}</th>
+            <th>{{ $t('Faculty') }}</th>
+            <th>{{ $t('Male') }}</th>
+            <th>{{ $t('Female') }}</th>
+            <th>{{ $t('Total') }}</th>
           </tr>
         </thead>
 
         <!-- Loading bar -->
         <tr v-if="ReportRepository.loading" class="loading-row">
-          <td colspan="20">
+          <td colspan="5">
             <v-progress-linear
            :reverse="dir === 'rtl'"
               indeterminate
@@ -91,9 +84,9 @@
           </td>
         </tr>
 
-        <tbody v-if="ReportRepository.jawad.length">
+        <tbody v-if="ReportRepository.facultyBaseGraduation.length">
           <template
-            v-for="(institution, index) in ReportRepository.jawad"
+            v-for="(institution, index) in ReportRepository.facultyBaseGraduation"
             :key="'uni-'+index"
           >
             <template
@@ -106,27 +99,24 @@
                     {{ institution.university }}
                   </td>
                 </template>
-                <td>{{ faculty.faculty_name }}</td>
+                <td>{{ faculty.faculty }}</td>
 
-                <template v-for="classIndex in 6" :key="'class-'+classIndex">
                   <td>
-                    {{ faculty.classes["Class " + classIndex]?.Total_Male || 0 }}
+                    {{ faculty.Total_Males || 0 }}
                   </td>
                   <td>
-                    {{ faculty.classes["Class " + classIndex]?.Total_Female || 0 }}
+                    {{ faculty.Total_Females || 0 }}
                   </td>
                   <td>
-                    {{ faculty.classes["Class " + classIndex]?.Total_Students || 0 }}
+                    {{ faculty.Total_Students || 0 }}
                   </td>
-                </template>
               </tr>
             </template>
           </template>
         </tbody>
-
         <tbody v-else>
           <tr>
-            <td colspan="20" class="text-center py-4">
+            <td colspan="5" class="text-center py-4">
               {{ $t('No data available') }}
             </td>
           </tr>
@@ -167,22 +157,21 @@ const yearRange = computed(() => {
 });
 
 const onDateChange = () => {
-    const universityId = ReportRepository.university?.id || ReportRepository.university;
-    ReportRepository.fecthJawad(
+    ReportRepository.fetchFacultyBaseGraduation(
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,
         ReportRepository.season,
-        universityId,  // Send only the id
+        ReportRepository.shift
     );
 };
 
 onMounted(() => {
-    ReportRepository.fetchUniversities();
-    ReportRepository.fecthJawad(
+    
+    ReportRepository.fetchFacultyBaseGraduation(
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,
         ReportRepository.season,
-        "all",
+        ReportRepository.shift,
     );
 });
 </script>
