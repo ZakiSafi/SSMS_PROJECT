@@ -34,7 +34,7 @@ class FacultyBaseGraduationReportController extends Controller
                 DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),
             );
         if ($year && $year !== 'all') {
-            $query->whereYear('student_statistics.academic_year', $year);
+            $query->where('student_statistics.academic_year', $year);
         }
         if ($season && $season !== 'all') {
             $query->where('student_statistics.season', $season);

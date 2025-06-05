@@ -161,7 +161,7 @@ const yearRange = computed(() => {
 });
 
 const onDateChange = () => {
-  const universityId = ReportRepository.university?.id || ReportRepository.university;
+  const universityId = ReportRepository.university?.id || "all";
   ReportRepository.fetchFawad(
     { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
     ReportRepository.date,

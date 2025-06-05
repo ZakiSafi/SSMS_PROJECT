@@ -192,8 +192,15 @@ const reportItems = [
     {
         to:"/fawad",
         translationKey:"fawad",
-        icon:"mdi-circular-medium",
+        icon: "mdi-circle-medium",
         value:"fawad"
+    },
+
+    {
+        to:"/farhad",
+        translationKey:"farhad",
+        icon: "mdi-circle-medium",
+        value:"farhad"
     }
 ];
 </script>
