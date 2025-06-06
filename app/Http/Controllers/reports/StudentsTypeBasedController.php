@@ -35,17 +35,18 @@ class StudentsTypeBasedController extends Controller
             };
 
             if ($year && $year !== 'all') {
-            $query->whereYear('student_statistics.academic_year', $year);
+            $query->where('student_statistics.academic_year', $year);
             };
 
             if ($type && $type !== 'all') {
             $query->where('student_statistics.student_type', $type);
             }
-            $statistics = $query->groupBy('student_statistics.academic_year', 'universities.name', 'faculties.name', 'student_statistics.shift',
+
+        $statistics = $query->groupBy('student_statistics.academic_year', 'universities.name', 'faculties.name', 'student_statistics.shift',
             'student_statistics.student_type')
             ->orderBy('student_statistics.academic_year', 'desc')
             ->get();
-            if(!$statistics){
+            if($statistics->isEmpty()){
                 return response()->json([
                     'message' => 'No data found for the given criteria.'
                 ], 404);
