@@ -17,7 +17,7 @@ import UniversitiesClasses from "./Pages/report/UniversitiesClasses.vue";
 import Dashboard from "./Pages/Dashboard.vue";
 import jawad from "./Pages/report/jawad.vue";
 import fawad from "./Pages/report/fawad.vue";
-
+import FacultyBaseGraduation from "./Pages/report/FacultyBaseGraduation.vue";
 const routes = [
     // Show login first
     { path: "/", name: "Login", component: Login, meta:"" },
@@ -42,6 +42,7 @@ const routes = [
             { path: "/university-classes", name: "university-classes", component: UniversitiesClasses },
             { path: "/jawad", name: "jawad", component: jawad },
             { path: "/fawad", name: "fawad", component: fawad },
+            {path: "/faculty-graduation", name:"faculty-graduation", component: FacultyBaseGraduation}
         ],
     },
 ];

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\reports;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use App\Models\StudentStatistic;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +14,7 @@ class FacultyBaseGraduationReportController extends Controller
         $year = $request->query('year');
         $season = $request->query('season');
         $shift = $request->query('shift');
+        $perPage = $request->query('perPage', 10);
         $type = 'graduated';
         $perPage = $request->query('perPage', 10);
 
@@ -47,7 +47,6 @@ class FacultyBaseGraduationReportController extends Controller
         if ($shift && $shift !== 'all') {
             $query->whereRaw('LOWER(student_statistics.shift) = ?', [strtolower(trim($shift))]);
         }
-
 
         $statistics = $query->where('student_statistics.student_type', $type)
             ->groupBy(
