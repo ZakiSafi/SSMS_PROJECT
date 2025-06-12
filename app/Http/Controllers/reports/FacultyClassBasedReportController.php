@@ -121,8 +121,8 @@ class FacultyClassBasedReportController extends Controller
                 if ($faculty['faculty_id'] == $row->faculty_id) {
                     $faculty['classes'][$row->classroom] = [
                         'shift' => $row->shift,
-                        'Total_Male' => (string) $row->Total_Male,
-                        'Total_Female' => (string) $row->Total_Female,
+                        'Total_Male' => (string) $row->Total_Males,
+                        'Total_Female' => (string) $row->Total_Females,
                         'Total_Students' => (string) $row->Total_Students,
                         'Male_Percentage' => (string) $row->Male_Percentage,
                         'Female_Percentage' => (string) $row->Female_Percentage

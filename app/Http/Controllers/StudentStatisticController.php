@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StudentStatisticRequest;
-use App\Http\Resources\StudentStatisticResource;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use App\Models\StudentStatistic;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StudentStatisticRequest;
+use App\Http\Resources\StudentStatisticResource;
 
 class StudentStatisticController extends Controller
 {
