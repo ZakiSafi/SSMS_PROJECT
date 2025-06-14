@@ -4,7 +4,7 @@
             transition="dialog-top-transition"
             width="50rem"
             v-model="FacultyRepository.createDialog"
-            
+
         >
             <template v-slot:default="{ isActive }">
                 <v-card class="px-3">

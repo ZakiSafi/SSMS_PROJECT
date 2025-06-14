@@ -166,7 +166,7 @@ const onDateChange = () => {
 };
 
 onMounted(() => {
-    
+
     ReportRepository.fetchFacultyBaseGraduation(
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,

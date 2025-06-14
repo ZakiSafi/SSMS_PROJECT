@@ -18,6 +18,7 @@
     "user": {
         "name": "ذکی الله صافی"
     },
+    "name" : "اسم",
     "Dashboard": "داشبورد",
     "students": "محصلین",
     "Faculty": "پوهنځی",
@@ -37,8 +38,8 @@
     "University": "پوهنتون",
     "Class": "صنف",
     "Classes": "صنوف",
-    "Male": "مرد",
-    "Female": "زن",
+    "Male": "زکور",
+    "Female": "اناث",
     "Total": "مجموع",
     "search": "جستجو",
     "create": "ایجاد کردن",
