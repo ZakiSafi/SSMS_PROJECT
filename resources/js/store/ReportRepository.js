@@ -10,6 +10,7 @@ export const useReportRepository = defineStore("reportRepository", {
             allUniversities: reactive([]),
             universityBaseGraduation: reactive([]),
             facultyBaseGraduation: reactive([]),
+            departmentBaseGraduation: reactive([]),
             studentTeacher: reactive([]),
             universityClasses: reactive([]),
             jawad: reactive([]),
@@ -160,6 +161,28 @@ export const useReportRepository = defineStore("reportRepository", {
             catch{
                 console.error("Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:", error);
                 this.facultyBaseGraduation = [];
+            }
+            finally{
+                 this.loading=false
+
+            }
+
+        },
+         
+        async fetchDepartmentBaseGraduation({page,itemsPerPage}, date=this.date, season=this.season, shift=this.shift){
+
+             
+            this.loading=true
+            try{
+                const response= await axios.get(`report/departmentBasedGraduation?year=${date}&season=${season}&shift=${shift}&page=${page}&perPage=${itemsPerPage}`);
+                this.departmentBaseGraduation = response.data.data;
+                this.totalItems = response.data.total;
+
+
+            }
+            catch{
+                console.error("Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:", error);
+                this.departmentBaseGraduation = [];
             }
             finally{
                  this.loading=false

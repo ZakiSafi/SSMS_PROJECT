@@ -70,6 +70,16 @@
                 />
                 <v-list-item
                     class="menu-item"
+                    prepend-icon="mdi-office-building-outline"
+                    :title="$t('menu.teachers')"
+                    to="/teachers"
+                    value="teachers"
+                    :class="{
+                        'v-list-item--active': route.path === '/teachers',
+                    }"
+                />
+                <v-list-item
+                    class="menu-item"
                     prepend-icon="mdi-account-group-outline"
                     :title="$t('menu.student_statistic')"
                     to="/student-statistic"
@@ -201,7 +211,14 @@ const reportItems = [
         translationKey:"faculty_graduation",
         icon: "mdi-circle-medium",
         value:"faculty-graduation"
+    },
+    {
+        to:"/department-base-graduation",
+        translationKey:"department_base_graduation",
+        icon: "mdi-circle-medium",
+        value:"department-base-graduation"
     }
+    
 ];
 </script>
 

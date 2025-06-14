@@ -63,14 +63,7 @@
                                 :rules="[rules.required]"
                             />
 
-                            <v-text-field
-                                v-model="formData.teachers"
-                                variant="outlined"
-                                label="Total Teachers"
-                                class="pb-4"
-                                density="compact"
-                                :rules="[rules.required, rules.numeric]"
-                            />
+                            
                         </v-form>
                     </v-card-text>
 

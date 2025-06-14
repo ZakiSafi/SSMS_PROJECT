@@ -45,6 +45,8 @@
     "create":"Create",
     "select_university":"Select University",
     "select_season":"Select Season",
-    "all":"all"
+    "all":"all",
+    "DBGR":"Department Based Graduation Report",
+    "total_teachers":"Total Teachers"
 
 }

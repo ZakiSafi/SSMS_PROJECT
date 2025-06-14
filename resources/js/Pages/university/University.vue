@@ -103,6 +103,7 @@ const deleteItem = async (item) => {
 const headers = [
   { title: "Name", key: "name", align: "start", sortable: false },
   { title: "Province", key: "province.name", align: "center", sortable: false },
+  { title: "Type", key: "type", align: "center", sortable: false },
   { title: "Action", key: "action", align: "end", sortable: false },
 ];
 </script>
