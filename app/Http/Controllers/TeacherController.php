@@ -32,24 +32,24 @@ class TeacherController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(University $university)
+    public function show(Teacher $teacher)
     {
-        return new TeacherResource($this->showRecord($university));
+        return new TeacherResource($this->showRecord($teacher));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(TeacherRequest $request, University $university)
+    public function update(TeacherRequest $request, Teacher $teacher)
     {
-        return $this->updateRecord($request, $university);
+        return $this->updateRecord($request, $teacher);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(University $university)
+    public function destroy(Teacher $teacher)
     {
-        return $this->deleteRecord($university);
+        return $this->deleteRecord($teacher);
     }
 }

@@ -18,8 +18,8 @@ class TeacherResource extends JsonResource
             [
                 'id' => $this->id,
                 'university' => [
-                    'id' => $this->university->id,
-                    'name' => $this->university->name,
+                    'id' => $this->university?->id,
+                    'name' => $this->university?->name,
 
                 ],
                 'academic_year' => $this->academic_year,

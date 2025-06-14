@@ -11,7 +11,7 @@ class TeacherRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,8 +22,8 @@ class TeacherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'university_id' => 'required|exists:univeristies,id',
-            'academic_year' => 'required|year',
+            'university_id' => 'required',
+            'academic_year' => 'required|string',
             'total_teachers' => 'required|integer|min:0',
         ];
     }

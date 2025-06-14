@@ -44,7 +44,7 @@ class DepartmentBasedGraduationReportController extends Controller
         }
 
         if ($year && $year !== 'all') {
-            $query->where('student_statistics.academic_year', $shift);
+            $query->where('student_statistics.academic_year', $year);
         }
 
         $statistics = $query->where('student_statistics.student_type', $type)

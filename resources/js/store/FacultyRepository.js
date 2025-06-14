@@ -12,8 +12,10 @@ export  const useFacultyRepository=defineStore("facultyRepository",{
             totalItems: ref(0),
             itemsPerPage: ref(5),
             createDialog: ref(false),
-            facultySearch: ref(""),
+            search: ref(""),
             faculties: reactive([]),
+            teachers: reactive([]),
+            teacher: reactive({}),
             faculty: reactive({}),
             universities: reactive([]),
         }
@@ -22,7 +24,7 @@ export  const useFacultyRepository=defineStore("facultyRepository",{
         async FetchFaculties({ page, itemsPerPage }){
             this.loading=true;
             const response=await axios.get(
-                `faculties?page=${page}&perPage=${itemsPerPage}&name=${this.facultySearch}`
+                `faculties?page=${page}&perPage=${itemsPerPage}&name=${this.search}`
             );
 
             this.faculties=response.data.data
@@ -104,6 +106,89 @@ export  const useFacultyRepository=defineStore("facultyRepository",{
             }
         },
 
+
+        async fetchTeachers({ page, itemsPerPage } ){
+            this.loading = true;
+            try {
+                const response = await axios.get(
+                    `teachers?page=${page}&perPage=${itemsPerPage}&name=${this.search}`
+                );
+                this.teachers = response.data.data;
+                this.totalItems = response.data.meta.total;
+            } catch (err) {
+                console.error("Error fetching teachers:", err);
+                this.teachers = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async fetchTeacher(id) {
+            try {
+                const response = await axios.get(`teachers/${id}`);
+                this.teacher = response.data.data;
+            } catch (err) {
+                console.error("Error fetching teacher:", err);
+            }
+        },
+
+        async createTeacher(formData) {
+            try {
+                const config = {
+                    method: "POST",
+                    url: "teachers",
+                    data: formData,
+                };
+
+                await axios(config);
+                this.createDialog = false;
+                this.fetchTeachers({
+                    page: this.page,
+                    itemsPerPage: this.itemsPerPage,
+                });
+            } catch (err) {
+                console.error("Error creating teacher:", err);
+            }
+        },
+
+        async updateTeacher(formData, id) {
+            try {
+                const config = {
+                    method: "PUT",
+                    url: `teachers/${id}`,
+                    data: formData,
+                };
+
+                await axios(config);
+                this.createDialog = false;
+                this.fetchTeachers({
+                    page: this.page,
+                    itemsPerPage: this.itemsPerPage,
+                });
+            } catch (err) {
+                console.error("Error updating teacher:", err);
+            }
+        },
+
+        async deleteTeacher(id) {
+            this.loading = true;
+            this.error = null;
+
+            try {
+                const config = {
+                    method: "DELETE",
+                    url: "teachers/" + id,
+                };
+
+                await axios(config);
+                this.fetchTeachers({
+                    page: this.page,
+                    itemsPerPage: this.itemsPerPage,
+                });
+            } catch (err) {
+                this.error = err;
+            }
+        },
         async FetchUniversities() {
             try {
                 const response = await axios.get("universities");

@@ -18,6 +18,9 @@ import Dashboard from "./Pages/Dashboard.vue";
 import jawad from "./Pages/report/jawad.vue";
 import fawad from "./Pages/report/fawad.vue";
 import FacultyBaseGraduation from "./Pages/report/FacultyBaseGraduation.vue";
+import DepartmentBaseGraduation from "./Pages/report/DepartmentBaseGraduation.vue";
+import Teachers from "./Pages/teacher/Teachers.vue";
+
 const routes = [
     // Show login first
     { path: "/", name: "Login", component: Login, meta:"" },
@@ -42,7 +45,9 @@ const routes = [
             { path: "/university-classes", name: "university-classes", component: UniversitiesClasses },
             { path: "/jawad", name: "jawad", component: jawad },
             { path: "/fawad", name: "fawad", component: fawad },
-            {path: "/faculty-graduation", name:"faculty-graduation", component: FacultyBaseGraduation}
+            {path: "/faculty-graduation", name:"faculty-graduation", component: FacultyBaseGraduation},
+            {path: "/department-base-graduation", name:"department-base-graduation", component: DepartmentBaseGraduation},
+            {path: "/teachers", name: "teachers", component: Teachers },
         ],
     },
 ];
