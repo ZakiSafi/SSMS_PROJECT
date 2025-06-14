@@ -100,17 +100,16 @@
                     </template>
                     <td>{{ department.department }}</td>
 
-                    <template v-for="classIndex in 6" :key="'class-' + classIndex">
                       <td>
-                        {{ department.classes?.['Class ' + classIndex]?.Total_males || 0 }}
+                        {{ department?.Total_Males || 0 }}
                       </td>
                       <td>
-                        {{ department.classes?.['Class ' + classIndex]?.Total_Females || 0 }}
+                        {{ department?.Total_Females || 0 }}
                       </td>
                       <td>
-                        {{ department.classes?.['Class ' + classIndex]?.Total_Students || 0 }}
+                        {{ department?.Total_Students || 0 }}
                       </td>
-                    </template>
+
                   </tr>
                 </template>
               </template>

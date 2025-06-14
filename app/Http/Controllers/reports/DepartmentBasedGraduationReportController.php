@@ -45,12 +45,6 @@ class DepartmentBasedGraduationReportController extends Controller
             $query->where('student_statistics.academic_year', intval($year));
         }
 
-<<<<<<< HEAD
-        if ($year && $year !== 'all') {
-            $query->where('student_statistics.academic_year', $year);
-        }
-=======
->>>>>>> f129854b685ad1dc00614270d07e69c9b65027cf
 
         $statistics = $query->where('student_statistics.student_type', $type)
             ->groupBy(
