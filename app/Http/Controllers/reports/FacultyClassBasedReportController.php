@@ -22,7 +22,7 @@ class FacultyClassBasedReportController extends Controller
             ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
             ->select(
                 'student_statistics.university_id',
-                'universities.name as university_name'
+                'universities.name as university'
             )
             ->where('student_statistics.academic_year', $year)
             ->when($season !== 'all', function ($query) use ($season) {
@@ -66,8 +66,8 @@ class FacultyClassBasedReportController extends Controller
                 'student_statistics.faculty_id',
                 'student_statistics.classroom',
                 'student_statistics.shift',
-                DB::raw('SUM(student_statistics.male_total) as Total_Male'),
-                DB::raw('SUM(student_statistics.female_total) as Total_Female'),
+                DB::raw('SUM(student_statistics.male_total) as Total_Males'),
+                DB::raw('SUM(student_statistics.female_total) as Total_Females'),
                 DB::raw('SUM(student_statistics.male_total + student_statistics.female_total) as Total_Students'),
                 DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
                 DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage')
@@ -101,7 +101,7 @@ class FacultyClassBasedReportController extends Controller
 
         foreach ($universityPaginator as $university) {
             $grouped[$university->university_id] = [
-                'university' => $university->university_name,
+                'university' => $university->university,
                 'faculties' => []
             ];
         }
@@ -121,8 +121,8 @@ class FacultyClassBasedReportController extends Controller
                 if ($faculty['faculty_id'] == $row->faculty_id) {
                     $faculty['classes'][$row->classroom] = [
                         'shift' => $row->shift,
-                        'Total_Male' => (string) $row->Total_Male,
-                        'Total_Female' => (string) $row->Total_Female,
+                        'Total_Male' => (string) $row->Total_Males,
+                        'Total_Female' => (string) $row->Total_Females,
                         'Total_Students' => (string) $row->Total_Students,
                         'Male_Percentage' => (string) $row->Male_Percentage,
                         'Female_Percentage' => (string) $row->Female_Percentage

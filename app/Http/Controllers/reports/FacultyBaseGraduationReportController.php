@@ -16,6 +16,7 @@ class FacultyBaseGraduationReportController extends Controller
         $shift = $request->query('shift');
         $perPage = $request->query('perPage', 10);
         $type = 'graduated';
+        $perPage = $request->query('perPage', 10);
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
@@ -84,12 +85,17 @@ class FacultyBaseGraduationReportController extends Controller
             return response()->json(['message' => 'No data found'], 404);
         }
 
+        // Return both data and pagination info
         return response()->json([
             'data' => $grouped,
-            'total' => $statistics->total(),
-            'per_page' => $statistics->perPage(),
-            'current_page' => $statistics->currentPage(),
-            'last_page' => $statistics->lastPage(),
+            'pagination' => [
+                'total' => $statistics->total(),
+                'per_page' => $statistics->perPage(),
+                'current_page' => $statistics->currentPage(),
+                'last_page' => $statistics->lastPage(),
+                'from' => $statistics->firstItem(),
+                'to' => $statistics->lastItem(),
+            ],
         ]);
     }
 }
