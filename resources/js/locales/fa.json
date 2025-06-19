@@ -18,14 +18,16 @@
     "user": {
         "name": "ذکی الله صافی"
     },
-    "name" : "اسم",
+    "name": "اسم",
     "Dashboard": "داشبورد",
     "students": "محصلین",
+    "Total Student": "مجموع محصل",
     "Faculty": "پوهنځی",
     "provinces": "ولایات",
     "Department": "دیپارتمنت ها",
     "classrooms": "صنف ها",
     "statistics": "احصایه",
+    "Teacher": "استاد",
     "student_statistic": "آمار محصلین",
     "university Classes": "صنف های پوهنتون",
     "language": "زبان",
@@ -48,5 +50,12 @@
     "spring": "بهاری",
     "autumn": "خزانی",
     "all": "همه",
-   "DBGR":"  گزارش فارغ‌التحصیلی مبتنی بر دپارتمان"
+    "DBGR": "  گزارش فارغ‌التحصیلی مبتنی بر دپارتمان",
+    "public": "عامه",
+    "private": "خصوصی",
+    "total_males": "مجموع زکور",
+    "total_females": "مجموع اناث",
+    "total_students": "مجموع عمومی",
+    "male_percentage": "فیصدی زکور",
+    "female_percentage": "فیصدی اناث "
 }

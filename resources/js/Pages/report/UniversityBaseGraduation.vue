@@ -13,10 +13,16 @@
     hide-details
     @update:modelValue="onDateChange"
   ></v-combobox>
-  
-  <v-select 
+
+  <v-select
     v-model="ReportRepository.season"
-    :items="['winter','spring']"
+    :items="[
+        {text: $t('spring'), value: 'public'},
+        {text: $t('autumn'), value: 'autumn'}
+        ]"
+
+    item-title = 'text'
+    item-value = 'value'
     label="Select Session"
     variant="outlined"
     hide-details
@@ -24,7 +30,7 @@
     @update:modelValue="onDateChange"
   ></v-select>
 </div>
-    
+
     <v-data-table-server
         v-model:items-per-page="ReportRepository.itemsPerPage"
         :headers="headers"
@@ -49,17 +55,17 @@ const ReportRepository = useReportRepository();
 import persianDate from "persian-date";
 
 const getCurrentPersianYear = () => {
-  return new persianDate().year(); 
+  return new persianDate().year();
 }
 
 const currentYear = ref(getCurrentPersianYear());
 const yearRange = computed(() => {
   const years = [];
-  const startYear = currentYear.value - 10; 
+  const startYear = currentYear.value - 10;
   const endYear = currentYear.value + 10;
-  
+
   for (let i = startYear; i <= endYear; i++) {
-    years.push(i); 
+    years.push(i);
   }
   return years;
 })
@@ -72,14 +78,17 @@ const onDateChange = () => {
     );
 };
 
-const headers = [
-    { title: "University", key: "university", align: "start", sortable: false },
-    { title: "Total Males", key: "Total_Males", align: "center" },
-    { title: "Total Females", key: "Total_Females", align: "center" },
-    { title: "Total Students", key: "Total_Students", align: "center" },
-    { title: "Male Percentage", key: "Male_Percentage", align: "center" },
-    { title: "Female Percentage", key: "Female_Percentage", align: "center" },
-];
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+
+const headers = computed(() => [
+  { title: t("menu.university"), key: "university", align: "start", sortable: false },
+  { title: t("total_males"), key: "Total_Males", align: "center" },
+  { title: t("total_females"), key: "Total_Females", align: "center" },
+  { title: t("total_students"), key: "Total_Students", align: "center" },
+  { title: t("male_percentage"), key: "Male_Percentage", align: "center" },
+  { title: t("female_percentage"), key: "Female_Percentage", align: "center" },
+])
 </script>
 
 <style scoped>

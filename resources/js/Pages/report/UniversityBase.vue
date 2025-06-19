@@ -4,48 +4,53 @@
     />
     <v-divider :thickness="1" class="border-opacity-100" />
 
-<div class="w-full flex justify-between items-start gap-4 pt-6">
-  <!-- Left side: Combobox -->
-  <div class="w-1/5">
-    <v-combobox
-      v-model="ReportRepository.date"
-      :items="yearRange"
-      label="Select or Type Year"
-      variant="outlined"
-      density="compact"
-      :rules="[validateYearInput]"
-      @update:modelValue="onDateChange"
-    ></v-combobox>
-  </div>
+    <div class="w-full flex justify-between items-start gap-4 pt-6">
+        <!-- Left side: Combobox -->
+        <div class="w-1/5">
+            <v-combobox
+                v-model="ReportRepository.date"
+                :items="yearRange"
+                label="Select or Type Year"
+                variant="outlined"
+                density="compact"
+                :rules="[validateYearInput]"
+                @update:modelValue="onDateChange"
+            ></v-combobox>
+        </div>
 
-  <!-- Right side: Two selects side by side -->
-  <div class="w-1/4 flex">
-    <div class="w-1/2">
-      <v-select
-        v-model="ReportRepository.type"
-        :items="['public', 'private']"
-        label="Select University Type"
-        variant="outlined"
-        density="compact"
-        :rules="[validateType]"
-        @update:modelValue="onTypeChange"
-      ></v-select>
+        <!-- Right side: Two selects side by side -->
+        <div class="w-1/4 flex">
+            <div class="w-1/2">
+                <v-select
+                    v-model="ReportRepository.type"
+                    :items="[
+                        { text: $t('public'), value: 'public' },
+                        { text: $t('private'), value: 'private' },
+                    ]"
+                    label="Select University Type"
+                    variant="outlined"
+                    density="compact"
+                    item-title="text"
+                    item-value="value"
+                    :rules="[validateType]"
+                    @update:modelValue="onTypeChange"
+                />
+            </div>
+            <div class="w-1/2 ml-4">
+                <v-select
+                    v-model="ReportRepository.shift"
+                    :items="[{text:$t('day'), value: 'Day'}, {text:$t('night'), value: 'Night'}]"
+                    item-title = text
+                    item-value = value
+                    label="Select Shift"
+                    variant="outlined"
+                    density="compact"
+                    :rules="[validateShift]"
+                    @update:modelValue="onShiftChange"
+                ></v-select>
+            </div>
+        </div>
     </div>
-    <div class="w-1/2 ml-4">
-      <v-select
-        v-model="ReportRepository.shift"
-        :items="['Day', 'Night']"
-        label="Select Shift"
-        variant="outlined"
-        density="compact"
-        :rules="[validateShift]"
-        @update:modelValue="onShiftChange"
-      ></v-select>
-    </div>
-  </div>
-</div>
-
-
 
     <v-data-table-server
         v-model:items-per-page="ReportRepository.itemsPerPage"
@@ -136,16 +141,19 @@ const validateShift = (value) => {
     return true;
 };
 
-const headers = [
-    { title: "University", key: "university", align: "start", sortable: false },
-    { title: "Total Males", key: "Total_Males", align: "center" },
-    { title: "Total Females", key: "Total_Females", align: "center" },
-    { title: "Total Students", key: "Total_Students", align: "center" },
-    { title: "Male Percentage", key: "Male_Percentage", align: "center" },
-    { title: "Female Percentage", key: "Female_Percentage", align: "center" },
-];
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+
+const headers = computed(() => [
+  { title: t("menu.university"), key: "university", align: "start", sortable: false },
+  { title: t("total_males"), key: "Total_Males", align: "center" },
+  { title: t("total_females"), key: "Total_Females", align: "center" },
+  { title: t("total_students"), key: "Total_Students", align: "center" },
+  { title: t("male_percentage"), key: "Male_Percentage", align: "center" },
+  { title: t("female_percentage"), key: "Female_Percentage", align: "center" },
+])
+
+
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

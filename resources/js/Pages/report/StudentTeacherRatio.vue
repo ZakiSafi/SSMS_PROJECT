@@ -68,12 +68,12 @@ const onDateChange = () => {
     );
 };
 
-const headers = [
-  { title: "University", key: "university", align: "start", sortable: false },
-  { title: "Teacher", key: "teachers", align: "start" },
-  { title: "Total Student", key: "total_students", align: "center" },
-  { title: "ST Ratio", key: "students_per_teacher_ratio", align: "center" },
-];
+const headers = computed(() =>[
+  { title: t("University"), key: "university", align: "start", sortable: false },
+  { title: t("Teacher"), key: "teachers", align: "start" },
+  { title: t("Total Student"), key: "total_students", align: "center" },
+  { title: t("ST Ratio"), key: "students_per_teacher_ratio", align: "center" },
+]);
 
 </script>
 
