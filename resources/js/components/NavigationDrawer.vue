@@ -287,7 +287,6 @@ const reportItems = [
 }
 
 .submenu-item {
-    padding-left: 32px !important;
     margin: 0 !important;
     min-height: 32px !important;
 }
@@ -296,8 +295,7 @@ const reportItems = [
 :deep(.v-list-group__items) {
     padding-top: 10px !important;
     padding-bottom: 0 !important;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-right: 300px;
 }
 
 /* Specifically target the bullet points in submenus */
@@ -306,6 +304,10 @@ const reportItems = [
   min-width: 20px !important;
   margin-inline-end: 4px !important;
 }
+
+
+
+
 
 
 </style>
