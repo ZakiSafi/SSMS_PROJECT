@@ -13,12 +13,34 @@
         "university_report": "راپور پوهنتون",
         "university_graduation_report": "راپور فارغ التحصیلی",
         "student_teacher_ratio": "نسبت محصل به استاد",
-        "university_classes": "صنوف پوهنتون"
+        "university_classes": "صنوف پوهنتون",
+        "jawad": "راپور جاوید",
+        "fawad": "راپور فواد",
+        "faculty_graduation": "راپور فارغ‌التحصیلی پوهنځی",
+        "department_base_graduation": "راپور فارغ‌التحصیلی دیپارتمنت"
     },
     "user": {
         "name": "ذکی الله صافی"
     },
+    "form": {
+        "create": "ایجاد کردن",
+        "update": "آپدیت",
+        "submit": "ثبت",
+        "name": "اسم",
+        "close": "بستن"
+    },
+    "validation": {
+        "required": "این فیلد الزامی است",
+        "valid_name": "لطفاً یک نام معتبر وارد کنید"
+    },
+
+    "pagination": {
+        "items_per_page": "آیتم در صفحه",
+        "all": "همه"
+    },
+
     "name": "اسم",
+    "Action": "عمل",
     "Dashboard": "داشبورد",
     "students": "محصلین",
     "Total Student": "مجموع محصل",

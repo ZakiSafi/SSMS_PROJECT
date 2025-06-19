@@ -1,48 +1,89 @@
 <template>
-  <CreateProvince v-if="ProvinceRepository.createDialog" />
+    <CreateProvince v-if="ProvinceRepository.createDialog" />
 
     <div :dir="dir">
-      <AppBar pageTitle="provinces" />
+        <AppBar pageTitle="provinces" />
 
-      <!-- Divider between AppBar and content -->
-       
-      <v-divider :thickness="1" class="border-opacity-100 "></v-divider>
+        <!-- Divider between AppBar and content -->
 
-      <!-- Search & Buttons Section -->
-      <div class="pt-6 pb-6 d-flex justify-space-between">
-        <div class="text-field w-25">
-          <v-text-field color="primary" density="compact" variant="outlined" :label="t('search')"
-            append-inner-icon="mdi-magnify" hide-details v-model="ProvinceRepository.provinceSearch"
-            class="search-field"></v-text-field>
+        <v-divider :thickness="1" class="border-opacity-100"></v-divider>
+
+        <!-- Search & Buttons Section -->
+        <div class="pt-6 pb-6 d-flex justify-space-between">
+            <div class="text-field w-25">
+                <v-text-field
+                    color="primary"
+                    density="compact"
+                    variant="outlined"
+                    :label="t('search')"
+                    append-inner-icon="mdi-magnify"
+                    hide-details
+                    v-model="ProvinceRepository.provinceSearch"
+                    class="search-field"
+                ></v-text-field>
+            </div>
+
+            <div>
+                &nbsp;
+                <v-btn
+                    @click="CreateDialogShow"
+                    color="primary"
+                    variant="flat"
+                    class="px-6"
+                >
+                    {{ $t("create") }}
+                </v-btn>
+            </div>
         </div>
 
-        <div>
-          &nbsp;
-          <v-btn @click="CreateDialogShow" color="primary" variant="flat" class="px-6">
-            {{ $t('create') }}
-          </v-btn>
-        </div>
-      </div>
-
-      <!-- Data Table Section -->
-      <v-data-table-server 
-      :dir="dir"
-      v-model:items-per-page="ProvinceRepository.itemsPerPage" :headers="headers"
-        :items-length="ProvinceRepository.totalItems" :items="ProvinceRepository.provinces"
-        :loading="ProvinceRepository.loading" :search="ProvinceRepository.provinceSearch"
-        @update:options="ProvinceRepository.FetchProvinces" class="w-100 mx-auto" hover>
-        <template v-slot:item.action="{ item }">
-
-          <v-card flat fluid >
-            <button @click="edit(item)" class="cursor-pointer  pb-3"> <v-icon
-                color="tealColor">mdi-square-edit-outline</v-icon>
-            </button>
-            <button @click="deleteItem(item)" class="cursor-pointer">
-              <v-icon color="error">mdi-delete-outline</v-icon>
-
-            </button>
-          </v-card>
-          <!-- <v-list>
+        <!-- Data Table Section -->
+        <v-data-table-server
+            :dir="dir"
+            v-model:items-per-page="ProvinceRepository.itemsPerPage"
+            :headers="headers"
+            :items-length="ProvinceRepository.totalItems"
+            :items="ProvinceRepository.provinces"
+            :loading="ProvinceRepository.loading"
+            :search="ProvinceRepository.provinceSearch"
+            @update:options="ProvinceRepository.FetchProvinces"
+            class="w-100 mx-auto"
+            hover
+        >
+            <template #bottom>
+                <div class="d-flex align-center justify-end pa-2" >
+                    <span class="mx-2">{{
+                        $t("pagination.items_per_page")
+                    }}</span>
+                    <v-select
+                        v-model="ProvinceRepository.itemsPerPage"
+                        :items="[
+                            { value: 5, text: '5' },
+                            { value: 10, text: '10' },
+                            { value: 25, text: '25' },
+                            { value: 50, text: '50' },
+                            { value: -1, text: $t('pagination.all') },
+                        ]"
+                        item-title="text"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        style="max-width: 100px"
+                    ></v-select>
+                </div>
+            </template>
+            <template v-slot:item.action="{ item }">
+                <v-card flat fluid>
+                    <button @click="edit(item)" class="cursor-pointer pb-3">
+                        <v-icon color="tealColor"
+                            >mdi-square-edit-outline</v-icon
+                        >
+                    </button>
+                    <button @click="deleteItem(item)" class="cursor-pointer">
+                        <v-icon color="error">mdi-delete-outline</v-icon>
+                    </button>
+                </v-card>
+                <!-- <v-list>
             <v-list-item>
               <v-list-item-title @click="edit(item)" class="cursor-pointer  pb-3">
                 <v-icon color="tealColor">mdi-square-edit-outline</v-icon>
@@ -54,50 +95,50 @@
               </v-list-item-title>
             </v-list-item>
           </v-list> -->
-        </template>
-      </v-data-table-server>
+            </template>
+        </v-data-table-server>
     </div>
 </template>
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
-import {computed } from "vue";
+import { computed } from "vue";
 import { useProvinceRepository } from "@/store/ProvinceRepository";
 import CreateProvince from "./CreateProvince.vue";
 import { useI18n } from "vue-i18n";
-const { t,locale } = useI18n();
+const { t, locale } = useI18n();
 const dir = computed(() => {
-  return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
+    return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
 });
 
 const ProvinceRepository = useProvinceRepository();
 
 const CreateDialogShow = () => {
-  ProvinceRepository.province = {};
-  ProvinceRepository.isEditMode = false;
-  ProvinceRepository.createDialog = true;
+    ProvinceRepository.province = {};
+    ProvinceRepository.isEditMode = false;
+    ProvinceRepository.createDialog = true;
 };
 
 const edit = (item) => {
-  ProvinceRepository.isEditMode = true;
-  ProvinceRepository.province = {};
-  ProvinceRepository.FetchProvince(item.id)
-    .then(() => {
-      ProvinceRepository.createDialog = true;
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
+    ProvinceRepository.isEditMode = true;
+    ProvinceRepository.province = {};
+    ProvinceRepository.FetchProvince(item.id)
+        .then(() => {
+            ProvinceRepository.createDialog = true;
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
 };
 
 const deleteItem = async (item) => {
-  await ProvinceRepository.DeleteProvince(item.id);
+    await ProvinceRepository.DeleteProvince(item.id);
 };
 
-const headers = [
-  { title: "Name", key: "name", align: "start", sortable: false },
-  { title: "Action", key: "action", align: "end", sortable: false },
-];
+const headers = computed(() => [
+    { title: t("name"), key: "name", align: "start", sortable: false },
+    { title: t("Action"), key: "action", align: "end", sortable: false },
+]);
 </script>
 
 <style scoped></style>

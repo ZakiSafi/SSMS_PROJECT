@@ -218,11 +218,21 @@ const reportItems = [
         icon: "mdi-circle-medium",
         value:"department-base-graduation"
     }
-    
+
 ];
 </script>
 
 <style scoped>
+
+/* Add RTL specific styles */
+[dir="rtl"] .submenu-item {
+    padding-right: 32px !important;
+}
+
+[dir="rtl"] :deep(.v-list-group__items) {
+    margin-right: 0 !important;
+    margin-left: 16px !important;
+}
 .sidebar-container {
     height: 100vh;
     background-color: #f8f9fa;

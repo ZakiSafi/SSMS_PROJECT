@@ -13,12 +13,34 @@
         "university_report": "University Report",
         "university_graduation_report": "University Graduation Report",
         "student_teacher_ratio": "Student Teacher Ratio",
-        "university_classes": "University Classes"
+        "university_classes": "University Classes",
+        "jawad": "Jawad Report",
+        "fawad": "Fawad Report",
+        "faculty_graduation": "Faculty Graduation Report",
+        "department_base_graduation": "Department Based Graduation Report"
     },
     "user": {
         "name": "Zakiullah Safi"
     },
+    "form": {
+        "create": "Create",
+        "update": "Update",
+        "submit": "Submit",
+        "name": "Name",
+        "close": "Close"
+    },
+    "validation": {
+        "required": "This field is required",
+        "valid_name": "Please enter a valid name"
+    },
+
+    "pagination": {
+    "items_per_page": "Items per page",
+    "all": "All"
+  },
+
     "name": "name",
+    "Action": "Action",
     "dashboard": "Dashboard",
     "students": "Students",
     "Total Student": "Total Student",
