@@ -35,7 +35,30 @@
         class="w-100 mx-auto"
         hover
         >
-
+        <!-- item per page controlling -->
+        <template #bottom>
+                <div class="d-flex align-center justify-end pa-2" >
+                    <span class="mx-2">{{
+                        $t("pagination.items_per_page")
+                    }}</span>
+                    <v-select
+                        v-model="FacultyRepository.itemsPerPage"
+                        :items="[
+                            { value: 5, text: '5' },
+                            { value: 10, text: '10' },
+                            { value: 25, text: '25' },
+                            { value: 50, text: '50' },
+                            { value: -1, text: $t('pagination.all') },
+                        ]"
+                        item-title="text"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        style="max-width: 100px"
+                    ></v-select>
+                </div>
+            </template>
         <!-- Action Slot -->
             <template v-slot:item.action="{ item }">
                 <v-menu>
@@ -99,10 +122,10 @@ const deleteItem = async (item) => {
 };
 
 
-const headers = [
-  { title: "Academic Year", key: "academic_year", align: "start", sortable: false },
-  { title: "University", key: "university.name", align: "center", sortable: false },
-  { title: t("total_teachers"), key: "total_teachers", align: "center", sortable: false },
-  { title: "Action", key: "action", align: "end", sortable: false },
-];
+const headers = computed(()=>[
+  { title: t("Academic Year"), key: "academic_year", align: "start", sortable: false },
+  { title: t("University"), key: "university.name", align: "center", sortable: false },
+  { title: t("Total Teachers"), key: "total_teachers", align: "center", sortable: false },
+  { title: t("Action"), key: "action", align: "end", sortable: false },
+]);
 </script>

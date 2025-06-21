@@ -1,5 +1,5 @@
 <template>
-    <div dir="rtl">
+    <div :dir="dir">
         <v-dialog
             transition="dialog-top-transition"
             width="45rem"
@@ -11,7 +11,11 @@
                         class="px-2 pt-4 d-flex justify-space-between"
                     >
                         <h2 class="font-weight-bold pl-4">
-                            {{ StudentStatisticsRepository.isEditMode ? "Update" : "Create" }}
+                            {{
+                                StudentStatisticsRepository.isEditMode
+                                    ? $t("form.update")
+                                    : $t("create")
+                            }}
                         </h2>
                         <v-btn variant="text" @click="isActive.value = false">
                             <v-icon>mdi-close</v-icon>
@@ -21,27 +25,33 @@
                     <v-divider class="border-opacity-100 mx-6"></v-divider>
 
                     <v-card-text>
-                        <v-form ref="formRef" class="pt-4">
+                        <v-form
+                            ref="formRef"
+                            class="pt-4"
+                            v-model="formIsValid"
+                        >
                             <v-row dense>
                                 <!-- Row 1 -->
                                 <v-col cols="6">
-                                        <DatePicker
-                                            v-model="formData.academic_year"
-                                            format="jYYYY"
-                                            type="year"
-                                            placeholder="Select year"
-                                            rounded
-                                        />
-                                    
+                                    <DatePicker
+                                        v-model="formData.academic_year"
+                                        format="jYYYY"
+                                        type="year"
+                                        :placeholder="$t('form.select_year')"
+                                        rounded
+                                        :rules="[rules.required]"
+                                    />
                                 </v-col>
 
                                 <v-col cols="6">
                                     <v-combobox
                                         v-model="formData.university_id"
-                                        :items="StudentStatisticsRepository.universities"
+                                        :items="
+                                            StudentStatisticsRepository.universities
+                                        "
                                         item-title="name"
                                         item-value="id"
-                                        label="University"
+                                        :label="$t('University')"
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
@@ -53,10 +63,12 @@
                                 <v-col cols="6">
                                     <v-select
                                         v-model="formData.faculty_id"
-                                        :items="StudentStatisticsRepository.faculties"
+                                        :items="
+                                            StudentStatisticsRepository.faculties
+                                        "
                                         item-title="name"
                                         item-value="id"
-                                        label="Faculty"
+                                        :label="$t('Faculty')"
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
@@ -69,7 +81,7 @@
                                         :items="filteredDepartments"
                                         item-title="name"
                                         item-value="id"
-                                        label="Department"
+                                        :label="$t('Department')"
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
@@ -84,7 +96,7 @@
                                         :items="classOptions"
                                         item-title="name"
                                         item-value="name"
-                                        label="Class"
+                                        :label="$t('Class')"
                                         variant="outlined"
                                         density="compact"
                                     />
@@ -94,7 +106,7 @@
                                     <v-select
                                         v-model="formData.semester_number"
                                         :items="availableSemesters"
-                                        label="Semester"
+                                        :label="$t('Semester')"
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
@@ -106,7 +118,10 @@
                                     <v-select
                                         v-model="formData.student_type"
                                         :items="['new', 'current', 'graduated']"
-                                        label="Student Type"
+                                        :item-title="
+                                            (item) => $t(`student_type.${item}`)
+                                        "
+                                        :label="$t('Student Type')"
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
@@ -117,7 +132,10 @@
                                     <v-select
                                         v-model="formData.shift"
                                         :items="['day', 'night']"
-                                        label="Shift"
+                                        :item-title="
+                                            (item) => $t(`shift.${item}`)
+                                        "
+                                        :label="$t('Shift')"
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
@@ -128,7 +146,10 @@
                                     <v-select
                                         v-model="formData.season"
                                         :items="['spring', 'autumn']"
-                                        label="Season"
+                                        :item-title="
+                                            (item) => $t(`season.${item}`)
+                                        "
+                                        :label="$t('Season')"
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
@@ -139,22 +160,28 @@
                                 <v-col cols="6">
                                     <v-text-field
                                         v-model="formData.male_total"
-                                        label="Total Male Students"
+                                        :label="$t('Total Male Students')"
                                         type="number"
                                         variant="outlined"
                                         density="compact"
-                                        :rules="[rules.required]"
+                                        :rules="[
+                                            rules.required,
+                                            rules.positiveNumber,
+                                        ]"
                                     />
                                 </v-col>
 
                                 <v-col cols="6">
                                     <v-text-field
                                         v-model="formData.female_total"
-                                        label="Total Female Students"
+                                        :label="$t('Total Female Students')"
                                         type="number"
                                         variant="outlined"
                                         density="compact"
-                                        :rules="[rules.required]"
+                                        :rules="[
+                                            rules.required,
+                                            rules.positiveNumber,
+                                        ]"
                                     />
                                 </v-col>
                             </v-row>
@@ -163,7 +190,11 @@
 
                     <div class="d-flex flex-row-reverse mb-6 mx-6">
                         <v-btn color="primary" class="px-4" @click="save">
-                            {{ StudentStatisticsRepository.isEditMode ? "Update" : "Submit" }}
+                            {{
+                                StudentStatisticsRepository.isEditMode
+                                    ? $t("form.update")
+                                    : $t("form.submit")
+                            }}
                         </v-btn>
                     </div>
                 </v-card>
@@ -177,6 +208,10 @@ import { ref, reactive, onMounted, watch, computed } from "vue";
 import { useStudentStatisticRepository } from "@/store/StudentStatisticRepository";
 import persianDate from "persian-date";
 import DatePicker from "vue3-persian-datetime-picker";
+import { useI18n } from "vue-i18n";
+
+const { t, locale } = useI18n();
+const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
 
 const StudentStatisticsRepository = useStudentStatisticRepository();
 
@@ -184,13 +219,19 @@ const StudentStatisticsRepository = useStudentStatisticRepository();
 const currentYear = ref(new persianDate().year().toString());
 
 const formRef = ref(null);
+const formIsValid = ref(false);
 
 const formData = reactive({
     id: StudentStatisticsRepository.statistic.id,
-    academic_year: StudentStatisticsRepository.statistic.academic_year || currentYear.value,
-    university_id: StudentStatisticsRepository.statistic.university?.university_id || null,
-    faculty_id: StudentStatisticsRepository.statistic.faculty?.faculty_id || null,
-    department_id: StudentStatisticsRepository.statistic.department?.department_id || null,
+    academic_year:
+        StudentStatisticsRepository.statistic.academic_year ||
+        currentYear.value,
+    university_id:
+        StudentStatisticsRepository.statistic.university?.university_id || null,
+    faculty_id:
+        StudentStatisticsRepository.statistic.faculty?.faculty_id || null,
+    department_id:
+        StudentStatisticsRepository.statistic.department?.department_id || null,
     classroom: StudentStatisticsRepository.statistic.classroom || null,
     shift: StudentStatisticsRepository.statistic.shift || "day",
     season: StudentStatisticsRepository.statistic.season || "spring",
@@ -200,7 +241,6 @@ const formData = reactive({
     student_type: StudentStatisticsRepository.statistic.student_type || "new",
 });
 
-
 // Filter departments based on selected faculty
 const filteredDepartments = computed(() => {
     return StudentStatisticsRepository.departments.filter(
@@ -208,15 +248,18 @@ const filteredDepartments = computed(() => {
     );
 });
 
-watch(() => formData.faculty_id, () => {
-    formData.department_id = null;
-});
+watch(
+    () => formData.faculty_id,
+    () => {
+        formData.department_id = null;
+    }
+);
 
 const classOptions = [
-    { id: 1, name: "Class 1", semesters: [1, 2] },
-    { id: 2, name: "Class 2", semesters: [3, 4] },
-    { id: 3, name: "Class 3", semesters: [5, 6] },
-    { id: 4, name: "Class 4", semesters: [7, 8] },
+    { id: 1, name: t("class.class1"), semesters: [1, 2] },
+    { id: 2, name: t("class.class2"), semesters: [3, 4] },
+    { id: 3, name: t("class.class3"), semesters: [5, 6] },
+    { id: 4, name: t("class.class4"), semesters: [7, 8] },
 ];
 
 const availableSemesters = ref([]);
@@ -235,15 +278,19 @@ onMounted(() => {
 });
 
 const rules = {
-    required: (v) => !!v || "This field is required",
+    required: (v) => !!v || t("validation.required"),
+    positiveNumber: (v) => v >= 0 || t("validation.positive_number"),
 };
 
 const save = async () => {
-    const isValid = await formRef.value.validate();
-    if (!isValid) return;
+    const { valid } = await formRef.value.validate();
+    if (!valid) return;
 
     if (StudentStatisticsRepository.isEditMode) {
-        await StudentStatisticsRepository.updateStatistic(formData, formData.id);
+        await StudentStatisticsRepository.updateStatistic(
+            formData,
+            formData.id
+        );
     } else {
         await StudentStatisticsRepository.createStatistic(formData);
     }

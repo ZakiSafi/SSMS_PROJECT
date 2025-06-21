@@ -35,6 +35,31 @@
       class="w-100 mx-auto"
       hover
     >
+    <!-- code for controlling the footer or item per page -->
+    <template #bottom>
+                <div class="d-flex align-center justify-end pa-2" >
+                    <span class="mx-2">{{
+                        $t("pagination.items_per_page")
+                    }}</span>
+                    <v-select
+                        v-model="DepartmentRepository.itemsPerPage"
+                        :items="[
+                            { value: 5, text: '5' },
+                            { value: 10, text: '10' },
+                            { value: 25, text: '25' },
+                            { value: 50, text: '50' },
+                            { value: -1, text: $t('pagination.all') },
+                        ]"
+                        item-title="text"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        style="max-width: 100px"
+                    ></v-select>
+                </div>
+            </template>
+
       <!-- Action Slot -->
       <template v-slot:item.action="{ item }">
         <v-menu>
@@ -45,11 +70,11 @@
             <v-list-item>
               <v-list-item-title @click="edit(item)" class="cursor-pointer pb-3">
                 <v-icon color="tealColor">mdi-square-edit-outline</v-icon>
-                Edit
+                {{$t('Edit')}}
               </v-list-item-title>
               <v-list-item-title @click="deleteItem(item)" class="cursor-pointer pb-3">
                 <v-icon color="error">mdi-delete-outline</v-icon>
-                Delete
+                {{$t('Delete')}}
               </v-list-item-title>
             </v-list-item>
           </v-list>
@@ -95,11 +120,11 @@ const deleteItem = async (item) => {
   await DepartmentRepository.DeleteDepartment(item.id);
 };
 
-const headers = [
-  { title: "Name", key: "name", align: "start", sortable: false },
-  { title: "Faculty", key: "faculty.name", align: "center", sortable: false },
-  { title: "Action", key: "action", align: "end", sortable: false },
-];
+const headers =computed(()=> [
+  { title: t("Name"), key: "name", align: "start", sortable: false },
+  { title: t("Faculty"), key: "faculty.name", align: "center", sortable: false },
+  { title: t("Action"), key: "action", align: "end", sortable: false },
+]);
 </script>
 
 <style scoped></style>

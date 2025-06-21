@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\reports;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Models\StudentStatistic;
 use Illuminate\Support\Facades\DB;
-
 
 class StudentsTypeBasedController extends Controller
 {
@@ -14,44 +13,91 @@ class StudentsTypeBasedController extends Controller
     {
         $year = $request->query('year');
         $shift = $request->query('shift');
-        $type = $request->query('type');
+        $perPage = $request->query('perPage', 10);
 
+        // Fetch all types in one query
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
             ->select(
+                'student_statistics.faculty_id',
+                'student_statistics.university_id',
                 'student_statistics.academic_year as year',
-                'universities.name as university',
-                'faculties.name as faculty',
                 'student_statistics.shift as shift',
                 'student_statistics.student_type as type',
-                DB::raw('SUM(male_total) as Total_Males'),
-                DB::raw('SUM(female_total) as Total_Females'),
-                DB::raw('SUM(male_total + female_total) as Total_Students'),
-            DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
-            DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage'),
+                'universities.name as university',
+                'faculties.name as faculty',
+                DB::raw('SUM(student_statistics.male_total) as males'),
+                DB::raw('SUM(student_statistics.female_total) as females'),
+                DB::raw('SUM(student_statistics.female_total + student_statistics.male_total) as total')
             );
-            if ($shift && $shift !== 'all') {
-            $query->where('student_statistics.shift', $shift);
-            };
 
-            if ($year && $year !== 'all') {
-            $query->where('student_statistics.academic_year', $year);
-            };
+        if ($shift && $shift !== 'all') {
+            $query->whereRaw('LOWER(student_statistics.shift) = ?', [strtolower(trim($shift))]);
+        }
 
-            if ($type && $type !== 'all') {
-            $query->where('student_statistics.student_type', $type);
-            }
+        if ($year && $year !== 'all') {
+            $query->where('student_statistics.academic_year', intval($year));
+        }
 
-        $statistics = $query->groupBy('student_statistics.academic_year', 'universities.name', 'faculties.name', 'student_statistics.shift',
-            'student_statistics.student_type')
-            ->orderBy('student_statistics.academic_year', 'desc')
+        $data = $query
+            ->groupBy(
+                'student_statistics.academic_year',
+                'student_statistics.student_type',
+                'student_statistics.shift',
+                'student_statistics.faculty_id',
+                'student_statistics.university_id',
+                'faculties.name',
+                'universities.name'
+            )
             ->get();
-            if($statistics->isEmpty()){
-                return response()->json([
-                    'message' => 'No data found for the given criteria.'
-                ], 404);
 
-            }
-            return response()->json($statistics);
+        // Group by university and faculty
+        $grouped = $data->groupBy('university')->map(function ($facultyStats, $university) {
+            return [
+                'university' => $university,
+                'faculties' => $facultyStats->groupBy('faculty')->map(function ($types) {
+                    $result = [
+                        'faculty' => $types->first()->faculty,
+                        'students' => [
+                            'newly_enrolled' => ['males' => 0, 'females' => 0, 'total' => 0],
+                            'graduated' => ['males' => 0, 'females' => 0, 'total' => 0],
+                            'current' => ['males' => 0, 'females' => 0, 'total' => 0],
+                        ]
+                    ];
+
+                    foreach ($types as $type) {
+                        if ($type->type === 'current') {
+                            $result['students']['current'] = [
+                                'males' => $type->males,
+                                'females' => $type->females,
+                                'total' => $type->total,
+                            ];
+                        } elseif ($type->type === 'graduated') {
+                            $result['students']['graduated'] = [
+                                'males' => $type->males,
+                                'females' => $type->females,
+                                'total' => $type->total,
+                            ];
+                        } elseif ($type->type === 'new') {
+                            $result['students']['new'] = [
+                                'males' => $type->males,
+                                'females' => $type->females,
+                                'total' => $type->total,
+                            ];
+                        }
+                    }
+
+                    return $result;
+                })->values(),
+            ];
+        })->values();
+
+        if ($grouped->isEmpty()) {
+            return response()->json(['message' => 'No data found'], 404);
+        }
+
+        return response()->json([
+            'data' => $grouped,
+        ]);
     }
 }

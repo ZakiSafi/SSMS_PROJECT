@@ -5,6 +5,7 @@
         "university": "University",
         "faculty": "Faculty",
         "departments": "Departments",
+        "teachers": "Teachers",
         "student_statistic": "Student Statistic",
         "reports": "Reports",
         "settings": "Settings",
@@ -27,7 +28,8 @@
         "update": "Update",
         "submit": "Submit",
         "name": "Name",
-        "close": "Close"
+        "close": "Close",
+        "select_year": "Select Year"
     },
     "validation": {
         "required": "This field is required",
@@ -35,19 +37,23 @@
     },
 
     "pagination": {
-    "items_per_page": "Items per page",
-    "all": "All"
-  },
+        "items_per_page": "Items per page",
+        "all": "All"
+    },
 
-    "name": "name",
+    "Name": "Name",
     "Action": "Action",
+    "Academic Year": "Academic Year",
     "dashboard": "Dashboard",
     "students": "Students",
     "Total Student": "Total Student",
+    "Total Teachers": " Total Teachers",
+
     "provinces": "Provinces",
     "faculties": "Faculties",
     "departments": "Departments",
     "classrooms": "Classrooms",
+    "Classroom": "Classroom",
     "statistics": "Statistics",
     "student_statistic": "Student Statistics",
     "language": "Language",
@@ -55,10 +61,12 @@
     "University Classes": "University Classes",
     "Select or Type Year": "Select or Type Year",
     "Select Shift": "Select Shift",
+    "Shift": " Shift",
     "day": "day",
     "night": "night",
     "Teacher": "Teacher",
     "University": "University",
+    "Universities": "Universities",
     "Faculty": "Faculty",
     "Class": "Class",
     "Male": "male",
@@ -68,7 +76,12 @@
     "search": "search",
     "create": "create",
     "select_university": "select university",
-    "select_season": "select season",
+    "Season": "season",
+    "season": "season",
+    "semester": "semester",
+    "Semester": "Semester",
+    "Type": "Type",
+    "type": "type",
     "all": "all",
     "DBGR": "Department Based Graduation Report",
     "total_teachers": "Total Teachers",
@@ -78,5 +91,10 @@
     "total_females": "Total Females",
     "total_students": "Total Students",
     "male_percentage": "Male Percentage",
-    "female_percentage": "Female Percentage"
+    "female_percentage": "Female Percentage",
+
+    "province": "Province",
+    "university type": "University Type",
+    "Edit": "Edit",
+    "Delete": "Delete"
 }

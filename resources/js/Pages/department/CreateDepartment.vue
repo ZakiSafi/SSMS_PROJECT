@@ -10,7 +10,7 @@
                 <v-card class="px-3">
                     <v-card-title class="px-2 pt-4 d-flex justify-space-between">
                         <h2 class="font-weight-bold pl-4">
-                            {{ DepartmentRepository.isEditMode ? "Update" : "Create" }}
+                            {{ DepartmentRepository.isEditMode ? $t("form.update") : $t("form.create") }}
                         </h2>
                         <v-btn variant="text" @click="isActive.value = false">
                             <v-icon>mdi-close</v-icon>
@@ -23,7 +23,7 @@
                             <v-text-field
                                 v-model="formData.name"
                                variant="outlined"
-                                label="Name"
+                                :label="$t('Name')"
                                 class="pb-4"
                                 density="compact"
                                 :rules="[rules.required]"
@@ -34,7 +34,7 @@
                                 item-value="id"
                                 item-title="name"
                                variant="outlined"
-                                label="Faculty"
+                               :label="$t('Faculty')"
                                 density="compact"
                                 class="pb-4"
                                 :rules="[rules.required]"
@@ -44,7 +44,7 @@
 
                     <div class="d-flex flex-row-reverse mb-6 mx-6">
                         <v-btn color="primary" class="px-4" @click="save">
-                            {{ DepartmentRepository.isEditMode ? "Update" : "Submit" }}
+                            {{ DepartmentRepository.isEditMode ? $t("form.update") : $t( "form.submit") }}
                         </v-btn>
                     </div>
                 </v-card>

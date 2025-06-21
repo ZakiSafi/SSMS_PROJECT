@@ -5,6 +5,7 @@
         "university": "پوهنتون",
         "faculty": "پوهنځی",
         "departments": "دیپارتمنت ها",
+        "teachers": "استادان",
         "student_statistic": "آمار محصلین",
         "reports": "راپورها",
         "users": "کاربران",
@@ -27,7 +28,8 @@
         "update": "آپدیت",
         "submit": "ثبت",
         "name": "اسم",
-        "close": "بستن"
+        "close": "بستن",
+        "select_year": "سال را انتخاب کنید"
     },
     "validation": {
         "required": "این فیلد الزامی است",
@@ -39,15 +41,18 @@
         "all": "همه"
     },
 
-    "name": "اسم",
+    "Name": "اسم",
     "Action": "عمل",
+    "Academic Year": "سال تعلیمی",
     "Dashboard": "داشبورد",
     "students": "محصلین",
     "Total Student": "مجموع محصل",
+    "Total Teachers": "مجموع استادان",
     "Faculty": "پوهنځی",
     "provinces": "ولایات",
-    "Department": "دیپارتمنت ها",
+    "Department": "دیپارتمنت ",
     "classrooms": "صنف ها",
+    "Classroom": "صنف ",
     "statistics": "احصایه",
     "Teacher": "استاد",
     "student_statistic": "آمار محصلین",
@@ -57,9 +62,12 @@
     "logout": "خروج",
     "Select or Type Year": "سال را انتخاب یا تایپ کنید",
     "Select Shift": "شیفت را انتخاب کنید",
+    "Shift": "شیفت",
     "day": "روز",
     "night": "شب",
     "University": "پوهنتون",
+    "Universities": "پوهنتون ها",
+
     "Class": "صنف",
     "Classes": "صنوف",
     "Male": "زکور",
@@ -69,6 +77,12 @@
     "create": "ایجاد کردن",
     "select_university": "پوهنتون را انتخاب کنید",
     "select_season": "فصل را انتخاب کنید",
+    "Season": "فصل",
+    "season": "فصل",
+    "semester": "سمستر",
+    "Semester": "سمستر",
+    "type": "نوعیت",
+    "Type": "نوعیت",
     "spring": "بهاری",
     "autumn": "خزانی",
     "all": "همه",
@@ -79,5 +93,10 @@
     "total_females": "مجموع اناث",
     "total_students": "مجموع عمومی",
     "male_percentage": "فیصدی زکور",
-    "female_percentage": "فیصدی اناث "
+    "female_percentage": "فیصدی اناث ",
+    "Province": "ولایت",
+    "university type": "نوعیت پوهنتون",
+    "University Type": "نوعیت پوهنتون",
+    "Edit": "ایدیت",
+    "Delete": "دیلیت"
 }
