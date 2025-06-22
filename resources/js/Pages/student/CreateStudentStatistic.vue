@@ -117,10 +117,13 @@
                                 <v-col cols="6">
                                     <v-select
                                         v-model="formData.student_type"
-                                        :items="['new', 'current', 'graduated']"
-                                        :item-title="
-                                            (item) => $t(`student_type.${item}`)
-                                        "
+                                        :items="[
+                                            { value: 'new', title: $t('student_type.new') },
+                                            { value: 'current', title: $t('student_type.current') },
+                                            { value: 'graduated', title: $t('student_type.graduated') }
+                                        ]"
+                                        item-title="title"
+                                        item-value="value"
                                         :label="$t('Student Type')"
                                         variant="outlined"
                                         density="compact"
@@ -131,10 +134,12 @@
                                 <v-col cols="3">
                                     <v-select
                                         v-model="formData.shift"
-                                        :items="['day', 'night']"
-                                        :item-title="
-                                            (item) => $t(`shift.${item}`)
-                                        "
+                                        :items="[
+                                            {value: 'day', title:$t('day')},
+                                            {value: 'night', title:$t('night')},
+                                            ]"
+                                        :item-title="title"
+                                        :item-value ="value"
                                         :label="$t('Shift')"
                                         variant="outlined"
                                         density="compact"
@@ -147,7 +152,7 @@
                                         v-model="formData.season"
                                         :items="['spring', 'autumn']"
                                         :item-title="
-                                            (item) => $t(`season.${item}`)
+                                            (item) => $t(`${item}`)
                                         "
                                         :label="$t('Season')"
                                         variant="outlined"

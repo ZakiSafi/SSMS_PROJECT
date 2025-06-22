@@ -41,11 +41,22 @@
         "all": "همه"
     },
 
+    "student_type": {
+        "current": "برحال",
+        "Current": "برحال",
+        "new": "جدیدالشمول",
+        "New": "جدیدالشمول",
+        "graduated": "فارغان",
+        "Graduated": "فارغان"
+    },
+
     "Name": "اسم",
     "Action": "عمل",
     "Academic Year": "سال تعلیمی",
     "Dashboard": "داشبورد",
     "students": "محصلین",
+    "Total Male Students": "مجموع محصلین ذکور",
+    "Total Female Students": "مجموع محصلین اناث",
     "Total Student": "مجموع محصل",
     "Total Teachers": "مجموع استادان",
     "Faculty": "پوهنځی",
@@ -81,6 +92,8 @@
     "season": "فصل",
     "semester": "سمستر",
     "Semester": "سمستر",
+    "Student Type": "نوعیت محصل",
+    "student type": "نوعیت محصل",
     "type": "نوعیت",
     "Type": "نوعیت",
     "spring": "بهاری",
@@ -98,5 +111,7 @@
     "university type": "نوعیت پوهنتون",
     "University Type": "نوعیت پوهنتون",
     "Edit": "ایدیت",
-    "Delete": "دیلیت"
+    "Delete": "دیلیت",
+    "ST Ratio": "نسبت محصل به استاد",
+    "StudentTeacherRatio": "نسبت محصل به استاد"
 }

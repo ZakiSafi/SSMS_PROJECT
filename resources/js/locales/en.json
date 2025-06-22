@@ -41,11 +41,22 @@
         "all": "All"
     },
 
+    "student_type": {
+        "current": "current",
+        "Current": "Current",
+        "new": "new",
+        "New": "New",
+        "graduated": "graduated",
+        "Graduated": "Graduated"
+    },
+
     "Name": "Name",
     "Action": "Action",
     "Academic Year": "Academic Year",
     "dashboard": "Dashboard",
     "students": "Students",
+    "Total Male Students": "Total Male Students",
+    "Total Female Students": "Total Female Students",
     "Total Student": "Total Student",
     "Total Teachers": " Total Teachers",
 
@@ -80,6 +91,8 @@
     "season": "season",
     "semester": "semester",
     "Semester": "Semester",
+    "Student Type": "Student Type",
+    "student type": "student type",
     "Type": "Type",
     "type": "type",
     "all": "all",
@@ -96,5 +109,7 @@
     "province": "Province",
     "university type": "University Type",
     "Edit": "Edit",
-    "Delete": "Delete"
+    "Delete": "Delete",
+    "ST Ratio" : "Student Teacher Ratio",
+    "StudentTeacherRatio" : "Student Teacher Ratio"
 }

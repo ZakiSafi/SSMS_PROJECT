@@ -1,6 +1,6 @@
 <template>
   <div  :dir="dir">
-    <AppBar pageTitle="StudentTeacherRatio" />
+    <AppBar :pageTitle="$t('StudentTeacherRatio')" />
     <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
    <div class="w-25 pt-6 ">
@@ -8,7 +8,7 @@
     class="mr-4"
     v-model="ReportRepository.date"
     :items="yearRange"
-    label="Select or Type Year"
+    :label="$t('Select or Type Year')"
     variant="outlined"
     density="compact"
     @update:modelValue="onDateChange"
@@ -28,7 +28,31 @@
         "
         class="w-100 mx-auto"
         hover
-    ></v-data-table-server>
+    >
+    <template #bottom>
+                <div class="d-flex align-center justify-end pa-2" >
+                    <span class="mx-2">{{
+                        $t("pagination.items_per_page")
+                    }}</span>
+                    <v-select
+                        v-model="ReportRepository.itemsPerPage"
+                        :items="[
+                            { value: 5, text: '5' },
+                            { value: 10, text: '10' },
+                            { value: 25, text: '25' },
+                            { value: 50, text: '50' },
+                            { value: -1, text: $t('pagination.all') },
+                        ]"
+                        item-title="text"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        style="max-width: 100px"
+                    ></v-select>
+                </div>
+            </template>
+</v-data-table-server>
     </div>
 </template>
 
