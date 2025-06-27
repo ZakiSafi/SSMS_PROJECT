@@ -95,7 +95,7 @@
                     <template #activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                            :title="$t('menu.reports')"
+                            :title="$t('menu.currentStudents')"
                             prepend-icon="mdi-file-chart-outline"
                             class="menu-item"
                         />
@@ -103,7 +103,33 @@
 
                     <!-- Submenu Items -->
                     <v-list-item
-                        v-for="(item, index) in reportItems"
+                        v-for="(item, index) in currentStudents"
+                        :key="index"
+                        :to="item.to"
+                        :title="$t(`menu.${item.translationKey}`)"
+                        class="submenu-item"
+                        :value="item.value"
+                        :prepend-icon="item.icon"
+                        :class="{
+                            'v-list-item--active': route.path === item.to,
+                        }"
+                    />
+
+                <!-- Graduated Students -->
+                </v-list-group>
+                <v-list-group>
+                    <template #activator="{ props }">
+                        <v-list-item
+                            v-bind="props"
+                            :title="$t('menu.graduated_students')"
+                            prepend-icon="mdi-file-chart-outline"
+                            class="menu-item"
+                        />
+                    </template>
+
+                    <!-- Submenu Items -->
+                    <v-list-item
+                        v-for="(item, index) in graduatedStudents"
                         :key="index"
                         :to="item.to"
                         :title="$t(`menu.${item.translationKey}`)"
@@ -168,19 +194,14 @@ const settingItems = [
     },
 ];
 
-const reportItems = [
+const currentStudents = [
     {
         to: "/university-base-report",
         translationKey: "university_report",
         icon: "mdi-circle-medium",
         value: "university-base-report",
     },
-    {
-        to: "/university-graduation-report",
-        translationKey: "university_graduation_report",
-        icon: "mdi-circle-medium",
-        value: "university-graduation-report",
-    },
+   
     {
         to: "/student-teacher-ratio",
         translationKey: "student_teacher_ratio",
@@ -205,6 +226,19 @@ const reportItems = [
         icon: "mdi-circle-medium",
         value:"fawad"
     },
+
+];
+const graduatedStudents = [
+   
+    {
+        to: "/university-graduation-report",
+        translationKey: "university_graduation_report",
+        icon: "mdi-circle-medium",
+        value: "university-graduation-report",
+    },
+  
+  
+ 
 
     {
         to:"/faculty-graduation",

@@ -30,6 +30,8 @@ class StudentStatisticRequest extends FormRequest
             'male_total' => 'required|integer|min:0',
             'female_total' => 'required|integer|min:0',
             'student_type' => 'required|in:new,current,graduated',
+            "shift"=>"required|string|in:day,night",
+            "season"=>"required|string|in:spring,autumn",
         ];
     }
 }
