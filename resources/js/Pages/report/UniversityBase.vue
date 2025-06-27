@@ -10,7 +10,7 @@
             <v-combobox
                 v-model="ReportRepository.date"
                 :items="yearRange"
-                label="Select or Type Year"
+                :label="$t('Select or Type Year')"
                 variant="outlined"
                 density="compact"
                 :rules="[validateYearInput]"
@@ -27,7 +27,7 @@
                         { text: $t('public'), value: 'public' },
                         { text: $t('private'), value: 'private' },
                     ]"
-                    label="Select University Type"
+                    :label="$t('Select University Type')"
                     variant="outlined"
                     density="compact"
                     item-title="text"
@@ -39,10 +39,13 @@
             <div class="w-1/2 ml-4">
                 <v-select
                     v-model="ReportRepository.shift"
-                    :items="[{text:$t('day'), value: 'Day'}, {text:$t('night'), value: 'Night'}]"
-                    item-title = text
-                    item-value = value
-                    label="Select Shift"
+                    :items="[
+                        { text: $t('day'), value: 'Day' },
+                        { text: $t('night'), value: 'Night' },
+                    ]"
+                    item-title="text"
+                    item-value="value"
+                     :label="$t('Select Shift')"
                     variant="outlined"
                     density="compact"
                     :rules="[validateShift]"
@@ -62,7 +65,31 @@
         @update:options="onTableOptionsUpdate"
         class="w-100 mx-auto"
         hover
-    ></v-data-table-server>
+    >
+     <template #bottom>
+                <div class="d-flex align-center justify-end pa-2" >
+                    <span class="mx-2">{{
+                        $t("pagination.items_per_page")
+                    }}</span>
+                    <v-select
+                        v-model="ReportRepository.itemsPerPage"
+                        :items="[
+                            { value: 5, text: '5' },
+                            { value: 10, text: '10' },
+                            { value: 25, text: '25' },
+                            { value: 50, text: '50' },
+                            { value: -1, text: $t('pagination.all') },
+                        ]"
+                        item-title="text"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        style="max-width: 100px"
+                    ></v-select>
+                </div>
+            </template>
+            </v-data-table-server>
 </template>
 
 <script setup>
@@ -141,19 +168,26 @@ const validateShift = (value) => {
     return true;
 };
 
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 
 const headers = computed(() => [
-  { title: t("menu.university"), key: "university", align: "start", sortable: false },
-  { title: t("total_males"), key: "Total_Males", align: "center" },
-  { title: t("total_females"), key: "Total_Females", align: "center" },
-  { title: t("total_students"), key: "Total_Students", align: "center" },
-  { title: t("male_percentage"), key: "Male_Percentage", align: "center" },
-  { title: t("female_percentage"), key: "Female_Percentage", align: "center" },
-])
-
-
+    {
+        title: t("menu.university"),
+        key: "university",
+        align: "start",
+        sortable: false,
+    },
+    { title: t("total_males"), key: "Total_Males", align: "center" },
+    { title: t("total_females"), key: "Total_Females", align: "center" },
+    { title: t("total_students"), key: "Total_Students", align: "center" },
+    { title: t("male_percentage"), key: "Male_Percentage", align: "center" },
+    {
+        title: t("female_percentage"),
+        key: "Female_Percentage",
+        align: "center",
+    },
+]);
 </script>
 
 <style scoped></style>

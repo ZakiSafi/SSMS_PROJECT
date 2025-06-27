@@ -1,7 +1,7 @@
 <template>
     <CreateTeacher v-if="FacultyRepository.createDialog" />
     <div :dir="dir">
-        <AppBar pageTitle="Faculty" />
+        <AppBar pageTitle="menu.teachers" />
 
         <!-- Divider between AppBar and content -->
         <v-divider :thickness="1" class="border-opacity-100 "></v-divider>
@@ -69,11 +69,11 @@
                         <v-list-item>
                             <v-list-item-title @click="edit(item)" class="cursor-pointer pb-3">
                                 <v-icon color="tealColor">mdi-square-edit-outline</v-icon>
-                                Edit
+                                {{$t('Edit')}}
                             </v-list-item-title>
                             <v-list-item-title @click="deleteItem(item)" class="cursor-pointer">
                                 <v-icon color="error">mdi-delete-outline</v-icon>
-                                Delete
+                                 {{$t('Delete')}}
                             </v-list-item-title>
                         </v-list-item>
                     </v-list>

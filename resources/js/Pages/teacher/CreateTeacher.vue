@@ -10,7 +10,7 @@
                 <v-card class="px-3">
                     <v-card-title class="px-2 pt-4 d-flex justify-space-between">
                         <h2 class="font-weight-bold pl-4">
-                            {{ FacultyRepository.isEditMode ? "Update" : "Create" }}
+                            {{ FacultyRepository.isEditMode ? $t('form.update') : $t('create')  }}
                         </h2>
                         <v-btn variant="text" @click="isActive.value = false">
                             <v-icon>mdi-close</v-icon>
@@ -23,11 +23,10 @@
                             <v-row>
                                 <v-col cols="12">
                                     <DatePicker
-                                            v-model="formData.academic_year"
-                                            
+                                            v-model="formData.academic_year" 
                                             format="jYYYY"
                                             type="year"
-                                            placeholder="Select year"
+                                            :placeholder="$t('Select year')"
                                             rounded
                                         />
                                 </v-col>
@@ -35,7 +34,8 @@
                                  <v-text-field
                                 v-model="formData.total_teachers"
                                variant="outlined"
-                                label="Total Teachers"
+                                :label="$t('Total Teachers')"
+                              
                                 class="pb-4"
                                 density="compact"
                                 :rules="[rules.required,rules.number]"
@@ -48,7 +48,7 @@
                                 item-value="id"
                                 item-title="name"
                                variant="outlined"
-                                label="University"
+                                :label="$t('University')"
                                 density="compact"
                                 class="pb-4"
                                 :rules="[rules.required]"
@@ -64,7 +64,7 @@
 
                     <div class="d-flex flex-row-reverse mb-6 mx-6">
                         <v-btn color="primary" class="px-4" @click="save">
-                            {{ FacultyRepository.isEditMode ? "Update" : "Submit" }}
+                            {{ FacultyRepository.isEditMode ? $t('form.update')   : $t("form.submit") }}
                         </v-btn>
                     </div>
                 </v-card>
