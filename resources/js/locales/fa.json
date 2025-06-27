@@ -18,7 +18,9 @@
         "jawad": "راپور جاوید",
         "fawad": "راپور فواد",
         "faculty_graduation": "راپور فارغ‌التحصیلی پوهنځی",
-        "department_base_graduation": "راپور فارغ‌التحصیلی دیپارتمنت"
+        "department_base_graduation": "راپور فارغ‌التحصیلی دیپارتمنت",
+        "graduated_students": " راپور محصلین فارغ شده " ,
+        "currentStudents": "راپور محصلین برحال"
     },
     "user": {
         "name": "ذکی الله صافی"

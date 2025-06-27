@@ -8,6 +8,8 @@
         "teachers": "Teachers",
         "student_statistic": "Student Statistic",
         "reports": "Reports",
+        "graduated_students": "Graduated Students",
+        "currentStudents": "Current Students",
         "settings": "Settings",
         "users": "Users",
         "role_permissions": "Role Permissions",

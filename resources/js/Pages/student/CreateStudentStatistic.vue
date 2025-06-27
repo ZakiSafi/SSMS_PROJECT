@@ -220,7 +220,7 @@ const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
 
 const StudentStatisticsRepository = useStudentStatisticRepository();
 
-// Academic Year
+// currentYear
 const currentYear = ref(new persianDate().year().toString());
 
 const formRef = ref(null);
@@ -229,7 +229,7 @@ const formIsValid = ref(false);
 const formData = reactive({
     id: StudentStatisticsRepository.statistic.id,
     academic_year:
-        StudentStatisticsRepository.statistic.academic_year ||
+        StudentStatisticsRepository.statistic.academic_year?.toString() ||
         currentYear.value,
     university_id:
         StudentStatisticsRepository.statistic.university?.university_id || null,
@@ -261,10 +261,10 @@ watch(
 );
 
 const classOptions = [
-    { id: 1, name: t("class.class1"), semesters: [1, 2] },
-    { id: 2, name: t("class.class2"), semesters: [3, 4] },
-    { id: 3, name: t("class.class3"), semesters: [5, 6] },
-    { id: 4, name: t("class.class4"), semesters: [7, 8] },
+    { id: 1, name: t("class1"), semesters: [1, 2] },
+    { id: 2, name: t("class2"), semesters: [3, 4] },
+    { id: 3, name: t("class3"), semesters: [5, 6] },
+    { id: 4, name: t("class4"), semesters: [7, 8] },
 ];
 
 const availableSemesters = ref([]);
