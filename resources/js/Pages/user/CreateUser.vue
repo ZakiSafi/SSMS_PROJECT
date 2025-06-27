@@ -1,5 +1,5 @@
 <template>
-  <div dir="rtl">
+  <div :dir="dir">
     <v-dialog
       transition="dialog-top-transition"
       width="40rem"
@@ -9,7 +9,7 @@
         <v-card class="px-3">
           <v-card-title class="px-2 pt-4 d-flex justify-space-between">
             <h2 class="font-weight-bold pl-4">
-              {{ UserRepository.isEditMode ? "Update" : "Create" }} User
+              {{ UserRepository.isEditMode ? $t('update user') : $t('create user') }}
             </h2>
             <v-btn variant="text" @click="isActive.value = false">
               <v-icon>mdi-close</v-icon>
@@ -20,52 +20,43 @@
 
           <v-card-text>
             <v-form ref="formRef" class="pt-4">
-              
-                
-                  <v-text-field
-                    v-model="formData.name"
-                    label="Name"
-                    variant="outlined"
-                    :rules="[rules.required]"
-                  ></v-text-field>
-                
+              <v-text-field
+                v-model="formData.name"
+                :label="$t('name')"
+                variant="outlined"
+                :rules="[rules.required]"
+              ></v-text-field>
 
-               
-                  <v-text-field
-                    v-model="formData.email"
-                    label="Email"
-                    variant="outlined"
-                    :rules="[rules.required, rules.email]"
-                  ></v-text-field>
-                
+              <v-text-field
+                v-model="formData.email"
+                :label="$t('email')"
+                variant="outlined"
+                :rules="[rules.required, rules.email]"
+              ></v-text-field>
 
-               
-                  <v-text-field
-                    v-model="formData.password"
-                    label="Password"
-                    type="password"
-                    variant="outlined"
-                    :rules="[rules.required]"
-                  ></v-text-field>
-              
+              <v-text-field
+                v-model="formData.password"
+                :label="$t('form.password')"
+                type="password"
+                variant="outlined"
+                :rules="[rules.required]"
+              ></v-text-field>
 
-                
-                  <v-select
-                    v-model="formData.university_id"
-                    :items="UserRepository.universities"
-                    label="University"
-                    item-title="name"
-                    item-value="id"
-                    variant="outlined"
-                    :rules="[rules.required]"
-                  ></v-select>
-              
+              <v-select
+                v-model="formData.university_id"
+                :items="UserRepository.universities"
+                :label="$t('university')"
+                item-title="name"
+                item-value="id"
+                variant="outlined"
+                :rules="[rules.required]"
+              ></v-select>
             </v-form>
           </v-card-text>
 
           <div class="d-flex flex-row-reverse mb-6 mx-6">
             <v-btn color="primary" class="px-4" @click="save">
-              {{ UserRepository.isEditMode ? "Update" : "Submit" }}
+              {{ UserRepository.isEditMode ? $t('form.update') : $t('form.submit') }}
             </v-btn>
           </div>
         </v-card>
@@ -73,6 +64,7 @@
     </v-dialog>
   </div>
 </template>
+
 
 <script setup>
 import { ref, reactive, onMounted } from "vue";

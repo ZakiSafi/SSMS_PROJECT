@@ -43,10 +43,10 @@
   v-model="ReportRepository.shift"
    :items="[
     { title: $t('day'), value: 'day' },
-    { title: $t('night'), value: 'shift' }
+    { title: $t('night'), value: 'night' }
   ]"
-  item-title="name"
-  item-value="id"
+  item-title="title"
+  item-value="value"
   :label="$t('shift')"
   variant="outlined"
   hide-details

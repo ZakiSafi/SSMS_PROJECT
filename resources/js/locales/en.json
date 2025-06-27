@@ -31,7 +31,8 @@
         "submit": "Submit",
         "name": "Name",
         "close": "Close",
-        "select_year": "Select Year"
+        "select_year": "Select Year",
+        "password": "Password"
     },
     "validation": {
         "required": "This field is required",
@@ -53,7 +54,11 @@
     },
 
     "Name": "Name",
+    "name": "name",
+    "update user": "Update User",
+    "create user": "Create User",
     "Action": "Action",
+    "action": "action",
     "Academic Year": "Academic Year",
     "dashboard": "Dashboard",
     "students": "Students",
@@ -81,6 +86,7 @@
     "night": "night",
     "Teacher": "Teacher",
     "University": "University",
+    "university": "university",
     "Universities": "Universities",
     "Faculty": "Faculty",
     "Class": "Class",
@@ -92,6 +98,7 @@
     "create": "create",
     "select_university": "select university",
    " Select University Type": "Select University Type",
+  " Select season": "Select season",
     "Season": "season",
     "season": "season",
     "semester": "semester",
@@ -116,5 +123,6 @@
     "Edit": "Edit",
     "Delete": "Delete",
     "ST Ratio" : "Student Teacher Ratio",
-    "StudentTeacherRatio" : "Student Teacher Ratio"
+    "StudentTeacherRatio" : "Student Teacher Ratio",
+    "email": "Email"
 }

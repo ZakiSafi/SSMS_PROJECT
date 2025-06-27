@@ -7,7 +7,7 @@
     class="mr-4"
     v-model="ReportRepository.date"
     :items="yearRange"
-    label="Select or Type Year"
+    :label="$t('Select or Type Year')"
     variant="outlined"
     density="compact"
     hide-details
@@ -17,13 +17,14 @@
   <v-select
     v-model="ReportRepository.season"
     :items="[
-        {text: $t('spring'), value: 'public'},
+        {text: $t('spring'), value: 'spring'},
         {text: $t('autumn'), value: 'autumn'}
         ]"
 
     item-title = 'text'
     item-value = 'value'
-    label="Select Session"
+    :label="$t('Select season')"
+
     variant="outlined"
     hide-details
     density="compact"

@@ -12,13 +12,13 @@
         "settings": "تنظیمات",
         "role_permissions": "صلاحیت های نقش",
         "university_report": "راپور پوهنتون",
-        "university_graduation_report": "راپور فارغ التحصیلی",
+        "university_graduation_report": "راپور فارغ‌التحصیلان پوهنتون",
         "student_teacher_ratio": "نسبت محصل به استاد",
         "university_classes": "صنوف پوهنتون",
         "jawad": "راپور جاوید",
         "fawad": "راپور فواد",
-        "faculty_graduation": "راپور فارغ‌التحصیلی پوهنځی",
-        "department_base_graduation": "راپور فارغ‌التحصیلی دیپارتمنت",
+        "faculty_graduation": "راپور فارغ‌التحصیلان پوهنځی",
+        "department_base_graduation": "راپور فارغ‌التحصیلان دیپارتمنت",
         "graduated_students": " راپور محصلین فارغ شده " ,
         "currentStudents": "راپور محصلین برحال"
     },
@@ -31,7 +31,8 @@
         "submit": "ثبت",
         "name": "اسم",
         "close": "بستن",
-        "select_year": "سال را انتخاب کنید"
+        "select_year": "سال را انتخاب کنید",
+        "password": "رمز عبور"
     },
     "validation": {
         "required": "این فیلد الزامی است",
@@ -53,7 +54,11 @@
     },
 
     "Name": "اسم",
+    "name": "اسم",
+    "update user": "آپدیت کاربر",
+    "create user": "ایجاد کاربر",
     "Action": "عمل",
+    "action": "عمل",
     "Academic Year": "سال تعلیمی",
     "Dashboard": "داشبورد",
     "students": "محصلین",
@@ -81,6 +86,7 @@
     "day": "روز",
     "night": "شب",
     "University": "پوهنتون",
+    "university": "پوهنتون",
     "Universities": "پوهنتون ها",
 
     "Class": "صنف",
@@ -92,6 +98,7 @@
     "create": "ایجاد کردن",
     "select_university": "پوهنتون را انتخاب کنید",
     "select_season": "فصل را انتخاب کنید",
+    "Select season": "فصل را انتخاب کنید",
     "Season": "فصل",
     "season": "فصل",
     "semester": "سمستر",
@@ -103,7 +110,7 @@
     "spring": "بهاری",
     "autumn": "خزانی",
     "all": "همه",
-    "DBGR": "  گزارش فارغ‌التحصیلی مبتنی بر دپارتمان",
+    "DBGR": "  گزارش فارغ‌التحصیلی مبتنی بر دیپارتمنت",
     "public": "عامه",
     "private": "خصوصی",
     "total_males": "مجموع زکور",
@@ -117,5 +124,6 @@
     "Edit": "ایدیت",
     "Delete": "دیلیت",
     "ST Ratio": "نسبت محصل به استاد",
-    "StudentTeacherRatio": "نسبت محصل به استاد"
+    "StudentTeacherRatio": "نسبت محصل به استاد",
+    "email": "ایمیل"
 }
