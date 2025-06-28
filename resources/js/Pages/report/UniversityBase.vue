@@ -65,6 +65,7 @@
         @update:options="onTableOptionsUpdate"
         class="w-100 mx-auto"
         hover
+        :dir="dir"
     >
      <template #bottom>
                 <div class="d-flex align-center justify-end pa-2" >
@@ -97,6 +98,11 @@ import AppBar from "@/components/AppBar.vue";
 import { useReportRepository } from "@/store/ReportRepository";
 import { ref, computed } from "vue";
 import persianDate from "persian-date";
+import { useI18n } from "vue-i18n";
+const { t,locale } = useI18n();
+const dir = computed(() => {
+    return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
+});
 
 const ReportRepository = useReportRepository();
 
@@ -168,8 +174,7 @@ const validateShift = (value) => {
     return true;
 };
 
-import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+
 
 const headers = computed(() => [
     {

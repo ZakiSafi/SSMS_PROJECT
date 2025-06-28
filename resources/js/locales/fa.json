@@ -15,11 +15,11 @@
         "university_graduation_report": "راپور فارغ‌التحصیلان پوهنتون",
         "student_teacher_ratio": "نسبت محصل به استاد",
         "university_classes": "صنوف پوهنتون",
-        "jawad": "راپور جاوید",
-        "fawad": "راپور فواد",
+        "deparment_base": " به تفکیک دیپارتمنت",
+        "faculty_base": " به تفکیک پوهنځی",
         "faculty_graduation": "راپور فارغ‌التحصیلان پوهنځی",
         "department_base_graduation": "راپور فارغ‌التحصیلان دیپارتمنت",
-        "graduated_students": " راپور محصلین فارغ شده " ,
+        "graduated_students": " راپور محصلین فارغ شده ",
         "currentStudents": "راپور محصلین برحال"
     },
     "user": {

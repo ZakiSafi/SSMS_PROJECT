@@ -43,6 +43,7 @@
             class="w-100 mx-auto"
             hover
         >
+        
             <!-- Action Slot -->
             <template v-slot:item.action="{ item }">
                 <v-menu>
@@ -76,6 +77,29 @@
                         </v-list-item>
                     </v-list>
                 </v-menu>
+            </template>
+             <template #bottom>
+                <div class="d-flex align-center justify-end pa-2" >
+                    <span class="mx-2">{{
+                        $t("pagination.items_per_page")
+                    }}</span>
+                    <v-select
+                        v-model="UserRepository.itemsPerPage"
+                        :items="[
+                            { value: 5, text: '5' },
+                            { value: 10, text: '10' },
+                            { value: 25, text: '25' },
+                            { value: 50, text: '50' },
+                            { value: -1, text: $t('pagination.all') },
+                        ]"
+                        item-title="text"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        style="max-width: 100px"
+                    ></v-select>
+                </div>
             </template>
         </v-data-table-server>
     </div>

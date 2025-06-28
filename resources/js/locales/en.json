@@ -17,8 +17,8 @@
         "university_graduation_report": "University Graduation Report",
         "student_teacher_ratio": "Student Teacher Ratio",
         "university_classes": "University Classes",
-        "jawad": "Jawad Report",
-        "fawad": "Fawad Report",
+        "deparment_base": "Department Base",
+        "faculty_base": "Faculty Base",
         "faculty_graduation": "Faculty Graduation Report",
         "department_base_graduation": "Department Based Graduation Report"
     },
@@ -66,7 +66,8 @@
     "Total Female Students": "Total Female Students",
     "Total Student": "Total Student",
     "Total Teachers": " Total Teachers",
-
+    "facultyBase": "Faculty Base Report",
+    "departmentBase": "Department Base Report",
     "provinces": "Provinces",
     "faculties": "Faculties",
     "departments": "Departments",
@@ -97,8 +98,8 @@
     "search": "search",
     "create": "create",
     "select_university": "select university",
-   " Select University Type": "Select University Type",
-  " Select season": "Select season",
+    " Select University Type": "Select University Type",
+    " Select season": "Select season",
     "Season": "season",
     "season": "season",
     "semester": "semester",
@@ -122,7 +123,7 @@
     "university type": "University Type",
     "Edit": "Edit",
     "Delete": "Delete",
-    "ST Ratio" : "Student Teacher Ratio",
-    "StudentTeacherRatio" : "Student Teacher Ratio",
+    "ST Ratio": "Student Teacher Ratio",
+    "StudentTeacherRatio": "Student Teacher Ratio",
     "email": "Email"
 }

@@ -31,10 +31,6 @@ class User extends Authenticatable
         return $this->belongsTo(University::class);
     }
 
-    public function rollPermission()
-    {
-        return $this->belongsTo(RollPermission::class, 'roll_permission_id');
-    }
     public function logs()
     {
         return $this->hasMany(Log::class);

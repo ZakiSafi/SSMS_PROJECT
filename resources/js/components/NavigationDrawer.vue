@@ -9,7 +9,7 @@
                     class="w-[2.9rem] h-[2.9rem] rounded-full object-cover transition-all duration-300"
                 />
             </v-list-item>
-            <h3>{{ $t('user.name') }}</h3>
+            <h3>{{ $t("user.name") }}</h3>
         </div>
 
         <v-divider :thickness="1" class="border-opacity-100 full"></v-divider>
@@ -115,7 +115,7 @@
                         }"
                     />
 
-                <!-- Graduated Students -->
+                    <!-- Graduated Students -->
                 </v-list-group>
                 <v-list-group>
                     <template #activator="{ props }">
@@ -174,7 +174,7 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -187,11 +187,12 @@ const settingItems = [
         value: "users",
     },
     {
-        to: "/role-permissions",
+        to: "/role-permission",
         translationKey: "role_permissions",
         icon: "mdi-circle-medium",
         value: "roles",
     },
+    
 ];
 
 const currentStudents = [
@@ -201,7 +202,7 @@ const currentStudents = [
         icon: "mdi-circle-medium",
         value: "university-base-report",
     },
-   
+
     {
         to: "/student-teacher-ratio",
         translationKey: "student_teacher_ratio",
@@ -215,49 +216,42 @@ const currentStudents = [
         value: "university-classes",
     },
     {
-        to: "/jawad",
-        translationKey:"jawad",
+        to: "/faculty_base",
+        translationKey: "faculty_base",
         icon: "mdi-circle-medium",
         value: "Faculty Base Report",
     },
     {
-        to:"/fawad",
-        translationKey:"fawad",
+        to: "/deparment_base",
+        translationKey: "deparment_base",
         icon: "mdi-circle-medium",
-        value:"fawad"
+        value: "fawad",
     },
-
 ];
 const graduatedStudents = [
-   
     {
         to: "/university-graduation-report",
         translationKey: "university_graduation_report",
         icon: "mdi-circle-medium",
         value: "university-graduation-report",
     },
-  
-  
- 
 
     {
-        to:"/faculty-graduation",
-        translationKey:"faculty_graduation",
+        to: "/faculty-graduation",
+        translationKey: "faculty_graduation",
         icon: "mdi-circle-medium",
-        value:"faculty-graduation"
+        value: "faculty-graduation",
     },
     {
-        to:"/department-base-graduation",
-        translationKey:"department_base_graduation",
+        to: "/department-base-graduation",
+        translationKey: "department_base_graduation",
         icon: "mdi-circle-medium",
-        value:"department-base-graduation"
-    }
-
+        value: "department-base-graduation",
+    },
 ];
 </script>
 
 <style scoped>
-
 /* Add RTL specific styles */
 [dir="rtl"] .submenu-item {
     padding-right: 32px !important;
@@ -330,28 +324,42 @@ const graduatedStudents = [
     display: none !important;
 }
 
-.submenu-item {
+/* .submenu-item > :nth-child(1) > :nth-child(1){
     margin: 0 !important;
+   
+    display: flex;
+    justify-content: flex-end;
+    background-color: red;
+} */
+
+.v-list-group__items .v-list-item--nav.v-list-item {
+    padding-left: 16px !important; /* or 8px */
     min-height: 32px !important;
 }
 
+.v-list-group__items .v-list-item__prepend {
+    margin-inline-start: 0px !important;
+}
+
+.v-list-group__items .v-list-item__content {
+    margin-left: 4px; /* Adjust spacing between icon and text */
+}
 
 :deep(.v-list-group__items) {
     padding-top: 10px !important;
     padding-bottom: 0 !important;
-    margin-right: 300px;
 }
 
 /* Specifically target the bullet points in submenus */
 :deep(.v-list-group__items .v-list-item .v-list-item__prepend) {
-  width: 20px !important;
-  min-width: 20px !important;
-  margin-inline-end: 4px !important;
+    width: 0px !important;
+    min-width: 20px !important;
+    margin-inline-end: 4px !important;
 }
 
-
-
-
-
-
+/* .submenu-item > :nth-child(1){
+    background-color: red;
+    display: flex;
+    justify-content: flex-start;
+} */
 </style>

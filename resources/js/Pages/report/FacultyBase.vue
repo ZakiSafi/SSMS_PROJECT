@@ -1,6 +1,6 @@
 <template>
   <div :dir="dir">
-    <AppBar :pageTitle="$t('University Classes')" />
+    <AppBar :pageTitle="$t('facultyBase')" />
     <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
 <div class="w-full d-flex justify-space-between pt-6 pb-6 ">
