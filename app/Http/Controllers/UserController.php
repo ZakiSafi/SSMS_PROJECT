@@ -25,7 +25,11 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        return $this->storeRecord($request, $this->model);
+        $user = $this->storeRecord($request, $this->model);
+        $validated = $request->validated();
+        $user->assignRole($validated['role_id']);
+        return new UserResource($user);
+
     }
 
     /**
