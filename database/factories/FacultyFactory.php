@@ -17,25 +17,32 @@ class FacultyFactory extends Factory
      */
     public function definition(): array
     {
+        static $faculties = [
+            'Faculty of Science',
+            'Faculty of Arts',
+            'Faculty of Engineering',
+            'Faculty of Medicine',
+            'Faculty of Law',
+            'Faculty of Business',
+            'Faculty of Education',
+            'Faculty of Social Sciences',
+            'Faculty of Humanities',
+            'Faculty of Agriculture',
+            'Faculty of Architecture',
+            'Faculty of Computer Science',
+            'Faculty of Sharia',
+            'Faculty of Pharmacy',
+            'Faculty of Social Health',
+        ];
+
+        static $index = 0;
+
+        if ($index >= count($faculties)) {
+            throw new \Exception('No more unique faculties available.');
+        }
+
         return [
-            'name' => $this->faker->randomElement([
-                'Faculty of Science',
-                'Faculty of Arts',
-                'Faculty of Engineering',
-                'Faculty of Medicine',
-                'Faculty of Law',
-                'Faculty of Business',
-                'Faculty of Education',
-                'Faculty of Social Sciences',
-                'Faculty of Humanities',
-                'Faculty of Agriculture',
-                'Faculty of Architecture',
-                'Faculty of computer Science',
-                'Faculty of sharia',
-                'Faculty of pharmacy',
-                'Faculty of social health',
-            ]),
-            'university_id' => University::inRandomOrder()->first()->id ?? University::factory()->create()->id,
+            'name' => $faculties[$index++],
         ];
     }
 }

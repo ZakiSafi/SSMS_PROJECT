@@ -24,6 +24,7 @@ use App\Http\Controllers\reports\FacultyClassBasedReportController;
 use App\Http\Controllers\reports\FacultyBaseGraduationReportController;
 use App\Http\Controllers\reports\DepartmentBasedGraduationReportController;
 use App\Http\Controllers\reports\UniversityBasedGraduationReportController;
+use App\Http\Controllers\RoleController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('provinces', ProvinceController::class);
@@ -31,7 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('departments', DepartmentController::class);
     Route::apiResource('studentStatistics', StudentStatisticController::class);
     Route::apiResource('settings', SettingController::class);
-    Route::apiResource('rollPermissions', RollPermissionController::class);
+    Route::apiResource('role', RoleController::class);
     Route::apiResource('users', UserController::class);
     Route::put('users/update/{user}', [UserController::class, 'update']);
     Route::apiResource('logs', LogController::class);

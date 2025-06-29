@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import AppBar from "@/components/AppBar.vue";
+import { useUserRepository } from "@/store/UserRepository";
+const UserRepository = useUserRepository();
 
 const roleName = ref("");
 const roleDescription = ref("");
 
-// Define the pages and allowed actions
+// Define pages and actions
 const pages = [
     { label: "Dashboard", key: "dashboard", actions: ["view"] },
     {
@@ -55,7 +57,7 @@ const pages = [
     },
 ];
 
-// Set up reactive permissions model
+// Reactive permissions object
 const permissions = ref({});
 pages.forEach((page) => {
     permissions.value[page.key] = {};
@@ -84,33 +86,32 @@ const submitPermissions = async () => {
         permissions: permissionArray,
     };
 
-    console.log("Sending payload:", payload);
-
     try {
-        const res = await fetch("/api/assign-permissions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
+        await UserRepository.createRole(payload);
+        console.log("Role created successfully");
+
+        // Reset form
+        roleName.value = "";
+        roleDescription.value = "";
+        pages.forEach((page) => {
+            page.actions.forEach((action) => {
+                permissions.value[page.key][action] = false;
+            });
         });
-        const result = await res.json();
-        console.log("Backend response:", result);
     } catch (error) {
-        console.error("Error submitting:", error);
+        console.error("Error creating role:", error);
     }
 };
 </script>
 
 <template>
     <v-container fluid>
-        <AppBar pageTitle="Role Permissions " />
-        <!-- Divider between AppBar and content -->
-        <v-divider :thickness="1" class="border-opacity-100"></v-divider>
+        <AppBar pageTitle="Role Permissions" />
+        <v-divider :thickness="1" class="border-opacity-100" />
+
         <v-row class="pt-6">
-            <!-- Left Side Form -->
-            <v-col cols="12" md="12">
-                <!-- Role Info Inputs -->
+            <v-col cols="12">
+                <!-- Role Info -->
                 <v-row class="mb-6">
                     <v-col cols="12" md="6">
                         <v-text-field
@@ -118,7 +119,6 @@ const submitPermissions = async () => {
                             label="Role Name"
                             variant="outlined"
                             density="compact"
-                            dense
                             required
                         />
                     </v-col>
@@ -128,7 +128,6 @@ const submitPermissions = async () => {
                             label="Role Description"
                             variant="outlined"
                             density="compact"
-                            dense
                         />
                     </v-col>
                 </v-row>
@@ -148,7 +147,6 @@ const submitPermissions = async () => {
                             >
                                 {{ page.label }}
                             </v-card-title>
-
                             <v-divider class="mb-3" />
                             <v-card-text class="px-2 pt-0 min-card-text">
                                 <div class="d-flex flex-wrap gap-4">
@@ -169,24 +167,20 @@ const submitPermissions = async () => {
                                             dense
                                         />
                                     </div>
-
-                                    <!-- Spacer to fill layout for cards with fewer checkboxes -->
                                     <div
                                         v-for="n in 4 - page.actions.length"
                                         :key="'spacer-' + n"
                                         class="w-45"
-                                    >
-                                        <!-- Empty slot for layout balance -->
-                                    </div>
+                                    />
                                 </div>
                             </v-card-text>
                         </v-card>
                     </v-col>
                 </v-row>
 
-                <!-- Submit Button -->
+                <!-- Submit -->
                 <v-row class="mt-6">
-                    <v-col cols="10" > </v-col>
+                    <v-col cols="10"></v-col>
                     <v-col cols="2" class="text-center">
                         <v-btn
                             color="primary"
@@ -210,7 +204,6 @@ const submitPermissions = async () => {
     gap: 1rem;
 }
 .min-card-text {
-  min-height: 143px;
+    min-height: 143px;
 }
-    
 </style>
