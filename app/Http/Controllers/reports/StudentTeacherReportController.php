@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 
 use App\Models\StudentStatistic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class StudentTeacherReportController extends Controller
 {
     public function __invoke()
     {
+        $user = Auth::user();
         $year = request()->query('year');
         $perPage = request()->query('perPage', 10);
 
@@ -28,7 +30,9 @@ class StudentTeacherReportController extends Controller
                 DB::raw('SUM(student_statistics.male_total + student_statistics.female_total) as total_students'),
                 DB::raw('ROUND(SUM(student_statistics.male_total + student_statistics.female_total) / NULLIF(teachers.total_teachers, 0), 2) as students_per_teacher_ratio')
             );
-
+            if(!$user->hasRole('admin')) {
+                $query->where('student_statistics.university_id', $user->university_id);
+            }
         if ($year && $year !== 'all') {
             $query->where('student_statistics.academic_year', $year);
         }

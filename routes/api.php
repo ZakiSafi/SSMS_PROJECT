@@ -39,8 +39,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('universities', UniversityController::class);
     Route::apiResource('teachers', TeacherController::class);
 
-
-
+    Route::prefix('report')->group(function () {
+    Route::get('universitiesClasses', [UniversityClassReportController::class, '__invoke']);
+    Route::get('university', [UniversityReportController::class, '__invoke']);
+    Route::get('studentsTypeBased', [StudentsTypeBasedController::class, '__invoke']);
+    Route::get('facultyClassBased', [FacultyClassBasedReportController::class, '__invoke']);
+    Route::get('departmentClassBase', [DepartmentClassBasedController::class, '__invoke']);
+    Route::get('studentTeacherRatio', [StudentTeacherReportController::class, '__invoke']);
+    Route::get('facultyBasedGraduation', [FacultyBaseGraduationReportController::class, '__invoke']);
+    Route::get('departmentBasedGraduation', [DepartmentBasedGraduationReportController::class, '__invoke']);
+    Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
+});
 
 
     // Define the login route (with optional name)
@@ -56,14 +65,3 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
 // reports
-Route::prefix('report')->group(function () {
-    Route::get('universitiesClasses', [UniversityClassReportController::class, '__invoke']);
-    Route::get('university', [UniversityReportController::class, '__invoke']);
-    Route::get('studentsTypeBased', [StudentsTypeBasedController::class, '__invoke']);
-    Route::get('facultyClassBased', [FacultyClassBasedReportController::class, '__invoke']);
-    Route::get('departmentClassBase', [DepartmentClassBasedController::class, '__invoke']);
-    Route::get('studentTeacherRatio', [StudentTeacherReportController::class, '__invoke']);
-    Route::get('facultyBasedGraduation', [FacultyBaseGraduationReportController::class, '__invoke']);
-    Route::get('departmentBasedGraduation', [DepartmentBasedGraduationReportController::class, '__invoke']);
-    Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
-});

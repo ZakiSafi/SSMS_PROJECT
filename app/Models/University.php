@@ -5,15 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
 
 class University extends Model
 {
-    use HasFactory;
+    use HasFactory, HasRoles;
     protected $fillable = [
         'name',
         'type',
         'province_id',
     ];
+
+        protected static function booted()
+{
+    static::addGlobalScope('university', function ($query) {
+        if (!Auth::check() ||Auth::user()->hasRole('Admin')) {
+            return;
+        }
+
+        $query->where('id', Auth::user()->university_id);
+    });
+}
+
 
     public function user()
     {
