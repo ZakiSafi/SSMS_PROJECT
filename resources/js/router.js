@@ -22,6 +22,7 @@ import DepartmentBaseGraduation from "./Pages/report/DepartmentBaseGraduation.vu
 import Teachers from "./Pages/teacher/Teachers.vue";
 import rolePermission from "./Pages/role/rolePermission.vue";
 import CreateRolePermission from "./Pages/role/CreateRolePermission.vue";
+import UpdateRolePermission from "./Pages/role/UpdateRole.vue";
 
 const routes = [
     // Show login first
@@ -101,6 +102,12 @@ const routes = [
                 path: "/CreateRole",
                 name: "create-permission",
                 component: CreateRolePermission,
+            },
+            {
+                path: "/UpdateRole/:id",
+                props: true,
+                name: "update-role",
+                component: UpdateRolePermission,
             },
         ],
     },

@@ -24,51 +24,35 @@ class RoleController extends Controller
      public function show($id)
     {
         $role = Role::where('id', $id)->first();
-        return new RollPermissionResource($role);
+        return new RollResource($role);
     }
 
     // Updating Roll Permissions
-    public function update(RollPermissionRequest $request, $id)
-{
-    $validated = $request->validated();
+    public function update(RollRequest $request, $id)
+    {
+        $validated= $request->validated();
+        $permissionsArray = $validated['permissions'];
     
-    // Start a database transaction
-    DB::beginTransaction();
-    
-    try {
-        // Find the role or fail
-        $role = Role::findOrFail($id);
-        
-        // Update role attributes
+        // Find the role by ID
+        $role = Role::where('id', $id)->first();
         $role->name = $validated['name'];
         $role->description = $validated['description'];
+    
+        // Find or create each permission and sync them with the role
+        
+        foreach ($permissionsArray as $permission) {
+             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            
+        }
+    
+        // Sync the permissions with the role
+        $role->syncPermissions($permissionsArray);
+    
+        // Save the updated role details
         $role->save();
-        
-        // Prepare permissions (assuming permissionsArray is an array of permission names)
-        $permissionsArray = $validated['permissions'] ?? [];
-        
-        // Get or create all permissions at once (more efficient than in a loop)
-        $permissions = collect($permissionsArray)->map(function ($permissionName) {
-            return Permission::firstOrCreate(
-                ['name' => $permissionName],
-                ['guard_name' => 'web'] // or config('auth.defaults.guard')
-            );
-        });
-        
-        // Sync permissions
-        $role->syncPermissions($permissions);
-        
-        // Commit the transaction
-        DB::commit();
-        
-        return new RollPermissionResource($role->fresh()); // fresh() to reload with permissions
-        
-    } catch (\Exception $e) {
-        DB::rollBack();
-        // Handle the error appropriately
-        return response()->json(['message' => 'Update failed'], 500);
+    
+        return new RollResource($role);
     }
-}
 
 // Storing a new role with permissions
     public function store(RollRequest $request)

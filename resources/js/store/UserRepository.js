@@ -151,5 +151,38 @@ export const useUserRepository = defineStore("userRepository", {
                 this.loading = false;
             }
         },
+
+        async deleteRole(id) {
+            try {
+                const config = {
+                    method: "DELETE",
+                    url: `role/${id}`,
+                };
+                await axios(config);
+                this.fetchRoles({
+                    page: this.page,
+                    itemsPerPage: this.itemsPerPage,
+                });
+            } catch (err) {
+                console.error("Failed to delete role:", err);
+            }
+        },
+        async updateRole(id, formData) {
+            try {
+                const config = {
+                    method: "PUT",
+                    url: `role/${id}`,
+                    data: formData,
+                };
+                await axios(config);
+                this.createDialog = false;
+                this.fetchRoles({
+                    page: this.page,
+                    itemsPerPage: this.itemsPerPage,
+                });
+            } catch (err) {
+                console.error("Failed to update user:", err);
+            }
+        },
     },
 });

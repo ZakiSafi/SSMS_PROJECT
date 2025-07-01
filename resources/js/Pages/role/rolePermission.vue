@@ -81,7 +81,7 @@
                     <v-list>
                         <v-list-item>
                             <v-list-item-title
-                                @click="edit(item)"
+                                @click="goToEdit(item.id)"
                                 class="cursor-pointer d-flex gap-3 pb-3"
                             >
                                 <v-icon color="tealColor"
@@ -113,10 +113,16 @@ import { computed } from "vue";
 import { useUserRepository } from "../../store/UserRepository";
 import { useI18n } from "vue-i18n";
 import { RouterLink } from "vue-router";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const { t, locale } = useI18n();
 const dir = computed(() => {
     return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
 });
+
+const goToEdit = (id) => {
+    router.push({ name: "update-role", params: { id } });
+};
 
 const UserRepository = useUserRepository();
 
@@ -139,7 +145,7 @@ const edit = (item) => {
 };
 
 const deleteItem = async (item) => {
-    await UserRepository.DeleteUniversity(item.id);
+    await UserRepository.deleteRole(item.id);
 };
 
 const headers = computed(() => [
