@@ -4,6 +4,7 @@ namespace App\Http\Controllers\reports;
 
 use App\Http\Controllers\Controller;
 use App\Models\StudentStatistic;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -11,6 +12,8 @@ class FacultyClassBasedReportController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $user = Auth::user();
+        $isAdmin = $user->hasRole('Admin');
         $year = $request->query('year');
         $season = $request->query('season');
         $university = $request->query('university');
@@ -25,6 +28,9 @@ class FacultyClassBasedReportController extends Controller
                 'universities.name as university'
             )
             ->where('student_statistics.academic_year', $year)
+            ->when(!$isAdmin, function ($query) use ($user) {
+                return $query->where('student_statistics.university_id', $user->university_id);
+            })
             ->when($season !== 'all', function ($query) use ($season) {
                 return $query->where('student_statistics.season', $season);
             })

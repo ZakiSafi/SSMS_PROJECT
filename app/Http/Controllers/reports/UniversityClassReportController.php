@@ -5,11 +5,14 @@ namespace App\Http\Controllers\reports;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class UniversityClassReportController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $user = Auth::user();
+        $isAdmin = $user->hasRole('Admin');
         $year = $request->query('year');
         $shift = $request->query('shift');
         $perPage = $request->query('perPage', 10);
@@ -20,6 +23,9 @@ class UniversityClassReportController extends Controller
             ->select('student_statistics.university_id', 'universities.name as university_name')
             ->where('student_statistics.academic_year', $year)
             ->where('student_statistics.shift', $shift)
+            ->when(!$isAdmin, function ($query) use ($user) {
+                return $query->where('student_statistics.university_id', $user->university_id);
+            })
             ->groupBy('student_statistics.university_id', 'universities.name')
             ->paginate($perPage);
 
