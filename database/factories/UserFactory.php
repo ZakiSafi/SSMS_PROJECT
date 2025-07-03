@@ -28,6 +28,7 @@ class UserFactory extends Factory
             'email' => "safi@gmail.com",
             'password' => static::$password ??= Hash::make('11221122'),
             'university_id' => 1, // Assuming you have 3 universities
+            'role_id' => 1, // Assuming you have 2 roles
             'remember_token' => Str::random(10),
         ];
     }

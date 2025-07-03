@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Role as SpatieRole;
 
-class Role extends Model
+class Role extends SpatieRole
 {
-    Use HasRoles;
-    protected $fillable = ["name","description","guard_name"];
+    // Now you're using Spatie's Role model correctly
+    protected $fillable = ["name", "description", "guard_name"];
 }

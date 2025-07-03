@@ -9,8 +9,16 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\ProvinceSeeder;
 use Database\Seeders\UniversitySeeder;
-use Database\Seeders\PermissionSeeder;
-
+use Database\Seeders\RolePermissionSeeder;
+use Database\Seeders\RoleSeeder;
+use Database\Seeders\FacultySeeder;
+use Database\Seeders\DepartmentSeeder;
+use Database\Seeders\SettingSeeder;
+use Database\Seeders\TeacherSeeder;
+use Database\Seeders\UserSeeder;
+use Database\Seeders\LogSeeder;
+use RolePermissionSeeder as GlobalRolePermissionSeeder;
+use RoleSeeder as GlobalRoleSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,10 +33,13 @@ class DatabaseSeeder extends Seeder
             FacultySeeder::class,
             DepartmentSeeder::class,
             SettingSeeder::class,
+            TeacherSeeder::class,
+            RoleSeeder::class,
             UserSeeder::class,
             LogSeeder::class,
-            TeacherSeeder::class,
-            PermissionSeeder::class,
+
+
+
         ]);
     }
 }
