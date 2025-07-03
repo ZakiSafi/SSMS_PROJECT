@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 
 class UniversityController extends Controller
 {
+         public function __construct()
+    {
+        $this->middleware('permission:university.view')->only(['index', 'show']);
+        $this->middleware('permission:university.edit')->only(['edit', 'update']);
+        $this->middleware('permission:university.create')->only(['create', 'store']);
+        $this->middleware('permission:university.delete')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */

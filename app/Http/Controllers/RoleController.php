@@ -28,11 +28,12 @@ class RoleController extends Controller
     }
 
     // Updating Roll Permissions
-    public function update(RollRequest $request, $id)
+       public function update(RollRequest $request, $id)
     {
+        
         $validated= $request->validated();
         $permissionsArray = $validated['permissions'];
-    
+        
         // Find the role by ID
         $role = Role::where('id', $id)->first();
         $role->name = $validated['name'];
@@ -41,7 +42,7 @@ class RoleController extends Controller
         // Find or create each permission and sync them with the role
         
         foreach ($permissionsArray as $permission) {
-             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
             
         }
     
@@ -56,40 +57,38 @@ class RoleController extends Controller
 
 // Storing a new role with permissions
     public function store(RollRequest $request)
-{
-    $validated = $request->validated();
+    {
+        $validated = $request->validated();
 
-    // Create role with guard_name (must match with permissions)
-    $role = Role::create([
-        'name' => $validated['name'],
-        'guard_name' => 'web',
-        'description' => $validated['description'] ?? null
-    ]);
+        // Create role with guard_name (use 'web' or 'api' based on your auth system)
+        $role = Role::create([
+            'name' => $validated['name'],
+            'guard_name' => 'api', // or 'api' if using Sanctum/API only
+            'description' => $validated['description'] ?? null
+        ]);
 
-    // Process and assign permissions
-    $permissions = [];
-    foreach ($validated['permissions'] ?? [] as $perm) {
-        $permission = Permission::firstOrCreate(
-            [
-                'name' => $perm['name'],
-                'guard_name' => 'web'
-            ],
-            [
-                'description' => $perm['description'] ?? null
-            ]
-        );
-        $permissions[] = $permission;
+        // Process permissions
+        $permissionIds = [];
+        foreach ($validated['permissions'] ?? [] as $perm) {
+            $permission = Permission::firstOrCreate(
+                [
+                    'name' => $perm['name'],
+                    'guard_name' => 'api' // Must match role's guard_name
+                ],
+                [
+                    'description' => $perm['description'] ?? null
+                ]
+            );
+            $permissionIds[] = $permission->id;
+        }
+
+        $role->syncPermissions($permissionIds);
+
+        return response()->json([
+            'message' => 'Role created successfully',
+            'role' => $role->load('permissions')
+        ]);
     }
-
-    // Assign permissions to the role
-    $role->syncPermissions($permissions); // You can also use givePermissionTo() if preferred
-
-    return response()->json([
-        'message' => 'Role created and permissions assigned successfully',
-        'role' => $role->load('permissions')
-    ]);
-}
-
 
     // Deleting a role
     public function destroy(Role $role)

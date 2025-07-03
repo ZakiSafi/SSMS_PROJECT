@@ -10,6 +10,14 @@ use App\Models\RollPermission;
 
 class SettingController extends Controller
 {
+    public function __construct()
+    {
+        // Apply permission middleware with explicit guard
+        $this->middleware('permission:settings.view', ['guard' => 'api'])->only(['index', 'show']);
+        $this->middleware('permission:settings.edit', ['guard' => 'api'])->only(['edit', 'update']);
+        $this->middleware('permission:settings.create', ['guard' => 'api'])->only(['create', 'store']);
+        $this->middleware('permission:settings.delete', ['guard' => 'api'])->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */

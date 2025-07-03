@@ -11,6 +11,13 @@ use App\Http\Resources\StudentStatisticResource;
 
 class StudentStatisticController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:student-statistic.view')->only(['index', 'show']);
+        $this->middleware('permission:student-statistic.edit')->only(['edit', 'update']);
+        $this->middleware('permission:student-statistic.create')->only(['create', 'store']);
+        $this->middleware('permission:student-statistic.delete')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */
