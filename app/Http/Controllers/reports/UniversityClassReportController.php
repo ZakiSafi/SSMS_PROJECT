@@ -12,7 +12,7 @@ class UniversityClassReportController extends Controller
     public function __invoke(Request $request)
     {
         $user = Auth::user();
-        $isAdmin = $user->hasRole('Admin');
+        $isAdmin = $user->hasRole('admin');
         $year = $request->query('year');
         $shift = $request->query('shift');
         $perPage = $request->query('perPage', 10);

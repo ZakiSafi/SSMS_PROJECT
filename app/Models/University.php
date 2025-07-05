@@ -20,7 +20,7 @@ class University extends Model
         protected static function booted()
 {
     static::addGlobalScope('university', function ($query) {
-        if (!Auth::check() ||Auth::user()->hasRole('Admin')) {
+        if (!Auth::check() ||Auth::user()->hasRole('admin')) {
             return;
         }
 

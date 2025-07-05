@@ -12,7 +12,7 @@ class UniversityBasedGraduationReportController extends Controller
     public function __invoke(Request $request)
     {
         $user = Auth::user();
-        $isAdmin = $user->hasRole('Admin');
+        $isAdmin = $user->hasRole('admin');
         $season  = $request->query('season');
         $year = $request->query('year');
         $perPage = $request->query('perPage', 10);

@@ -37,7 +37,7 @@ class DepartmentBasedGraduationReportController extends Controller
                 DB::raw('ROUND((SUM(male_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Male_Percentage'),
                 DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage')
             );
-            if (!$user->hasRole('Admin')) {
+            if (!$user->hasRole('admin')) {
     $query->where('student_statistics.university_id', $user->university_id);
 }
         if ($season && $season !== 'all') {

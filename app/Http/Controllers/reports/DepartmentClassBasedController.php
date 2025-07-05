@@ -12,7 +12,7 @@ class DepartmentClassBasedController extends Controller
     public function __invoke(Request $request)
     {
         $user = Auth::user();
-        $isAdmin = $user->hasRole('Admin');
+        $isAdmin = $user->hasRole('admin');
         $year = $request->query('year');
         $season = $request->query('season');
         $universityName = $request->query('university');
