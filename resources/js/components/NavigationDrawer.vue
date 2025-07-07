@@ -51,7 +51,7 @@
                 <v-list-item
                     class="menu-item"
                     prepend-icon="mdi-home-city-outline"
-                    :title="$t('menu.faculty')"
+                    :title="$t('menu.faculties')"
                     to="/faculties"
                     value="faculties"
                     :class="{
@@ -192,7 +192,6 @@ const settingItems = [
         icon: "mdi-circle-medium",
         value: "roles",
     },
-    
 ];
 
 const currentStudents = [

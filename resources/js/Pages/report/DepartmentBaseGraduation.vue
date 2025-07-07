@@ -137,7 +137,7 @@
   import persianDate from "persian-date";
 
   const { t, locale } = useI18n();
-  const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
+  const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 
   const ReportRepository = useReportRepository();
 

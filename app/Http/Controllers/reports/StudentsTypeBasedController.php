@@ -35,6 +35,8 @@ class StudentsTypeBasedController extends Controller
 
         if (!$user->hasRole('admin')) {
             $query->where('student_statistics.university_id', $user->university_id);
+        }
+
         if ($shift && $shift !== 'all') {
             $query->whereRaw('LOWER(student_statistics.shift) = ?', [strtolower(trim($shift))]);
         }

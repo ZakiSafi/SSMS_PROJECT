@@ -81,7 +81,7 @@
   const { t, locale } = useI18n();
   
   const dir = computed(() => {
-    return locale.value === "fa" ? "rtl" : "ltr";
+    return locale.value === "en" ? "ltr" : "rtl";
   });
   
   const showCreateDialog = () => {

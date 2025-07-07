@@ -117,7 +117,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const { t, locale } = useI18n();
 const dir = computed(() => {
-    return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
+    return locale.value === "en" ? "ltr" : "rtl"; // Correctly set "rtl" and "ltr"
 });
 
 const goToEdit = (id) => {

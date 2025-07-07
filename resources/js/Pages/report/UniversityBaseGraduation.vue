@@ -61,7 +61,7 @@ const { t,locale } = useI18n();
 
 import persianDate from "persian-date";
 const dir = computed(() => {
-  return locale.value === "fa" ? "rtl" : "ltr"; // Correctly set "rtl" and "ltr"
+  return locale.value === "en" ? "ltr" : "rtl"; // Correctly set "rtl" and "ltr"
 });
 
 const getCurrentPersianYear = () => {

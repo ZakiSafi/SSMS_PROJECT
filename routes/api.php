@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\SettingController;
@@ -51,6 +52,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
 });
 
+Route::prefix('dashboard')->group(function () {
+    Route::get('summary', [DashboardController::class, 'summary']);
+    Route::get('distribution', [DashboardController::class, 'distribution']);
+    Route::get('trends', [DashboardController::class, 'trends']);
+    Route::get('student-teacher-ratio', [DashboardController::class, 'studentTeacherRatio']);
+    Route::get('filter-options', [DashboardController::class, 'filterOptions']);
+});
 
     // Define the login route (with optional name)
 

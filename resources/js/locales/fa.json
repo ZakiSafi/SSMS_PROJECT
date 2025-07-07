@@ -20,7 +20,8 @@
         "faculty_graduation": "راپور فارغ‌التحصیلان پوهنځی",
         "department_base_graduation": "راپور فارغ‌التحصیلان دیپارتمنت",
         "graduated_students": " راپور محصلین فارغ شده ",
-        "currentStudents": "راپور محصلین برحال"
+        "currentStudents": "راپور محصلین برحال",
+        "faculties": "پوهنځي"
     },
     "user": {
         "name": "ذکی الله صافی"
@@ -62,6 +63,7 @@
     "Academic Year": "سال تعلیمی",
     "Dashboard": "داشبورد",
     "students": "محصلین",
+    "faculties": "پوهنځي",
     "Total Male Students": "مجموع محصلین ذکور",
     "Total Female Students": "مجموع محصلین اناث",
     "Total Student": "مجموع محصل",
