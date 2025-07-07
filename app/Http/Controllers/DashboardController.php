@@ -2,203 +2,150 @@
 
 namespace App\Http\Controllers;
 
-// app/Http/Controllers/DashboardController.php
-
 use Illuminate\Http\Request;
 use App\Models\StudentStatistic;
 use App\Models\University;
-use App\Models\Faculty;
-use App\Models\Department;
 use App\Models\Teacher;
-use Illuminate\Support\Facades\DB;
+use App\Models\Faculty;
+use App\Services\DashboardService;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
+    protected $dashboardService;
+
+    public function __construct(DashboardService $dashboardService)
+    {
+        $this->dashboardService = $dashboardService;
+    }
+
+    /**
+     * Get summary statistics for dashboard
+     */
     public function summary(Request $request)
     {
-        $filters = $request->validate([
-            'academic_year' => 'sometimes|integer',
-            'season' => 'sometimes|string|in:Spring,Autumn',
-            'university_id' => 'sometimes|integer|exists:universities,id',
-            'faculty_id' => 'sometimes|integer|exists:faculties,id',
-            'department_id' => 'sometimes|integer|exists:departments,id',
-            'student_type' => 'sometimes|string',
+        $validated = $request->validate([
+            'year' => 'nullable|integer',
+            'season' => 'nullable|in:spring,autumn',
+            'university_type' => 'nullable|in:public,private,all',
+            'province_id' => 'nullable|exists:provinces,id',
+            'university_id' => 'nullable|exists:universities,id',
+            'faculty_id' => 'nullable|exists:faculties,id',
+            'shift' => 'nullable|in:day,night',
         ]);
 
-        $statsQuery = StudentStatistic::query();
-        $this->applyFilters($statsQuery, $filters);
-
-        $teacherQuery = Teacher::query();
-        if (isset($filters['university_id'])) {
-            $teacherQuery->where('university_id', $filters['university_id']);
-        }
+        $filters = array_filter($validated, function ($value) {
+            return $value !== null && $value !== 'all';
+        });
 
         return response()->json([
-            'students' => [
-                'total' => $statsQuery->sum(DB::raw('male_total + female_total')),
-                'male' => $statsQuery->sum('male_total'),
-                'female' => $statsQuery->sum('female_total'),
-            ],
-            'teachers' => [
-                'total' => $teacherQuery->count(),
-            ],
-            'institutions' => [
-                'universities' => isset($filters['university_id']) ? 1 : University::count(),
-                'faculties' => isset($filters['faculty_id']) ? 1 : Faculty::count(),
-                'departments' => isset($filters['department_id']) ? 1 : Department::count(),
-            ],
+            'success' => true,
+            'data' => $this->dashboardService->getSummaryData($filters)
         ]);
     }
 
-    public function distribution(Request $request)
-    {
-        $filters = $request->validate([
-            'academic_year' => 'sometimes|integer',
-            'group_by' => 'required|in:university,faculty,department',
-        ]);
-
-        $query = StudentStatistic::query();
-        $this->applyFilters($query, $filters);
-
-        $groupField = $filters['group_by'] . '_id';
-
-        $data = $query
-            ->select(
-                $groupField,
-                DB::raw('SUM(male_total + female_total) as total'),
-                DB::raw('SUM(male_total) as male'),
-                DB::raw('SUM(female_total) as female')
-            )
-            ->groupBy($groupField)
-            ->with($filters['group_by'])
-            ->get()
-            ->map(function($item) use ($filters) {
-                return [
-                    'id' => $item->{$filters['group_by'] . '_id'},
-                    'name' => $item->{$filters['group_by']}->name,
-                    'total' => $item->total,
-                    'male' => $item->male,
-                    'female' => $item->female,
-                ];
-            });
-
-        return response()->json($data);
-    }
-
+    /**
+     * Get student trends over time
+     */
     public function trends(Request $request)
     {
-        $filters = $request->validate([
-            'academic_year' => 'sometimes|integer',
-            'group_by' => 'required|in:year,season,semester',
+        $validated = $request->validate([
+            'university_type' => 'nullable|in:public,private,all',
+            'province_id' => 'nullable|exists:provinces,id',
+            'time_range' => 'nullable|in:5years,10years,all',
+            'group_by' => 'nullable|in:year,season',
+            'season' => 'nullable|in:spring,autumn,all', // optional if you added this
+            'year' => 'nullable|integer|min:1300|max:1600',
+
         ]);
 
-        $query = StudentStatistic::query();
-        $this->applyFilters($query, $filters);
+        $filters = array_filter($validated, function ($value) {
+            return $value !== null && $value !== 'all';
+        });
 
-        $data = $query
-            ->select(
-                $filters['group_by'] === 'year' ? 'academic_year' : $filters['group_by'],
-                DB::raw('SUM(male_total + female_total) as total')
-            )
-            ->groupBy($filters['group_by'] === 'year' ? 'academic_year' : $filters['group_by'])
-            ->orderBy($filters['group_by'] === 'year' ? 'academic_year' : $filters['group_by'])
-            ->get();
-
-        return response()->json($data);
-    }
-
-    public function studentTeacherRatio(Request $request)
-    {
-        $filters = $request->validate([
-            'academic_year' => 'sometimes|integer',
-            'group_by' => 'required|in:university,faculty',
-        ]);
-
-        $studentQuery = StudentStatistic::query();
-        $this->applyFilters($studentQuery, $filters);
-
-        $groupField = $filters['group_by'] . '_id';
-
-        $studentCounts = $studentQuery
-            ->select(
-                $groupField,
-                DB::raw('SUM(male_total + female_total) as student_count')
-            )
-            ->groupBy($groupField)
-            ->get()
-            ->keyBy($groupField);
-
-        $teacherCounts = Teacher::query()
-            ->when(isset($filters['university_id']), function($q) use ($filters, $groupField) {
-                $q->where('university_id', $filters['university_id']);
-                if ($groupField === 'faculty_id') {
-                    $q->groupBy('faculty_id');
-                }
-            })
-            ->select(
-                $groupField,
-                DB::raw('COUNT(*) as teacher_count')
-            )
-            ->groupBy($groupField)
-            ->get()
-            ->keyBy($groupField);
-
-        $result = [];
-        foreach ($studentCounts as $id => $studentData) {
-            $teachers = $teacherCounts->get($id, (object)['teacher_count' => 0]);
-            $result[] = [
-                'id' => $id,
-                'students' => $studentData->student_count,
-                'teachers' => $teachers->teacher_count,
-                'ratio' => $teachers->teacher_count > 0 
-                    ? round($studentData->student_count / $teachers->teacher_count, 2)
-                    : null,
-            ];
-        }
-
-        return response()->json($result);
-    }
-
-    public function filterOptions()
-    {
         return response()->json([
-            'years' => StudentStatistic::select('academic_year')
-                ->distinct()
-                ->orderBy('academic_year', 'desc')
-                ->pluck('academic_year'),
-            'seasons' => ['Spring', 'Autumn'],
-            'universities' => University::orderBy('name')->get(['id', 'name']),
-            'faculties' => Faculty::orderBy('name')->get(['id', 'name']),
-            'departments' => Department::orderBy('name')->get(['id', 'name']),
+            'success' => true,
+            'data' => $this->dashboardService->getTrendData($filters)
         ]);
     }
 
-    private function applyFilters($query, $filters)
+    /**
+     * Get gender distribution statistics
+     */
+    public function genderDistribution(Request $request)
     {
-        if (isset($filters['academic_year'])) {
-            $query->where('academic_year', $filters['academic_year']);
-        }
-        
-        if (isset($filters['season'])) {
-            $query->where('season', $filters['season']);
-        }
-        
-        if (isset($filters['university_id'])) {
-            $query->where('university_id', $filters['university_id']);
-        }
-        
-        if (isset($filters['faculty_id'])) {
-            $query->where('faculty_id', $filters['faculty_id']);
-        }
-        
-        if (isset($filters['department_id'])) {
-            $query->where('department_id', $filters['department_id']);
-        }
-        
-        if (isset($filters['student_type'])) {
-            $query->where('student_type', $filters['student_type']);
-        }
-        
-        return $query;
+        $validated = $request->validate([
+            'year' => 'nullable|integer',
+            'season' => 'nullable|in:spring,autumn',
+            'university_type' => 'nullable|in:public,private,all',
+            'province_id' => 'nullable|exists:provinces,id',
+        ]);
+
+        $filters = array_filter($validated, function ($value) {
+            return $value !== null && $value !== 'all';
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $this->dashboardService->getGenderDistribution($filters)
+        ]);
+    }
+
+    /**
+     * Get faculty/department breakdown
+     */
+    public function facultyBreakdown(Request $request)
+    {
+        $validated = $request->validate([
+            'year' => 'nullable|integer',
+            'season' => 'nullable|in:spring,autumn',
+            'university_type' => 'nullable|in:public,private,all',
+            'province_id' => 'nullable|exists:provinces,id',
+            'university_id' => 'nullable|exists:universities,id',
+            'breakdown_level' => 'nullable|in:faculty,department',
+        ]);
+
+        $filters = array_filter($validated, function ($value) {
+            return $value !== null && $value !== 'all';
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $this->dashboardService->getFacultyBreakdown($filters)
+        ]);
+    }
+
+    /**
+     * Get university comparison data
+     */
+    public function universityComparison(Request $request)
+    {
+        $validated = $request->validate([
+            'year' => 'nullable|integer',
+            'season' => 'nullable|in:spring,autumn',
+            'province_id' => 'nullable|exists:provinces,id',
+            'compare_by' => 'required|in:type,province,both',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $this->dashboardService->getUniversityComparison($validated)
+        ]);
+    }
+
+    /**
+     * Get recent activity for dashboard
+     */
+    public function recentActivity(Request $request)
+    {
+        $validated = $request->validate([
+            'limit' => 'nullable|integer|max:50',
+            'user_id' => 'nullable|exists:users,id',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $this->dashboardService->getRecentActivity($validated)
+        ]);
     }
 }

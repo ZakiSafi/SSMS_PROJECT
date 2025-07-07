@@ -40,6 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('universities', UniversityController::class);
     Route::apiResource('teachers', TeacherController::class);
 
+    
+
     Route::prefix('report')->group(function () {
     Route::get('universitiesClasses', [UniversityClassReportController::class, '__invoke']);
     Route::get('university', [UniversityReportController::class, '__invoke']);
@@ -52,13 +54,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
 });
 
-Route::prefix('dashboard')->group(function () {
-    Route::get('summary', [DashboardController::class, 'summary']);
-    Route::get('distribution', [DashboardController::class, 'distribution']);
-    Route::get('trends', [DashboardController::class, 'trends']);
-    Route::get('student-teacher-ratio', [DashboardController::class, 'studentTeacherRatio']);
-    Route::get('filter-options', [DashboardController::class, 'filterOptions']);
-});
 
     // Define the login route (with optional name)
 
@@ -73,3 +68,12 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
 // reports
+// Dashboard routes
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/summary', [DashboardController::class, 'summary']);
+        Route::get('/trends', [DashboardController::class, 'trends']);
+        Route::get('/gender-distribution', [DashboardController::class, 'genderDistribution']);
+        Route::get('/faculty-breakdown', [DashboardController::class, 'facultyBreakdown']);
+        Route::get('/university-comparison', [DashboardController::class, 'universityComparison']);
+        Route::get('/recent-activity', [DashboardController::class, 'recentActivity']);
+    });
