@@ -16,6 +16,7 @@ class FacultyClassBasedReportController extends Controller
         $isAdmin = $user->hasRole('admin');
         $year = $request->query('year');
         $season = $request->query('season');
+        $shift = $request->query('shift');
         $university = $request->query('university');
         $perPage = $request->query('perPage', 10);
 
@@ -36,6 +37,9 @@ class FacultyClassBasedReportController extends Controller
             })
             ->when($university !== 'all', function ($query) use ($university) {
                 return $query->where('universities.id', $university);
+            })
+            ->when($shift !== 'all', function ($query) use ($shift) {
+                return $query->where('student_statistics.shift', $shift);
             })
             ->groupBy('student_statistics.university_id', 'universities.name')
             ->paginate($perPage);

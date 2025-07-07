@@ -1,77 +1,84 @@
 <template>
-    <AppBar
-        :pageTitle="`Statistical Data of Students in ${ReportRepository.type} Higher Education Institutions – Day and Night Shifts, Year ${ReportRepository.date}`"
-    />
-    <v-divider :thickness="1" class="border-opacity-100" />
+    <div :dir="dir">
+        <AppBar
+            :pageTitle="`Statistical Data of Students in ${ReportRepository.type} Higher Education Institutions – Day and Night Shifts, Year ${ReportRepository.date}`"
+        />
+        <v-divider :thickness="1" class="border-opacity-100" />
 
-    <div class="w-full flex justify-between items-start gap-4 pt-6">
-        <!-- Left side: Combobox -->
-        <div class="w-1/5">
-            <v-combobox
-                v-model="ReportRepository.date"
-                :items="yearRange"
-                :label="$t('Select or Type Year')"
-                variant="outlined"
-                density="compact"
-                :rules="[validateYearInput]"
-                @update:modelValue="onDateChange"
-            ></v-combobox>
-        </div>
-
-        <!-- Right side: Two selects side by side -->
-        <div class="w-1/4 flex">
-            <div class="w-1/2">
-                <v-select
-                    v-model="ReportRepository.type"
-                    :items="[
-                        { text: $t('public'), value: 'public' },
-                        { text: $t('private'), value: 'private' },
-                    ]"
-                    :label="$t('Select University Type')"
+        <v-row class="pt-6 align-center">
+            <!-- Left side: Year Combobox -->
+            <v-col cols="3">
+                <v-combobox
+                    v-model="ReportRepository.date"
+                    :items="yearRange"
+                    :label="$t('Select or Type Year')"
                     variant="outlined"
                     density="compact"
-                    item-title="text"
-                    item-value="value"
-                    :rules="[validateType]"
-                    @update:modelValue="onTypeChange"
-                />
-            </div>
-            <div class="w-1/2 ml-4">
-                <v-select
-                    v-model="ReportRepository.shift"
-                    :items="[
-                        { text: $t('day'), value: 'Day' },
-                        { text: $t('night'), value: 'Night' },
-                    ]"
-                    item-title="text"
-                    item-value="value"
-                     :label="$t('Select Shift')"
-                    variant="outlined"
-                    density="compact"
-                    :rules="[validateShift]"
-                    @update:modelValue="onShiftChange"
-                ></v-select>
-            </div>
-        </div>
-    </div>
+                    :rules="[validateYearInput]"
+                    @update:modelValue="onDateChange"
+                ></v-combobox>
+            </v-col>
 
-    <v-data-table-server
-        v-model:items-per-page="ReportRepository.itemsPerPage"
-        :headers="headers"
-        :items-length="ReportRepository.totalItems"
-        :items="ReportRepository.universities"
-        :loading="ReportRepository.loading"
-        :search="ReportRepository.search"
-        @update:options="onTableOptionsUpdate"
-        class="w-100 mx-auto"
-        hover
-        :dir="dir"
-    >
-     <template #bottom>
-                <div class="d-flex align-center justify-end pa-2" >
-                    <span class="mx-2">{{
-                        $t("pagination.items_per_page")
-                    }}</span>
+            <!-- Center: Type and Shift selects -->
+            <v-col cols="6">
+                <v-row>
+                    <v-col cols="6">
+                        <v-select
+                            v-model="ReportRepository.type"
+                            :items="[
+                                { text: $t('public'), value: 'public' },
+                                { text: $t('private'), value: 'private' },
+                            ]"
+                            :label="$t('Select University Type')"
+                            variant="outlined"
+                            density="compact"
+                            item-title="text"
+                            item-value="value"
+                            :rules="[validateType]"
+                            @update:modelValue="onTypeChange"
+                        />
+                    </v-col>
+                    <v-col cols="6">
+                        <v-select
+                            v-model="ReportRepository.shift"
+                            :items="[
+                                { text: $t('day'), value: 'Day' },
+                                { text: $t('night'), value: 'Night' },
+                            ]"
+                            item-title="text"
+                            item-value="value"
+                            :label="$t('Select Shift')"
+                            variant="outlined"
+                            density="compact"
+                            :rules="[validateShift]"
+                            @update:modelValue="onShiftChange"
+                        />
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <!-- Right side: Print Button -->
+            <v-col cols="auto" class="mb-6">
+                <v-btn color="primary" @click="printTable">
+                    {{ $t("Print Report") }}
+                </v-btn>
+            </v-col>
+        </v-row>
+
+        <v-data-table-server
+            v-model:items-per-page="ReportRepository.itemsPerPage"
+            :headers="headers"
+            :items-length="ReportRepository.totalItems"
+            :items="ReportRepository.universities"
+            :loading="ReportRepository.loading"
+            :search="ReportRepository.search"
+            @update:options="onTableOptionsUpdate"
+            class="w-100 mx-auto"
+            hover
+        >
+            <template #bottom>
+                <div class="d-flex align-center justify-end pa-2">
+                    <span class="mx-2">{{ $t("pagination.items_per_page") }}</span>
                     <v-select
                         v-model="ReportRepository.itemsPerPage"
                         :items="[
@@ -87,10 +94,11 @@
                         variant="outlined"
                         hide-details
                         style="max-width: 100px"
-                    ></v-select>
+                    />
                 </div>
             </template>
-            </v-data-table-server>
+        </v-data-table-server>
+    </div>
 </template>
 
 <script setup>
@@ -99,9 +107,9 @@ import { useReportRepository } from "@/store/ReportRepository";
 import { ref, computed } from "vue";
 import persianDate from "persian-date";
 import { useI18n } from "vue-i18n";
-const { t,locale } = useI18n();
+const { t, locale } = useI18n();
 const dir = computed(() => {
-    return locale.value === "en" ? "ltr" : "rtl"; // Correctly set "rtl" and "ltr"
+    return locale.value === "en" ? "ltr" : "rtl";
 });
 
 const ReportRepository = useReportRepository();
@@ -118,6 +126,80 @@ const yearRange = computed(() => {
     }
     return years;
 });
+
+const printTable = () => {
+    const printContent = ReportRepository.universities
+        .map(
+            (item, index) => `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${item.university}</td>
+      <td>${item.Total_Males}</td>
+      <td>${item.Total_Females}</td>
+      <td>${item.Total_Students}</td>
+      <td>${item.Male_Percentage}</td>
+      <td>${item.Female_Percentage}</td>
+    </tr>
+  `
+        )
+        .join("");
+
+    const html = `
+    <html dir="${dir.value}">
+      <head>
+       
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+          }
+          h2 {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          th, td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: center;
+          }
+          th {
+            background-color: #f2f2f2;
+          }
+        </style>
+      </head>
+      <body>
+         <h2>Statistical Data of Students in ${ReportRepository.type} Higher Education Institutions – Day and Night Shifts, Year ${ReportRepository.date}</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>${t("menu.university")}</th>
+              <th>${t("total_males")}</th>
+              <th>${t("total_females")}</th>
+              <th>${t("total_students")}</th>
+              <th>${t("male_percentage")}</th>
+              <th>${t("female_percentage")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${printContent}
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+};
 
 const fetchData = () => {
     ReportRepository.fetchUniversity(
@@ -173,8 +255,6 @@ const validateShift = (value) => {
     if (!value) return "Shift is required";
     return true;
 };
-
-
 
 const headers = computed(() => [
     {

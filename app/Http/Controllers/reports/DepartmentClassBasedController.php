@@ -15,6 +15,7 @@ class DepartmentClassBasedController extends Controller
         $isAdmin = $user->hasRole('admin');
         $year = $request->query('year');
         $season = $request->query('season');
+        $shift = $request->query('shift');
         $universityName = $request->query('university');
         $perPage = $request->query('perPage', 10);
 
@@ -40,6 +41,9 @@ class DepartmentClassBasedController extends Controller
             })
             ->when($universityName !== 'all', function ($query) use ($universityName) {
                 return $query->where('universities.id', $universityName);
+            })
+            ->when($shift !== 'all', function ($query) use ($shift) {
+                return $query->where('student_statistics.shift', $shift);
             })
             ->groupBy(
                 'student_statistics.university_id',

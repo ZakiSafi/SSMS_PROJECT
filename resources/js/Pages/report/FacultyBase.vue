@@ -4,21 +4,38 @@
         <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
         <div class="w-full d-flex justify-space-between pt-6 pb-6">
-            <!-- Left side: Combobox -->
+            <!-- Left side: Year Picker -->
             <div class="w-1/5">
-                <v-combobox
-                    v-model="ReportRepository.date"
-                    :items="yearRange"
-                    :label="$t('Select or Type Year')"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    @update:modelValue="onDateChange"
-                ></v-combobox>
+                <v-col cols="6">
+                    <DatePicker
+                        v-model="selectedYear"
+                        format="jYYYY"
+                        type="year"
+                        :placeholder="$t('Select or Type Year')"
+                        rounded
+                        :rules="[rules.required]"
+                    />
+                </v-col>
             </div>
 
-            <!-- Right side: Two selects side by side -->
+            <!-- Right side: Season and University Selects -->
             <div class="w-1/3 flex">
+                <div class="w-2/3">
+                    <v-select
+                        v-model="ReportRepository.shift"
+                        :items="[
+                            { text: $t('day'), value: 'day' },
+                            { text: $t('night'), value: 'night' },
+                        ]"
+                        item-title="text"
+                        item-value="value"
+                        :label="$t('Select Shift')"
+                        variant="outlined"
+                        density="compact"
+                        :rules="[validateShift]"
+                        @update:modelValue="onShiftChange"
+                    />
+                </div>
                 <div class="w-2/3">
                     <v-select
                         class="mx-4"
@@ -33,8 +50,7 @@
                         variant="outlined"
                         hide-details
                         density="compact"
-                        @update:modelValue="onDateChange"
-                    ></v-select>
+                    />
                 </div>
                 <div class="w-3/4 ml-4">
                     <v-combobox
@@ -49,12 +65,12 @@
                         variant="outlined"
                         hide-details
                         density="compact"
-                        @update:modelValue="onDateChange"
                     />
                 </div>
             </div>
         </div>
 
+        <!-- Table -->
         <div class="table-container">
             <table class="gender-stats-table">
                 <thead>
@@ -83,7 +99,7 @@
                             color="primary"
                             height="4"
                             class="ma-0"
-                        ></v-progress-linear>
+                        />
                     </td>
                 </tr>
 
@@ -109,7 +125,7 @@
                                 </td>
 
                                 <template
-                                    v-for="classNum in [1, 2, 3, 4, 5, 6]"
+                                    v-for="classNum in 6"
                                     :key="'class-' + classNum"
                                 >
                                     <td>
@@ -150,52 +166,69 @@
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
-import { ref, computed, onMounted } from "vue";
-import { useReportRepository } from "../../store/ReportRepository";
+import { ref, computed, watch, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-const { t, locale } = useI18n();
-const dir = computed(() => {
-    return locale.value === "en" ? "ltr" : "rtl"; // Correctly set "rtl" and "ltr"
-});
-
-const ReportRepository = useReportRepository();
+import { useReportRepository } from "../../store/ReportRepository";
+import DatePicker from "vue3-persian-datetime-picker";
 import persianDate from "persian-date";
 
-const getCurrentPersianYear = () => {
-    return new persianDate().year();
-};
+const { t, locale } = useI18n();
+const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 
-const currentYear = ref(getCurrentPersianYear());
-const yearRange = computed(() => {
-    const years = [];
-    const startYear = currentYear.value - 10;
-    const endYear = currentYear.value + 10;
+const ReportRepository = useReportRepository();
 
-    for (let i = startYear; i <= endYear; i++) {
-        years.push(i);
-    }
-    return years;
+// Reactive year (DatePicker)
+const selectedYear = ref(ReportRepository.date || new persianDate().year());
+
+// Update repository and fetch data when year changes
+watch(selectedYear, (newYear) => {
+    ReportRepository.date = newYear;
+    fetchData();
 });
 
-const onDateChange = () => {
+// Watch season or university change
+watch(
+    () => ReportRepository.season,
+    () => fetchData()
+);
+watch(
+    () => ReportRepository.university,
+    () => fetchData()
+);
+
+watch(
+    () => ReportRepository.shift,
+    (newShift) => {
+        if (newShift) {
+            fetchData();
+        }
+    }
+);
+
+const rules = {
+    required: (v) => !!v || t("validation.required"),
+};
+
+// Centralized fetch
+const fetchData = () => {
     const universityId =
         ReportRepository.university?.id || ReportRepository.university;
     ReportRepository.fecthJawad(
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,
         ReportRepository.season,
-        universityId // Send only the id
+        universityId
     );
 };
-
+// fetch shift
+const onShiftChange = (shift) => {
+    ReportRepository.shift = shift;
+    fetchData();
+};
+// Initial load
 onMounted(() => {
     ReportRepository.fetchUniversities();
-    ReportRepository.fecthJawad(
-        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
-        ReportRepository.date,
-        ReportRepository.season,
-        "all"
-    );
+    fetchData();
 });
 </script>
 

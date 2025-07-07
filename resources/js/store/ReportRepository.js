@@ -106,103 +106,108 @@ export const useReportRepository = defineStore("reportRepository", {
             }
         },
 
-        async fecthJawad({page,itemsPerPage}, date=this.date, season=this.season, universityId){
-            console.log("jawadfcgvhbjnkml",this.university)
-            this.loading=true
-            try{
-                const response= await axios.get(`report/facultyClassBased?year=${date}&season=${season}&university=${universityId}&page=${page}&perPage=${itemsPerPage}`);
+        async fecthJawad(
+            { page, itemsPerPage },
+            date = this.date,
+            season = this.season,
+            universityId,
+            shift = this.shift
+        ) {
+            this.loading = true;
+            try {
+                const response = await axios.get(
+                    `report/facultyClassBased?year=${date}&season=${season}&shift=${shift}&university=${universityId}&page=${page}&perPage=${itemsPerPage}`
+                );
                 this.jawad = response.data.data;
                 this.totalItems = response.data.total;
-
-
-            }
-            catch{
+            } catch {
                 console.error("Error fetching data:", error);
                 this.jawad = [];
-            }
-            finally{
-                 this.loading=false
-
+            } finally {
+                this.loading = false;
             }
         },
 
-         async fetchFawad({page,itemsPerPage}, date=this.date, season=this.season, universityId){
-            console.log("jawadfcgvhbjnkml",this.university)
-            this.loading=true
-            try{
-                const response= await axios.get(`report/departmentClassBase?year=${date}&season=${season}&university=${universityId}&page=${page}&perPage=${itemsPerPage}`);
+        async fetchFawad(
+            { page, itemsPerPage },
+            date = this.date,
+            season = this.season,
+            universityId,
+            shift = this.shift
+        ) {
+            this.loading = true;
+            try {
+                const response = await axios.get(
+                    `report/departmentClassBase?year=${date}&season=${season}&shift=${shift}&university=${universityId}&page=${page}&perPage=${itemsPerPage}`
+                );
                 this.fawad = response.data.data;
                 this.totalItems = response.data.total;
-
-
-            }
-            catch{
-                console.error("Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:", error);
+            } catch {
+                console.error(
+                    "Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:",
+                    error
+                );
                 this.jawad = [];
-            }
-            finally{
-                 this.loading=false
-
+            } finally {
+                this.loading = false;
             }
         },
 
-
-        async fetchFacultyBaseGraduation({page,itemsPerPage}, date=this.date, season=this.season, shift=this.shift){
-
-             
-            this.loading=true
-            try{
-                const response= await axios.get(`report/facultyBasedGraduation?year=${date}&season=${season}&shift=${shift}&page=${page}&perPage=${itemsPerPage}`);
+        async fetchFacultyBaseGraduation(
+            { page, itemsPerPage },
+            date = this.date,
+            season = this.season,
+            shift = this.shift
+        ) {
+            this.loading = true;
+            try {
+                const response = await axios.get(
+                    `report/facultyBasedGraduation?year=${date}&season=${season}&shift=${shift}&page=${page}&perPage=${itemsPerPage}`
+                );
                 this.facultyBaseGraduation = response.data.data;
                 this.totalItems = response.data.total;
-
-
-            }
-            catch{
-                console.error("Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:", error);
+            } catch {
+                console.error(
+                    "Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:",
+                    error
+                );
                 this.facultyBaseGraduation = [];
+            } finally {
+                this.loading = false;
             }
-            finally{
-                 this.loading=false
-
-            }
-
         },
-         
-        async fetchDepartmentBaseGraduation({page,itemsPerPage}, date=this.date, season=this.season, shift=this.shift){
 
-             
-            this.loading=true
-            try{
-                const response= await axios.get(`report/departmentBasedGraduation?year=${date}&season=${season}&shift=${shift}&page=${page}&perPage=${itemsPerPage}`);
+        async fetchDepartmentBaseGraduation(
+            { page, itemsPerPage },
+            date = this.date,
+            season = this.season,
+            shift = this.shift
+        ) {
+            this.loading = true;
+            try {
+                const response = await axios.get(
+                    `report/departmentBasedGraduation?year=${date}&season=${season}&shift=${shift}&page=${page}&perPage=${itemsPerPage}`
+                );
                 this.departmentBaseGraduation = response.data.data;
                 this.totalItems = response.data.total;
-
-
-            }
-            catch{
-                console.error("Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:", error);
+            } catch {
+                console.error(
+                    "Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:",
+                    error
+                );
                 this.departmentBaseGraduation = [];
+            } finally {
+                this.loading = false;
             }
-            finally{
-                 this.loading=false
-
-            }
-
         },
-         
 
-
-
-         async fetchUniversities() {
-      try {
-        const response = await axios.get(`universities`);
-        this.allUniversities=response.data.data
-
-      } catch (error) {
-        console.error("Failed to fetch universities:", error);
-      }
-  },
-
+        async fetchUniversities() {
+            try {
+                const response = await axios.get(`universities`);
+                this.allUniversities = response.data.data;
+            } catch (error) {
+                console.error("Failed to fetch universities:", error);
+            }
+        },
     },
 });
