@@ -12,7 +12,6 @@ export const useUserRepository = defineStore("userRepository", {
             loading: ref(false),
             totalItems: ref(0),
             itemsPerPage: ref(5),
-
             router: useRouter(),
             createDialog: ref(false),
             userSearch: ref(""),
@@ -21,6 +20,7 @@ export const useUserRepository = defineStore("userRepository", {
             user: reactive({}),
             role: reactive({}),
             roles: reactive([]),
+            logs:reactive([])
         };
     },
 
@@ -184,5 +184,20 @@ export const useUserRepository = defineStore("userRepository", {
                 console.error("Failed to update user:", err);
             }
         },
+
+        async fetchLogs({page,itemsPerPage}){
+            try {
+                this.loading = true;
+                const response = await axios.get(
+                    `logs?page=${page}&perPage=${itemsPerPage}&name=${this.search}`
+                );
+                this.logs = response.data.data;
+                this.totalItems = response.data.meta.total;
+                this.loading = false;
+            } catch (err) {
+                console.error("Failed to fetch logs:", err);
+            }
+
+        }
     },
 });

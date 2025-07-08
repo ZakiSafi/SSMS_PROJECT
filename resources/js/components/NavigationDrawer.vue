@@ -192,6 +192,12 @@ const settingItems = [
         icon: "mdi-circle-medium",
         value: "roles",
     },
+    {
+        to: "/logs",
+        translationKey: "logs",
+        icon: "mdi-circle-medium",
+        value: "logs",
+    },
 ];
 
 const currentStudents = [

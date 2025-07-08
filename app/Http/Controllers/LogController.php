@@ -9,13 +9,13 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
-        public function __construct()
-    {
-        $this->middleware('permission:logs.view')->only(['index', 'show']);
-        $this->middleware('permission:logs.edit')->only(['edit', 'update']);
-        $this->middleware('permission:logs.create')->only(['create', 'store']);
-        $this->middleware('permission:logs.delete')->only('destroy');
-    }
+    //     public function __construct()
+    // {
+    //     $this->middleware('permission:logs.view')->only(['index', 'show']);
+    //     $this->middleware('permission:logs.edit')->only(['edit', 'update']);
+    //     $this->middleware('permission:logs.create')->only(['create', 'store']);
+    //     $this->middleware('permission:logs.delete')->only('destroy');
+    // }
     /**
      * Display a listing of the resource.
      */

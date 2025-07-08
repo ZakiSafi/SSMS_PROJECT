@@ -69,7 +69,3 @@ Route::prefix('dashboard')->group(function () {
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
 
-//
-
-Route::post('login', [AuthController::class, 'login'])->name('login');
-// reports
