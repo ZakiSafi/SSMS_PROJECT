@@ -86,4 +86,9 @@ class UserController extends Controller
     {
         return $this->deleteRecord($user);
     }
+
+    public function me(Request $request)
+{
+    return new UserResource($request->user());
+}
 }

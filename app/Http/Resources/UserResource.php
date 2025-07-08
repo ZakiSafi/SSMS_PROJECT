@@ -19,15 +19,16 @@ class UserResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "university" => [
-                'id' => $this->university->id,
-                'name' => $this->university->name,
+                'id' => $this->university?->id,
+                'name' => $this->university?->name,
             ],
             "email" => $this->email,
             "password" => $this->password,
             "role" => $role ? [
                 'id' => $role->id,
                 'name' => $role->name,
-            ] : null
+            ] : null,
+            'permissions' => $this->getAllPermissions()->pluck('name')
 
 
         ];

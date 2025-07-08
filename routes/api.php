@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('role', RoleController::class);
     Route::apiResource('users', UserController::class);
     Route::put('users/update/{user}', [UserController::class, 'update']);
+    Route::get('/me', [UserController::class, 'me']);
     Route::apiResource('logs', LogController::class);
     Route::apiResource('universities', UniversityController::class);
     Route::apiResource('teachers', TeacherController::class);
