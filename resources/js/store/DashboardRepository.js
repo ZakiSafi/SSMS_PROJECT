@@ -131,66 +131,18 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
                 this.isLoading = false;
             }
         },
-        // =========================================================================================================
-
-        // Fetch data from the API
-        async fetchDashboardData() {
-            this.isLoading = true;
+        async fetchRecentActivity(limit = 5) {
             try {
-                const response = await axios.get("dashboardReport");
-                const data = response.data;
-
-                console.log("Fetched dashboard data:", data);
-
-                // Ensure numeric values are converted to numbers
-                this.$patch({
-                    dashboardReport: data,
-                    dashboards: data,
-                    totalExpenses: parseFloat(data.totalAllExpenses) || 0,
-                    todayExpenses: data.dailyExpenses || [],
-                    thisMonthExpenses: data.monthlyExpenses || [],
-                    thisYearExpenses: data.yearlyExpenses || [],
-                    monthExpenses: data.monthExpenses || [],
-                    monthIncomes: data.monthIncomes || [],
-                    monthProfits: data.monthProfits || [],
-                    earnings: parseFloat(data.totalEarnings) || 0,
-                    expensesList: this.processExpenses(
-                        data.monthlyExpenses,
-                        "green"
-                    ),
+                const response = await axios.get("/dashboard/recent-activity", {
+                    params: { limit },
                 });
-
-                this.isLoading = false;
+                this.recentActivity = response.data.data || [];
             } catch (error) {
-                console.error("Failed to fetch dashboard data:", error);
-                this.error = "Failed to load dashboard data.";
-                this.isLoading = false;
+                console.error("Failed to fetch recent activity:", error);
+                this.recentActivity = [];
             }
         },
 
-        // Update expenses dynamically
-        updateExpenses(expenses, color) {
-            console.log("Updating expenses with:", expenses, color);
-            if (!Array.isArray(expenses)) {
-                console.warn("Expenses parameter is not an array");
-                return;
-            }
-            this.totalExpenses = expenses.reduce(
-                (acc, expense) => acc + (parseFloat(expense.totalExpense) || 0),
-                0
-            );
-            this.expensesList = this.processExpenses(expenses, color);
-        },
-
-        // Process expenses to add percentage and color
-        processExpenses(expenses, color) {
-            return expenses.map((exp) => ({
-                ...exp,
-                percentage:
-                    ((parseFloat(exp.totalExpense) || 0) / this.totalExpenses) *
-                    100,
-                color,
-            }));
-        },
+        // =========================================================================================================
     },
 });
