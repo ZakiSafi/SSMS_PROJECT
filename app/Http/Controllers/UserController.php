@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+     
     /**
      * Display a listing of the resource.
      */
@@ -23,10 +27,41 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserRequest $request)
-    {
-        return $this->storeRecord($request, $this->model);
+   public function store(UserRequest $request)
+{
+    DB::beginTransaction();
+    try {
+        $validated = $request->validated();
+        
+        // Create user
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'university_id' => $validated['university_id'] ?? null,
+        ]);
+
+        // Assign role (using either role ID or name)
+        if (isset($validated['role_id'])) {
+            $role = Role::findById($validated['role_id'], 'api');
+            $user->assignRole($role);
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'User created successfully',
+            'user' => $user->load('roles')
+        ], 201);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'message' => 'User creation failed',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     /**
      * Display the specified resource.
@@ -51,4 +86,9 @@ class UserController extends Controller
     {
         return $this->deleteRecord($user);
     }
+
+    public function me(Request $request)
+{
+    return new UserResource($request->user());
+}
 }

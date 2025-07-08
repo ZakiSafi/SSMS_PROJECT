@@ -9,6 +9,13 @@ use App\Http\Resources\ProvinceResource;
 
 class ProvinceController extends Controller
 {
+        public function __construct()
+    {
+        $this->middleware('permission:provinces.view')->only(['index', 'show']);
+        $this->middleware('permission:provinces.edit')->only(['edit', 'update']);
+        $this->middleware('permission:provinces.create')->only(['create', 'store']);
+        $this->middleware('permission:provinces.delete')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('university_id')->nullable()->constrained('universities')->nullOnDelete();
             $table->string('email')->unique();
             $table->string('password');
+            $table->foreignId('role_id')->nullable()->constrained('roles')->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });

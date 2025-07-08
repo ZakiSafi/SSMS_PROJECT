@@ -1,13 +1,21 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import AppBar from "@/components/AppBar.vue";
 import { useUserRepository } from "@/store/UserRepository";
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+const route = useRoute();
+const id = route.params.id;
+
 const UserRepository = useUserRepository();
 
 const roleName = ref("");
 const roleDescription = ref("");
 
-// Define pages and actions
+
+
 const pages = [
     { label: "Dashboard", key: "dashboard", actions: ["view"] },
     {
@@ -57,7 +65,6 @@ const pages = [
     },
 ];
 
-// Reactive permissions object
 const permissions = ref({});
 pages.forEach((page) => {
     permissions.value[page.key] = {};
@@ -65,48 +72,78 @@ pages.forEach((page) => {
         permissions.value[page.key][action] = false;
     });
 });
+onMounted(async () => {
+  // Fetch role from backend
+  await UserRepository.fetchRole(id);
 
+  roleName.value = UserRepository.role.name;
+  roleDescription.value = UserRepository.role.description;
+
+  // Reset all permissions to false
+  pages.forEach((page) => {
+    page.actions.forEach((action) => {
+      permissions.value[page.key][action] = false;
+    });
+  });
+
+  // Set permissions from backend as true
+  UserRepository.role.permissions.forEach((perm) => {
+    const [pageKey, action] = perm.split(".");
+    if (permissions.value[pageKey]) {
+      permissions.value[pageKey][action] = true;
+    }
+  });
+});
+
+
+
+// Update role
 const submitPermissions = async () => {
-    const permissionArray = [];
+    const selectedPermissions = [];
 
+    // Collect all selected permissions from the form
     Object.entries(permissions.value).forEach(([pageKey, actions]) => {
         Object.entries(actions).forEach(([action, allowed]) => {
             if (allowed) {
-                permissionArray.push({
-                    name: `${pageKey}.${action}`,
-                    description: `Allow ${action} ${pageKey.replace("_", " ")}`,
-                });
+                selectedPermissions.push(`${pageKey}.${action}`);
             }
         });
     });
 
+    // Combine with existing permissions (avoid duplicates)
+    const existingPermissions = UserRepository.role.permissions || [];
+
+    // Use Set to merge both arrays uniquely
+    const mergedPermissions = Array.from(new Set([
+        ...existingPermissions,
+        ...selectedPermissions
+    ]));
+
     const payload = {
         name: roleName.value,
         description: roleDescription.value,
-        permissions: permissionArray,
+        permissions: mergedPermissions, // ✅ full list of old + new
     };
 
-    try {
-        await UserRepository.createRole(payload);
-        console.log("Role created successfully");
+    console.log("Payload to send:", payload); // 🧪 debug
 
-        // Reset form
-        roleName.value = "";
-        roleDescription.value = "";
-        pages.forEach((page) => {
-            page.actions.forEach((action) => {
-                permissions.value[page.key][action] = false;
-            });
-        });
+    try {
+        await UserRepository.updateRole(id, payload);
+        router.push({ name: "role-permission" });
     } catch (error) {
-        console.error("Error creating role:", error);
+        console.error("Error updating role:", error);
     }
 };
+
+
+
+console.log("Permissions object:", permissions.value);
+
 </script>
 
 <template>
     <v-container fluid>
-        <AppBar pageTitle="Role Permissions" />
+        <AppBar pageTitle="Update Role Permissions" />
         <v-divider :thickness="1" class="border-opacity-100" />
 
         <v-row class="pt-6">
@@ -187,7 +224,7 @@ const submitPermissions = async () => {
                             size="large"
                             @click="submitPermissions"
                         >
-                            Submit
+                            Update
                         </v-btn>
                     </v-col>
                 </v-row>

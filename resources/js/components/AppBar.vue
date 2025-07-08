@@ -32,18 +32,18 @@
                             :key="$t(item.title)"
                             @click="changeLanguage(item.lang)"
                         >
-                            <div
-                                class="d-flex justify-between align-center gap-4"
-                            >
-                                <v-list-item-icon>
-                                    <img
-                                        :src="item.icon"
-                                        :alt="$t('language_icon')"
-                                        class="icon-size"
-                                        height="22"
-                                        width="22"
-                                    />
-                                </v-list-item-icon>
+                            <div class="flex items-center gap-4">
+                                <div class="mr-2">
+                                    <v-list-item-icon>
+                                        <img
+                                            :src="item.icon"
+                                            :alt="$t('language_icon')"
+                                            class="icon-size"
+                                            height="22"
+                                            width="22"
+                                        />
+                                    </v-list-item-icon>
+                                </div>
                                 <v-list-item-title>{{
                                     $t(item.title)
                                 }}</v-list-item-title>
@@ -120,7 +120,7 @@ import { ref, onMounted } from "vue";
 import { useAuthRepository } from "../store/AuthRepository";
 const AuthRepository = useAuthRepository();
 import { useI18n } from "vue-i18n";
-const { t,locale } = useI18n();
+const { t, locale } = useI18n();
 
 const props = defineProps({
     pageTitle: { type: String, default: "" },
@@ -128,8 +128,9 @@ const props = defineProps({
 });
 
 const items = ref([
-    { title: "english", lang: "en", icon: "/assets/english.png" },
-    { title: "dari", lang: "fa", icon: "/assets/dari.png" },
+    { title: "English", lang: "en", icon: "/assets/english.png" },
+    { title: "Dari", lang: "fa", icon: "/assets/dari.png" },
+    { title: "Pashto", lang: "ps", icon: "/assets/dari.png" },
 ]);
 
 const isRtl = ref(false);
@@ -146,7 +147,7 @@ onMounted(() => {
 const changeLanguage = (lang) => {
     locale.value = lang;
     localStorage.setItem("locale", lang);
-    isRtl.value = lang !== "en"; 
+    isRtl.value = lang !== "en";
 };
 
 const handleLogout = () => {

@@ -112,7 +112,7 @@ import { useUserRepository } from "@/store/UserRepository";
 import { useI18n } from "vue-i18n";
 import { computed } from "vue";
 const { t, locale } = useI18n();
-const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
+const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 
 const UserRepository = useUserRepository();
 

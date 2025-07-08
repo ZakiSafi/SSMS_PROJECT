@@ -5,12 +5,14 @@ namespace App\Http\Controllers\reports;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\StudentStatistic;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class FacultyBaseGraduationReportController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $user = Auth::user();
         $year = $request->query('year');
         $season = $request->query('season');
         $shift = $request->query('shift');
@@ -36,6 +38,9 @@ class FacultyBaseGraduationReportController extends Controller
                 DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage')
             );
 
+        if(!$user->hasRole('admin')) {
+            $query->where('student_statistics.university_id', $user->university_id);
+        }
         if ($year && $year !== 'all') {
             $query->where('student_statistics.academic_year', intval($year));
         }

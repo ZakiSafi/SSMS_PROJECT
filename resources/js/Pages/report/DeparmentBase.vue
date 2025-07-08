@@ -3,9 +3,9 @@
         <AppBar :pageTitle="$t('departmentBase')" />
         <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
-        <div class="w-full d-flex justify-space-between pt-6 pb-6">
-            <!-- Left side: Year Combobox -->
-            <div class="w-1/5">
+        <v-row class="pt-6 pb-6" align="center" justify="space-between">
+            <!-- Year Combobox -->
+            <v-col cols="3">
                 <v-combobox
                     v-model="ReportRepository.date"
                     :items="yearRange"
@@ -15,45 +15,70 @@
                     hide-details
                     @update:modelValue="onDateChange"
                 />
-            </div>
+            </v-col>
 
-            <!-- Right side: Season and University selects -->
-            <div class="w-1/2 flex">
-                <div class="flex-1 mx-2">
-                    <v-select
-                        v-model="ReportRepository.season"
-                        :items="[
-                            { title: $t('spring'), value: 'spring' },
-                            { title: $t('autumn'), value: 'autumn' },
-                        ]"
-                        item-title="title"
-                        item-value="value"
-                        :label="$t('select_season')"
-                        variant="outlined"
-                        hide-details
-                        density="compact"
-                        @update:modelValue="onDateChange"
-                    />
-                </div>
+            <!-- select Shift -->
 
-                <div class="flex-1 mx-2">
-                    <v-combobox
-                        v-model="ReportRepository.university"
-                        :items="[
-                            ...ReportRepository.allUniversities,
-                            { id: 'all', name: $t('all') },
-                        ]"
-                        item-title="name"
-                        item-value="id"
-                        :label="$t('select_university')"
-                        variant="outlined"
-                        hide-details
-                        density="compact"
-                        @update:modelValue="onDateChange"
-                    />
-                </div>
-            </div>
-        </div>
+            <v-col cols="2" class="mt-6">
+                <v-select
+                    v-model="ReportRepository.shift"
+                    :items="[
+                        { text: $t('day'), value: 'day' },
+                        { text: $t('night'), value: 'night' },
+                    ]"
+                    item-title="text"
+                    item-value="value"
+                    :label="$t('Select Shift')"
+                    variant="outlined"
+                    density="compact"
+                    :rules="[validateShift]"
+                    @update:modelValue="onShiftChange"
+                />
+            </v-col>
+
+            <!-- Season Select -->
+            <v-col cols="3">
+                <v-select
+                    v-model="ReportRepository.season"
+                    :items="[
+                        { title: $t('spring'), value: 'spring' },
+                        { title: $t('autumn'), value: 'autumn' },
+                    ]"
+                    item-title="title"
+                    item-value="value"
+                    :label="$t('select_season')"
+                    variant="outlined"
+                    hide-details
+                    density="compact"
+                    @update:modelValue="onDateChange"
+                />
+            </v-col>
+
+            <!-- University Combobox -->
+            <v-col cols="2">
+                <v-combobox
+                    v-model="ReportRepository.university"
+                    :items="[
+                        ...ReportRepository.allUniversities,
+                        { id: 'all', name: $t('all') },
+                    ]"
+                    item-title="name"
+                    item-value="id"
+                    :label="$t('select_university')"
+                    variant="outlined"
+                    hide-details
+                    density="compact"
+                    @update:modelValue="onDateChange"
+                />
+            </v-col>
+
+            <!-- Print Button -->
+            <v-col cols="2" class="d-flex justify-end">
+                <v-btn color="primary" @click="printTable">
+                    {{ $t("print_report") }}
+                </v-btn>
+            </v-col>
+        </v-row>
 
         <!-- Table -->
         <div class="table-container">
@@ -186,7 +211,7 @@ import { useI18n } from "vue-i18n";
 import persianDate from "persian-date";
 
 const { t, locale } = useI18n();
-const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
+const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 
 const ReportRepository = useReportRepository();
 
@@ -220,6 +245,56 @@ onMounted(() => {
         "all"
     );
 });
+const printTable = () => {
+    const tableEl = document.querySelector(".gender-stats-table");
+    if (!tableEl) return;
+
+    const tableHtml = tableEl.outerHTML;
+    const season = t(ReportRepository.season || "");
+    const university = ReportRepository.university?.name || t("all");
+
+    document.write(`
+    <html dir="${dir.value}">
+      <head>
+        <title>${t("Print Report")}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            direction: ${dir.value};
+          }
+          .title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+          }
+          th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+          }
+          th {
+            background-color: #e7f2f5;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="title">
+          ${t("department_report")}
+        </div>
+        ${tableHtml}
+      </body>
+    </html>
+  `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+};
 </script>
 
 <style scoped>

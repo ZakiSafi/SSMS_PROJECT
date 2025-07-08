@@ -5,12 +5,14 @@ namespace App\Http\Controllers\reports;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\StudentStatistic;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class StudentsTypeBasedController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $user = Auth::user();
         $year = $request->query('year');
         $shift = $request->query('shift');
         $perPage = $request->query('perPage', 10);
@@ -30,6 +32,10 @@ class StudentsTypeBasedController extends Controller
                 DB::raw('SUM(student_statistics.female_total) as females'),
                 DB::raw('SUM(student_statistics.female_total + student_statistics.male_total) as total')
             );
+
+        if (!$user->hasRole('admin')) {
+            $query->where('student_statistics.university_id', $user->university_id);
+        }
 
         if ($shift && $shift !== 'all') {
             $query->whereRaw('LOWER(student_statistics.shift) = ?', [strtolower(trim($shift))]);

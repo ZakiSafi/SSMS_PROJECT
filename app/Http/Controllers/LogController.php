@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
+    //     public function __construct()
+    // {
+    //     $this->middleware('permission:logs.view')->only(['index', 'show']);
+    //     $this->middleware('permission:logs.edit')->only(['edit', 'update']);
+    //     $this->middleware('permission:logs.create')->only(['create', 'store']);
+    //     $this->middleware('permission:logs.delete')->only('destroy');
+    // }
     /**
      * Display a listing of the resource.
      */
@@ -16,6 +23,7 @@ class LogController extends Controller
     private $model = Log::class;
     public function index(Request $request)
     {
+        
         $log = $this->listRecord($request, $this->model,$withtables = ['users']);
         return LogResource::collection($log);
     }

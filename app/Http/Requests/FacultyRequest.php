@@ -23,7 +23,6 @@ class FacultyRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'university_id' => 'required|exists:universities,id',
         ];
     }
 }

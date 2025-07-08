@@ -6,17 +6,31 @@ use App\Http\Requests\FacultyRequest;
 use App\Http\Resources\FacultyResource;
 use App\Models\Faculty;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class FacultyController extends Controller
 {
+     public function __construct()
+    {
+
+        
+        // Apply permission middleware with explicit guard
+        $this->middleware('permission:faculties.view', ['guard' => 'api'])->only(['index', 'show']);
+        $this->middleware('permission:faculties.edit', ['guard' => 'api'])->only(['edit', 'update']);
+        $this->middleware('permission:faculties.create', ['guard' => 'api'])->only(['create', 'store']);
+        $this->middleware('permission:faculties.delete', ['guard' => 'api'])->only('destroy');
+    }
+
+    private $model = Faculty::class;
+
     /**
      * Display a listing of the resource.
      */
-    private $model = Faculty::class;
     public function index(Request $request)
     {
-        $faculty = $this->listRecord($request, $this->model,['name']);
+        $faculty = $this->listRecord($request, $this->model, ['name']);
         return FacultyResource::collection($faculty);
     }
 

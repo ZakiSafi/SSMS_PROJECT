@@ -27,6 +27,7 @@ class UserRequest extends FormRequest
             'university_id' => 'nullable|exists:universities,id',
             'email' => 'required|email|max:255|unique:users,email,' . $this->user?->id,
             'password' => 'nullable|string|min:8',
+            'role_id' => 'nullable|exists:roles,id',
 
         ];
     }

@@ -9,6 +9,7 @@
         "student_statistic": "آمار محصلین",
         "reports": "راپورها",
         "users": "کاربران",
+        "logs": "لاگ ها",
         "settings": "تنظیمات",
         "role_permissions": "صلاحیت های نقش",
         "university_report": "راپور پوهنتون",
@@ -20,11 +21,10 @@
         "faculty_graduation": "راپور فارغ‌التحصیلان پوهنځی",
         "department_base_graduation": "راپور فارغ‌التحصیلان دیپارتمنت",
         "graduated_students": " راپور محصلین فارغ شده ",
-        "currentStudents": "راپور محصلین برحال"
+        "currentStudents": "راپور محصلین برحال",
+        "faculties": "پوهنځي"
     },
-    "user": {
-        "name": "ذکی الله صافی"
-    },
+   
     "form": {
         "create": "ایجاد کردن",
         "update": "آپدیت",
@@ -62,6 +62,9 @@
     "Academic Year": "سال تعلیمی",
     "Dashboard": "داشبورد",
     "students": "محصلین",
+    "faculties": "پوهنځي",
+    "department_report": "راپور دیپارتمنت ها",
+    "print_report": "چاپ راپور",
     "Total Male Students": "مجموع محصلین ذکور",
     "Total Female Students": "مجموع محصلین اناث",
     "Total Student": "مجموع محصل",
@@ -125,5 +128,13 @@
     "Delete": "دیلیت",
     "ST Ratio": "نسبت محصل به استاد",
     "StudentTeacherRatio": "نسبت محصل به استاد",
-    "email": "ایمیل"
+    "email": "ایمیل",
+    "user": "کاربر",
+    "action_type": "نوعیت عمل",
+    "action_description": "توضیحات عمل",
+    "table_name": "نام جدول",
+    "record_id": "شناسه رکورد",
+    "ip_address": "آدرس آی پی",
+    "logs": "لاگ ها"
+    
 }

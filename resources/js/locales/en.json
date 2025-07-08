@@ -4,11 +4,13 @@
         "provinces": "Provinces",
         "university": "University",
         "faculty": "Faculty",
+        "faculties" : "Faculties",
         "departments": "Departments",
         "teachers": "Teachers",
         "student_statistic": "Student Statistic",
         "reports": "Reports",
         "graduated_students": "Graduated Students",
+        "logs":"Log",
         "currentStudents": "Current Students",
         "settings": "Settings",
         "users": "Users",
@@ -22,9 +24,7 @@
         "faculty_graduation": "Faculty Graduation Report",
         "department_base_graduation": "Department Based Graduation Report"
     },
-    "user": {
-        "name": "Zakiullah Safi"
-    },
+    
     "form": {
         "create": "Create",
         "update": "Update",
@@ -89,6 +89,8 @@
     "University": "University",
     "university": "university",
     "Universities": "Universities",
+    "print_report": "Print Report",
+    "department_report": "Department Report",
     "Faculty": "Faculty",
     "Class": "Class",
     "Male": "male",
@@ -125,5 +127,12 @@
     "Delete": "Delete",
     "ST Ratio": "Student Teacher Ratio",
     "StudentTeacherRatio": "Student Teacher Ratio",
-    "email": "Email"
+    "email": "Email",
+    "user":"User",
+    "action_type": "Action Type",
+    "action_description": "Action Description",
+    "table_name": "Table Name",
+    "record_id": "Record ID",
+    "ip_address": "IP Address",
+    "logs": "Logs"
 }

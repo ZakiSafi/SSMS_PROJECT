@@ -4,14 +4,18 @@ namespace App\Http\Controllers\reports;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DepartmentClassBasedController extends Controller
 {
     public function __invoke(Request $request)
     {
+        $user = Auth::user();
+        $isAdmin = $user->hasRole('admin');
         $year = $request->query('year');
         $season = $request->query('season');
+        $shift = $request->query('shift');
         $universityName = $request->query('university');
         $perPage = $request->query('perPage', 10);
 
@@ -28,12 +32,18 @@ class DepartmentClassBasedController extends Controller
                 'student_statistics.department_id',
                 'departments.name as department_name'
             )
+            ->when(!$isAdmin && $user->university_id, function ($query) use ($user) {
+                return $query->where('student_statistics.university_id', $user->university_id);
+            })
             ->where('student_statistics.academic_year', $year)
             ->when($season !== 'all', function ($query) use ($season) {
                 return $query->where('student_statistics.season', $season);
             })
             ->when($universityName !== 'all', function ($query) use ($universityName) {
                 return $query->where('universities.id', $universityName);
+            })
+            ->when($shift !== 'all', function ($query) use ($shift) {
+                return $query->where('student_statistics.shift', $shift);
             })
             ->groupBy(
                 'student_statistics.university_id',
@@ -68,7 +78,6 @@ class DepartmentClassBasedController extends Controller
                 DB::raw('ROUND((SUM(female_total) / NULLIF(SUM(male_total + female_total), 0)) * 100, 0) as Female_Percentage')
             )
             ->where('student_statistics.academic_year', $year)
-            ->where('student_statistics.academic_year', $year)
             ->when($season !== 'all', function ($query) use ($season) {
                 return $query->where('student_statistics.season', $season);
             })
@@ -91,57 +100,68 @@ class DepartmentClassBasedController extends Controller
         // STEP 3: Get unique class names
         $allClasses = $classResults->pluck('classroom')->filter()->unique()->sort()->values();
 
-        // STEP 4: Build nested structure
-        $grouped = [];
+        // STEP 4: Build nested structure - FIXED VERSION
+        $universities = [];
+        $facultiesMap = [];
+        $departmentsMap = [];
 
         foreach ($departmentPaginator as $dept) {
             $uniId = $dept->university_id;
             $facId = $dept->faculty_id;
             $deptId = $dept->department_id;
 
-            // University block
-            if (!isset($grouped[$uniId])) {
-                $grouped[$uniId] = [
+            // Create university if not exists
+            if (!isset($universities[$uniId])) {
+                $universities[$uniId] = [
                     'university' => $dept->university_name,
                     'faculties' => []
                 ];
             }
 
-            // Faculty block
-            if (!isset($grouped[$uniId]['faculties'][$facId])) {
-                $grouped[$uniId]['faculties'][$facId] = [
+            // Create faculty if not exists
+            if (!isset($facultiesMap[$facId])) {
+                $facultiesMap[$facId] = [
                     'faculty' => $dept->faculty_name,
                     'departments' => []
                 ];
+                $universities[$uniId]['faculties'][] = &$facultiesMap[$facId];
             }
 
-            // Department block
-            $grouped[$uniId]['faculties'][$facId]['departments'][$deptId] = [
-                'department' => $dept->department_name,
-                'classes' => collect($allClasses)->mapWithKeys(fn($class) => [$class => null])->toArray()
-            ];
+            // Create department if not exists
+            if (!isset($departmentsMap[$deptId])) {
+                $departmentsMap[$deptId] = [
+                    'department' => $dept->department_name,
+                    'classes' => collect($allClasses)->mapWithKeys(fn($class) => [$class => null])->toArray()
+                ];
+                $facultiesMap[$facId]['departments'][] = &$departmentsMap[$deptId];
+            }
         }
 
         // Fill in classes
         foreach ($classResults as $row) {
-            $grouped[$row->university_id]['faculties'][$row->faculty_id]['departments'][$row->department_id]['classes'][$row->classroom] = [
-                'shift' => $row->shift,
-                'Total_males' => (string) $row->Total_males,
-                'Total_Females' => (string) $row->Total_Females,
-                'Total_Students' => (string) $row->Total_Students,
-                'Male_Percentage' => (string) $row->Male_Percentage,
-                'Female_Percentage' => (string) $row->Female_Percentage,
-            ];
+            foreach ($departmentsMap as &$department) {
+                if ($department['department'] === $row->department_name) {
+                    $department['classes'][$row->classroom] = [
+                        'shift' => $row->shift,
+                        'Total_males' => (string) $row->Total_males,
+                        'Total_Females' => (string) $row->Total_Females,
+                        'Total_Students' => (string) $row->Total_Students,
+                        'Male_Percentage' => (string) $row->Male_Percentage,
+                        'Female_Percentage' => (string) $row->Female_Percentage,
+                    ];
+                    break;
+                }
+            }
         }
 
-        // Flatten faculty and department indexes to numeric arrays
-        $final = array_map(function ($uni) {
-            $uni['faculties'] = array_values(array_map(function ($fac) {
+        // Convert to sequential arrays
+        $final = array_values(array_map(function($uni) {
+            $uni['faculties'] = array_values(array_map(function($fac) {
                 $fac['departments'] = array_values($fac['departments']);
                 return $fac;
             }, $uni['faculties']));
             return $uni;
-        }, array_values($grouped));
+        }, $universities));
 
         // STEP 5: Return result
         return response()->json([
