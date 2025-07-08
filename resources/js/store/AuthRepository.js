@@ -9,6 +9,8 @@ export const useAuthRepository = defineStore("authRepository", {
     state() {
         return {
             user: reactive({}),
+            permissions: reactive([]),
+            role: null,
             loading: ref(false),
             error: ref(null),
             router: useRouter(),
@@ -31,7 +33,20 @@ export const useAuthRepository = defineStore("authRepository", {
                     "user",
                     JSON.stringify(response.data.user)
                 );
-                axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+                const meResponse = await axios.get("/me");
+
+        const permissions = meResponse.data.data.permissions;
+        console.log("Permissions:", permissions);
+        const role = meResponse.data.data.role;
+
+        sessionStorage.setItem("permissions", JSON.stringify(permissions));
+        sessionStorage.setItem("role", JSON.stringify(role));
+
+        this.permissions = permissions;
+        this.role = role;
+        this.user = meResponse.data;
+                
 
                 toast.success("Login successful!", {
                     position: "top-right",
@@ -111,3 +126,16 @@ export const useAuthRepository = defineStore("authRepository", {
         },
     },
 });
+
+const meResponse = await axios.get("/me");
+
+        const permissions = meResponse.data.data.permissions;
+        console.log("Permissions:", permissions);
+        const role = meResponse.data.data.role;
+
+        sessionStorage.setItem("permissions", JSON.stringify(permissions));
+        sessionStorage.setItem("role", JSON.stringify(role));
+
+        this.permissions = permissions;
+        this.role = role;
+        this.user = meResponse.data;

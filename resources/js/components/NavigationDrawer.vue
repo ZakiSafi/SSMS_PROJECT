@@ -9,7 +9,7 @@
                     class="w-[2.9rem] h-[2.9rem] rounded-full object-cover transition-all duration-300"
                 />
             </v-list-item>
-            <h3>{{ $t("user.name") }}</h3>
+           <h3>{{ user.name || 'Guest' }}</h3>
         </div>
 
         <v-divider :thickness="1" class="border-opacity-100 full"></v-divider>
@@ -175,9 +175,27 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { useAuthRepository } from "../store/AuthRepository";
+const AuthRepository=useAuthRepository();
 
 const { t } = useI18n();
 const route = useRoute();
+
+const user = ref({
+    name: "",
+    email: "",
+    photo: "",
+});
+
+onMounted(() => {
+    const storedUser = sessionStorage.getItem("user");
+    if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        user.value.name = parsed.name;
+        user.value.email = parsed.email;
+        user.value.photo = parsed.photo;
+    }
+});
 
 const settingItems = [
     {

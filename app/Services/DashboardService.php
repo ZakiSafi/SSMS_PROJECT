@@ -232,7 +232,6 @@ class DashboardService
             ->select([
                 'logs.id',
                 'logs.action_type',
-                'logs.action_description',
                 'logs.table_name',
                 'logs.record_id',
                 'logs.created_at',
