@@ -19,6 +19,7 @@
             <v-list density="compact" nav>
                 <!-- Main Items -->
                 <v-list-item
+                v-if="hasPermission('dashboard.view')"
                     class="menu-item"
                     :title="$t('menu.dashboard')"
                     prepend-icon="mdi-home-lightning-bolt-outline"
@@ -29,6 +30,7 @@
                     }"
                 />
                 <v-list-item
+                v-if="hasPermission('provinces.view')"
                     class="menu-item"
                     prepend-icon="mdi-map-marker-outline"
                     :title="$t('menu.provinces')"
@@ -40,6 +42,7 @@
                 />
                 <v-list-item
                     class="menu-item"
+                    v-if="hasPermission('university.view')"
                     prepend-icon="mdi-school-outline"
                     :title="$t('menu.university')"
                     to="/university"
@@ -50,6 +53,7 @@
                 />
                 <v-list-item
                     class="menu-item"
+                    v-if="hasPermission('faculties.view')"
                     prepend-icon="mdi-home-city-outline"
                     :title="$t('menu.faculties')"
                     to="/faculties"
@@ -61,7 +65,9 @@
                 <v-list-item
                     class="menu-item"
                     prepend-icon="mdi-office-building-outline"
+                    v-if="hasPermission('departments.view')"
                     :title="$t('menu.departments')"
+                    
                     to="/departments"
                     value="departments"
                     :class="{
@@ -71,6 +77,7 @@
                 <v-list-item
                     class="menu-item"
                     prepend-icon="mdi-office-building-outline"
+                    v-if="hasPermission('teachers.view')"
                     :title="$t('menu.teachers')"
                     to="/teachers"
                     value="teachers"
@@ -82,6 +89,7 @@
                     class="menu-item"
                     prepend-icon="mdi-account-group-outline"
                     :title="$t('menu.student_statistic')"
+                    v-if="hasPermission('student_statistic.view')"
                     to="/student-statistic"
                     value="system"
                     :class="{
@@ -96,6 +104,8 @@
                         <v-list-item
                             v-bind="props"
                             :title="$t('menu.currentStudents')"
+                             v-if="hasPermission('current_students.view')"
+                            
                             prepend-icon="mdi-file-chart-outline"
                             class="menu-item"
                         />
@@ -104,6 +114,7 @@
                     <!-- Submenu Items -->
                     <v-list-item
                         v-for="(item, index) in currentStudents"
+                       
                         :key="index"
                         :to="item.to"
                         :title="$t(`menu.${item.translationKey}`)"
@@ -121,6 +132,8 @@
                     <template #activator="{ props }">
                         <v-list-item
                             v-bind="props"
+                             v-if="hasPermission('graduated_students.view')"
+                            
                             :title="$t('menu.graduated_students')"
                             prepend-icon="mdi-file-chart-outline"
                             class="menu-item"
@@ -131,6 +144,8 @@
                     <v-list-item
                         v-for="(item, index) in graduatedStudents"
                         :key="index"
+                         
+                        
                         :to="item.to"
                         :title="$t(`menu.${item.translationKey}`)"
                         class="submenu-item"
@@ -148,6 +163,7 @@
                         <v-list-item
                             v-bind="props"
                             :title="$t('menu.settings')"
+                            v-if="hasPermission('settings.view')"
                             prepend-icon="mdi-cog-outline"
                             class="menu-item"
                         />
@@ -173,6 +189,7 @@
 </template>
 
 <script setup>
+import { ref ,onMounted} from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useAuthRepository } from "../store/AuthRepository";
@@ -187,7 +204,14 @@ const user = ref({
     photo: "",
 });
 
+const permissions = ref([]);
+
 onMounted(() => {
+    const storedPermissions = sessionStorage.getItem("permissions");
+    if (storedPermissions) {
+        permissions.value = JSON.parse(storedPermissions);
+    }
+
     const storedUser = sessionStorage.getItem("user");
     if (storedUser) {
         const parsed = JSON.parse(storedUser);
@@ -196,6 +220,12 @@ onMounted(() => {
         user.value.photo = parsed.photo;
     }
 });
+
+// Utility to check permission
+const hasPermission = (permission) => {
+    return permissions.value.includes(permission);
+};
+
 
 const settingItems = [
     {
