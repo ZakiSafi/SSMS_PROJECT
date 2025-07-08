@@ -14,6 +14,7 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $role = $this->roles->first();
         return [
             "id" => $this->id,
             "name" => $this->name,
@@ -23,6 +24,11 @@ class UserResource extends JsonResource
             ],
             "email" => $this->email,
             "password" => $this->password,
+            "role" => $role ? [
+                'id' => $role->id,
+                'name' => $role->name,
+            ] : null
+
 
         ];
     }

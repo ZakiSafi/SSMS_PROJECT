@@ -31,6 +31,7 @@ export const useAuthRepository = defineStore("authRepository", {
                     "user",
                     JSON.stringify(response.data.user)
                 );
+                axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
                 toast.success("Login successful!", {
                     position: "top-right",

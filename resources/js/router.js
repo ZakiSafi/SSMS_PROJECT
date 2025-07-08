@@ -23,6 +23,7 @@ import Teachers from "./Pages/teacher/Teachers.vue";
 import rolePermission from "./Pages/role/rolePermission.vue";
 import CreateRolePermission from "./Pages/role/CreateRolePermission.vue";
 import UpdateRolePermission from "./Pages/role/UpdateRole.vue";
+import Logs from "./Pages/log/log.vue";
 
 const routes = [
     // Show login first
@@ -43,6 +44,7 @@ const routes = [
             { path: "/about", name: "about", component: About },
             { path: "/university", name: "university", component: University },
             { path: "/users", name: "users", component: Users },
+            { path: "/logs", name: "logs", component: Logs },
             { path: "/provinces", name: "provinces", component: Provinces },
             {
                 path: "/departments",

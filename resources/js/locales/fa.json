@@ -9,6 +9,7 @@
         "student_statistic": "آمار محصلین",
         "reports": "راپورها",
         "users": "کاربران",
+        "logs": "لاگ ها",
         "settings": "تنظیمات",
         "role_permissions": "صلاحیت های نقش",
         "university_report": "راپور پوهنتون",
@@ -23,9 +24,7 @@
         "currentStudents": "راپور محصلین برحال",
         "faculties": "پوهنځي"
     },
-    "user": {
-        "name": "ذکی الله صافی"
-    },
+   
     "form": {
         "create": "ایجاد کردن",
         "update": "آپدیت",
@@ -129,5 +128,13 @@
     "Delete": "دیلیت",
     "ST Ratio": "نسبت محصل به استاد",
     "StudentTeacherRatio": "نسبت محصل به استاد",
-    "email": "ایمیل"
+    "email": "ایمیل",
+    "user": "کاربر",
+    "action_type": "نوعیت عمل",
+    "action_description": "توضیحات عمل",
+    "table_name": "نام جدول",
+    "record_id": "شناسه رکورد",
+    "ip_address": "آدرس آی پی",
+    "logs": "لاگ ها"
+    
 }

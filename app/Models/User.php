@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
+
 /**
  * @method bool hasRole(string $role)
  */
@@ -28,6 +29,7 @@ class User extends Authenticatable
         'email',
         "university_id",
         'password',
+        'role_id',
         'image'
     ];
 
@@ -45,6 +47,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(StudentStatistic::class);
     }
+
+    // The role() relationship is not needed with Spatie Laravel Permission.
+    // Use the roles and permissions relationships provided by the package.
 
     /**
      * The attributes that should be hidden for serialization.
