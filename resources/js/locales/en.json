@@ -134,5 +134,7 @@
     "table_name": "Table Name",
     "record_id": "Record ID",
     "ip_address": "IP Address",
-    "logs": "Logs"
+    "logs": "Logs",
+    "users":"Users",
+    "description": "Description"
 }

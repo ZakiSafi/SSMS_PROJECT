@@ -32,7 +32,7 @@
                     variant="outlined"
                     density="compact"
                     :rules="[validateShift]"
-                    @update:modelValue="onShiftChange"
+                    @update:modelValue="onDateChange"
                 />
             </v-col>
 
@@ -232,7 +232,8 @@ const onDateChange = () => {
         { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,
         ReportRepository.season,
-        universityId
+        universityId,
+        ReportRepository.shift
     );
 };
 

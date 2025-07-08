@@ -135,6 +135,7 @@
     "table_name": "نام جدول",
     "record_id": "شناسه رکورد",
     "ip_address": "آدرس آی پی",
-    "logs": "لاگ ها"
+    "logs": "لاگ ها",
+    "description": "توضیحات"
     
 }
