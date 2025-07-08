@@ -105,6 +105,14 @@ export const useUserRepository = defineStore("userRepository", {
                 // handle error if needed
             }
         },
+        async fetchRoless() {
+            try {
+                const response = await axios.get("role");
+                this.roles = response.data.data;
+            } catch (err) {
+                // handle error if needed
+            }
+        },
 
         async fetchRoles({ page, itemsPerPage }) {
             try {
