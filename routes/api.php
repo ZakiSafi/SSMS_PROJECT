@@ -62,9 +62,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
-Route::post('login', [AuthController::class, 'login'])->name('login');
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b7151155a5dd52572d2eb6f087cd5232d89fa06e
 //
 
 Route::post('login', [AuthController::class, 'login'])->name('login');

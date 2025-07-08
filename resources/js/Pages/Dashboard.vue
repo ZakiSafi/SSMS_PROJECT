@@ -50,6 +50,50 @@
                 </v-card>
             </v-col>
         </v-row>
+        <!-- Trend Chart Filters -->
+        <v-row dense class="mt-4">
+            <v-col cols="12" md="3">
+                <v-select
+                    v-model="trendFilters.university_type"
+                    :items="['public', 'private']"
+                    label="University Type"
+                    dense
+                    @update:modelValue="fetchTrends"
+                />
+            </v-col>
+
+            <v-col cols="12" md="3">
+                <v-select
+                    v-model="trendFilters.province_id"
+                    :items="provinces"
+                    label="Province"
+                    dense
+                    item-title="name"
+                    item-value="id"
+                    @update:modelValue="fetchTrends"
+                />
+            </v-col>
+
+            <v-col cols="12" md="3">
+                <v-select
+                    v-model="trendFilters.time_range"
+                    :items="['5years', '10years']"
+                    label="Time Range"
+                    dense
+                    @update:modelValue="fetchTrends"
+                />
+            </v-col>
+
+            <v-col cols="12" md="3">
+                <v-select
+                    v-model="trendFilters.group_by"
+                    :items="['year', 'season']"
+                    label="Group By"
+                    dense
+                    @update:modelValue="fetchTrends"
+                />
+            </v-col>
+        </v-row>
 
         <!-- Charts Section -->
         <v-row class="mt-6">
@@ -91,7 +135,7 @@
 
             <v-timeline v-else align="start" side="end">
                 <v-timeline-item
-                    v-for="(log, index) in recentActivities"
+                    v-for="(log, index) in DashboardRepo.recentActivity"
                     :key="log.id"
                     :dot-color="getTimelineColor(log.action_type)"
                     size="small"
@@ -174,26 +218,52 @@ import { ref, onMounted, computed } from "vue";
 import { Chart, registerables } from "chart.js";
 import axios from "axios";
 import AppBar from "@/components/AppBar.vue";
-
 import { useDashboardRepository } from "../store/DashboardRepository";
-Chart.register(...registerables);
-async function fetchData() {
-    await DashboardRepo.fetchSummaryData({
-        year: filters.value.year,
-        season: filters.value.season,
-        university:
-            filters.value.university !== "All"
-                ? filters.value.university
-                : null,
-    });
 
-    await fetchRecentActivity();
-}
+Chart.register(...registerables);
 
 const DashboardRepo = useDashboardRepository();
 
-// ...
+async function fetchRecentActivity() {
+    loadingActivity.value = true;
+    try {
+        await DashboardRepo.fetchRecentActivity();
+        recentActivities.value = DashboardRepo.recentActivity;
+    } catch (err) {
+        console.error("Error fetching activity:", err);
+    } finally {
+        loadingActivity.value = false;
+    }
+}
 
+// Refs
+const barChartCanvas = ref(null);
+const lineChartCanvas = ref(null);
+const loadingActivity = ref(false);
+const recentActivities = ref([]);
+
+// Filters
+const filters = ref({
+    year: 1402,
+    season: "spring",
+    university: "All",
+});
+
+const trendFilters = ref({
+    university_type: "public",
+    province_id: 15,
+    time_range: "10years",
+    group_by: "year",
+    season: filters.value.season,
+});
+
+const provinces = [
+    { id: 15, name: "Kabul" },
+    { id: 16, name: "Herat" },
+    { id: 17, name: "Balkh" },
+];
+
+// Summary Stats
 const summaryStats = computed(() => [
     {
         title: "Total Students",
@@ -217,43 +287,29 @@ const summaryStats = computed(() => [
     },
 ]);
 
-// Filters
-const filters = ref({
-    year: 1402,
-    season: "spring",
-    university: "All",
-});
-const years = [1402, 1403, 1404];
-const seasons = ["spring", "autumn"];
-const universities = ["all", "kabul University", "herat University"];
+// Fetch functions
+async function fetchData() {
+    await DashboardRepo.fetchSummaryData({
+        year: filters.value.year,
+        season: filters.value.season,
+        university:
+            filters.value.university !== "All"
+                ? filters.value.university
+                : null,
+    });
+    await fetchRecentActivity();
+}
 
-// Recent Activities
-const recentActivities = ref([]);
-const loadingActivity = ref(false);
-
-// Chart Refs
-const barChartCanvas = ref(null);
-const lineChartCanvas = ref(null);
-// await DashboardRepo.fetchFacultyTrends({
-//     university_type: "private",
-//     time_range: "10years",
-//     group_by: "year",
-//     season: filters.value.season,
-//     province_id: 15, // You may bind this dynamically later
-// });
-
-onMounted(async () => {
-    // Fetch summary and activities
-    await fetchData();
-
-    // Fetch bar chart
+async function fetchBarChart() {
     await DashboardRepo.fetchFacultyBreakdown();
     const labels = DashboardRepo.facultyBreakdown.map((f) => f.name);
     const data = DashboardRepo.facultyBreakdown.map((f) => f.total_students);
+
     if (barChartCanvas.value._chartInstance) {
         barChartCanvas.value._chartInstance.destroy();
     }
-    const barChart = new Chart(barChartCanvas.value, {
+
+    const chart = new Chart(barChartCanvas.value, {
         type: "bar",
         data: {
             labels,
@@ -273,40 +329,48 @@ onMounted(async () => {
             },
         },
     });
-    barChartCanvas.value._chartInstance = barChart;
 
-    // Fetch trends chart
-    await DashboardRepo.fetchFacultyTrends({
-        university_type: "private",
-        time_range: "10years",
-        group_by: "year",
-        season: filters.value.season,
-        province_id: 15,
-    });
-    const trendLabels = DashboardRepo.trends.map((item) => item.year); // adjust key
-    const enrolledData = DashboardRepo.trends.map((item) => item.enrolled);
-    const graduatedData = DashboardRepo.trends.map((item) => item.graduated);
+    barChartCanvas.value._chartInstance = chart;
+}
+
+async function fetchTrends() {
+    await DashboardRepo.fetchFacultyTrends(trendFilters.value);
+
+    const trendLabels = DashboardRepo.trends.map((item) => item.year);
+    const total = DashboardRepo.trends.map((item) => parseInt(item.total));
+    const male = DashboardRepo.trends.map((item) => parseInt(item.male));
+    const female = DashboardRepo.trends.map((item) => parseInt(item.female));
+
     if (lineChartCanvas.value._chartInstance) {
         lineChartCanvas.value._chartInstance.destroy();
     }
-    const lineChart = new Chart(lineChartCanvas.value, {
+
+    const chart = new Chart(lineChartCanvas.value, {
         type: "line",
         data: {
             labels: trendLabels,
             datasets: [
                 {
-                    label: "Enrolled",
-                    data: enrolledData,
+                    label: "Total Students",
+                    data: total,
                     borderColor: "#42A5F5",
                     backgroundColor: "rgba(66, 165, 245, 0.1)",
                     fill: true,
                     tension: 0.3,
                 },
                 {
-                    label: "Graduated",
-                    data: graduatedData,
-                    borderColor: "#66BB6A",
-                    backgroundColor: "rgba(102, 187, 106, 0.1)",
+                    label: "Male",
+                    data: male,
+                    borderColor: "#29B6F6",
+                    backgroundColor: "rgba(41, 182, 246, 0.1)",
+                    fill: true,
+                    tension: 0.3,
+                },
+                {
+                    label: "Female",
+                    data: female,
+                    borderColor: "#EC407A",
+                    backgroundColor: "rgba(236, 64, 122, 0.1)",
                     fill: true,
                     tension: 0.3,
                 },
@@ -320,10 +384,18 @@ onMounted(async () => {
             },
         },
     });
-    lineChartCanvas.value._chartInstance = lineChart;
+
+    lineChartCanvas.value._chartInstance = chart;
+}
+
+// Load everything
+onMounted(async () => {
+    await fetchData();
+    await fetchBarChart();
+    await fetchTrends();
 });
 
-// Helper functions
+// Helpers
 function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString("en-US", {
         year: "numeric",
@@ -337,106 +409,47 @@ function formatDate(dateString) {
 function formatTimeAgo(dateString) {
     const now = new Date();
     const date = new Date(dateString);
-    const diffInSeconds = Math.floor((now - date) / 1000);
+    const diff = Math.floor((now - date) / 1000);
 
-    if (diffInSeconds < 60) return "Just now";
-    if (diffInSeconds < 3600)
-        return `${Math.floor(diffInSeconds / 60)} minutes ago`;
-    if (diffInSeconds < 86400)
-        return `${Math.floor(diffInSeconds / 3600)} hours ago`;
-    return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    if (diff < 60) return "Just now";
+    if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+    return `${Math.floor(diff / 86400)} days ago`;
 }
 
 function getUserInitials(name) {
-    if (!name) return "UU";
     return name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase();
+        ? name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+        : "UU";
 }
 
-function getTimelineColor(actionType) {
-    const colors = {
-        create: "green",
-        update: "blue",
-        delete: "red",
-        login: "purple",
-        logout: "orange",
-    };
-    return colors[actionType] || "grey";
+function getTimelineColor(type) {
+    return (
+        {
+            create: "green",
+            update: "blue",
+            delete: "red",
+            login: "purple",
+            logout: "orange",
+        }[type] || "grey"
+    );
 }
 
-function getActionColor(actionType) {
-    const colors = {
-        create: "success",
-        update: "info",
-        delete: "error",
-        login: "secondary",
-        logout: "warning",
-    };
-    return colors[actionType] || "primary";
+function getActionColor(type) {
+    return (
+        {
+            create: "success",
+            update: "info",
+            delete: "error",
+            login: "secondary",
+            logout: "warning",
+        }[type] || "primary"
+    );
 }
-
-async function fetchRecentActivity() {
-    loadingActivity.value = true;
-    try {
-        const response = await axios.get("/dashboard/recent-activity", {
-            params: { limit: 5 },
-        });
-        recentActivities.value = response.data.data;
-    } catch (error) {
-        console.error("Error fetching recent activity:", error);
-    } finally {
-        loadingActivity.value = false;
-    }
-}
-
-// async function fetchData() {
-//     // You can add other data fetching here if needed
-//     await fetchRecentActivity();
-// }
-
-// Init Charts and fetch initial data
-onMounted(async () => {
-    await DashboardRepo.fetchFacultyBreakdown(); // fetch data
-
-    // Build chart data from the repository
-    const labels = DashboardRepo.facultyBreakdown.map((f) => f.name);
-    const data = DashboardRepo.facultyBreakdown.map((f) => f.total_students);
-
-    // Destroy existing chart instance if needed
-    if (barChartCanvas.value._chartInstance) {
-        barChartCanvas.value._chartInstance.destroy();
-    }
-
-    const barChart = new Chart(barChartCanvas.value, {
-        type: "bar",
-        data: {
-            labels,
-            datasets: [
-                {
-                    label: "Total Students",
-                    data,
-                    backgroundColor: "#42A5F5",
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true },
-            },
-        },
-    });
-
-    // Store chart instance (optional, for destroy/re-render)
-    barChartCanvas.value._chartInstance = barChart;
-
-    // Call other initial methods if needed
-    await fetchData();
-});
 </script>
 
 <style scoped>

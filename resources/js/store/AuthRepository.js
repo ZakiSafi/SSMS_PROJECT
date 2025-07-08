@@ -33,20 +33,9 @@ export const useAuthRepository = defineStore("authRepository", {
                     "user",
                     JSON.stringify(response.data.user)
                 );
-
-                const meResponse = await axios.get("/me");
-
-        const permissions = meResponse.data.data.permissions;
-        console.log("Permissions:", permissions);
-        const role = meResponse.data.data.role;
-
-        sessionStorage.setItem("permissions", JSON.stringify(permissions));
-        sessionStorage.setItem("role", JSON.stringify(role));
-
-        this.permissions = permissions;
-        this.role = role;
-        this.user = meResponse.data;
-                
+                axios.defaults.headers.common[
+                    "Authorization"
+                ] = `Bearer ${response.data.token}`;
 
                 toast.success("Login successful!", {
                     position: "top-right",
@@ -58,21 +47,20 @@ export const useAuthRepository = defineStore("authRepository", {
                     progress: undefined,
                 });
 
-        // Wait 1 second before redirect
-        setTimeout(() => {
-            this.router.push("/dashboard");
-        }, 1000);
-        
-    } catch (error) {
-        toast.error("Login failed! Please check your credentials.", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+                // Wait 1 second before redirect
+                setTimeout(() => {
+                    this.router.push("/dashboard");
+                }, 1000);
+            } catch (error) {
+                toast.error("Login failed! Please check your credentials.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
 
                 this.error = error.response
                     ? error.response.data.message
@@ -127,15 +115,3 @@ export const useAuthRepository = defineStore("authRepository", {
     },
 });
 
-const meResponse = await axios.get("/me");
-
-        const permissions = meResponse.data.data.permissions;
-        console.log("Permissions:", permissions);
-        const role = meResponse.data.data.role;
-
-        sessionStorage.setItem("permissions", JSON.stringify(permissions));
-        sessionStorage.setItem("role", JSON.stringify(role));
-
-        this.permissions = permissions;
-        this.role = role;
-        this.user = meResponse.data;
