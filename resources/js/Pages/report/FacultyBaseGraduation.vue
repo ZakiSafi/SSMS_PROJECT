@@ -165,6 +165,7 @@ onMounted(() => {
 
 const printTable = () => {
   const data = ReportRepository.facultyBaseGraduation;
+   console.log('DATA FOR PRINTING:', data);
   if (!data.length) return;
 
   const rows = data

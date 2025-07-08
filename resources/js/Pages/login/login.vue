@@ -3,7 +3,7 @@
         <!-- Left Image Section -->
         <div class="h-screen">
             <img
-                src="../../../../public/assets/login.jpg"
+                src="../../../../public/assets/Flux_Dev_A_modern_educational_dashboard_concept_logo_Left_side_1.jpg"
                 alt="Jawad"
                 class="object-cover h-screen w-full"
             />
@@ -23,7 +23,7 @@
             />
             <v-form @submit.prevent="loginFunc" ref="formRef">
                 <div
-                    class="mt-[64px] mx-auto flex flex-column items-center justify-center"
+                    class="mt-[120px] mx-auto flex flex-column items-center justify-center"
                     style="width: 400px"
                 >
                     <h1
