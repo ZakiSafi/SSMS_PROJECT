@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,
             TeacherSeeder::class,
              AdminSeeder::class,
-            UserSeeder::class,
             LogSeeder::class,
 
 

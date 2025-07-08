@@ -64,7 +64,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
 
-<<<<<<< HEAD
 //
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
@@ -78,5 +77,3 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
         Route::get('/university-comparison', [DashboardController::class, 'universityComparison']);
         Route::get('/recent-activity', [DashboardController::class, 'recentActivity']);
     });
-=======
->>>>>>> 7c6b9677822dcb542c66772c16894c57b5c82b5f
