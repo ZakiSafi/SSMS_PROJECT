@@ -45,6 +45,7 @@ class DepartmentClassBasedController extends Controller
             ->when($shift !== 'all', function ($query) use ($shift) {
                 return $query->where('student_statistics.shift', $shift);
             })
+            ->where('student_statistics.student_type', '!=', 'graduated')
             ->groupBy(
                 'student_statistics.university_id',
                 'universities.name',
@@ -84,6 +85,7 @@ class DepartmentClassBasedController extends Controller
             ->when($universityName !== 'all', function ($query) use ($universityName) {
                 return $query->where('universities.id', $universityName);
             })
+            ->where('student_statistics.student_type', '!=', 'graduated')
             ->whereIn('student_statistics.department_id', $departmentIds)
             ->groupBy(
                 'student_statistics.university_id',
@@ -155,8 +157,8 @@ class DepartmentClassBasedController extends Controller
         }
 
         // Convert to sequential arrays
-        $final = array_values(array_map(function($uni) {
-            $uni['faculties'] = array_values(array_map(function($fac) {
+        $final = array_values(array_map(function ($uni) {
+            $uni['faculties'] = array_values(array_map(function ($fac) {
                 $fac['departments'] = array_values($fac['departments']);
                 return $fac;
             }, $uni['faculties']));

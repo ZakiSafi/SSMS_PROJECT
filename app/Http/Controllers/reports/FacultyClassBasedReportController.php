@@ -29,6 +29,7 @@ class FacultyClassBasedReportController extends Controller
                 'universities.name as university'
             )
             ->where('student_statistics.academic_year', $year)
+            ->where('student_statistics.student_type', '!=', 'graduated')
             ->when(!$isAdmin, function ($query) use ($user) {
                 return $query->where('student_statistics.university_id', $user->university_id);
             })
