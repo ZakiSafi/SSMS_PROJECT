@@ -8,7 +8,15 @@
             <v-col cols="12" md="4">
                 <v-select
                     v-model="filters.year"
-                    :items="years"
+                    :items="[
+                        '1400',
+                        '1401',
+                        '1402',
+                        '1403',
+                        '1404',
+                        '1405',
+                        '1406',
+                    ]"
                     label="Year"
                     dense
                     @update:modelValue="fetchData"
@@ -17,7 +25,7 @@
             <v-col cols="12" md="4">
                 <v-select
                     v-model="filters.season"
-                    :items="seasons"
+                    :items="['spring', 'autumn']"
                     label="Season"
                     dense
                     @update:modelValue="fetchData"
@@ -26,7 +34,9 @@
             <v-col cols="12" md="4">
                 <v-select
                     v-model="filters.university"
-                    :items="universities"
+                    :items="DashboardRepo.universities"
+                    item-title="name"
+                    item-value="id"
                     label="University"
                     dense
                     @update:modelValue="fetchData"
@@ -115,8 +125,8 @@
         </v-row>
 
         <!-- Recent Activity Section -->
-        <v-card class="mt-6 pa-4 elevation-1">
-            <div class="d-flex justify-space-between align-center mb-4">
+        <v-card class="mt-6">
+            <div class="d-flex justify-space-between align-center mb-4 pa-4">
                 <div class="text-subtitle-1">Recent Activities</div>
                 <v-btn
                     icon
@@ -133,22 +143,18 @@
                 color="primary"
             ></v-progress-linear>
 
-            <v-timeline v-else align="start" side="end">
-                <v-timeline-item
+            <div v-else class="activity-grid pa-4">
+                <v-card
                     v-for="(log, index) in DashboardRepo.recentActivity"
                     :key="log.id"
-                    :dot-color="getTimelineColor(log.action_type)"
-                    size="small"
+                    class="activity-card"
+                    elevation="2"
                 >
-                    <template v-slot:opposite>
-                        <div class="text-caption text-medium-emphasis">
-                            {{ formatDate(log.created_at) }}
-                        </div>
-                    </template>
-
-                    <v-card class="elevation-2">
-                        <v-card-text>
-                            <div class="d-flex align-center mb-2">
+                    <v-card-text>
+                        <div
+                            class="d-flex justify-space-between align-center mb-2"
+                        >
+                            <div class="d-flex align-center">
                                 <v-avatar
                                     size="32"
                                     color="primary"
@@ -164,43 +170,51 @@
                                         {{ log.user_email }}
                                     </div>
                                 </div>
-                                <v-chip
-                                    small
-                                    class="ml-auto"
-                                    :color="getActionColor(log.action_type)"
-                                    text-color="white"
-                                >
-                                    {{ log.action_type.toUpperCase() }}
-                                </v-chip>
                             </div>
+                            <v-chip
+                                small
+                                :color="getActionColor(log.action_type)"
+                                text-color="white"
+                            >
+                                {{ log.action_type.toUpperCase() }}
+                            </v-chip>
+                        </div>
 
-                            <div class="mb-2">
-                                <v-icon small class="mr-1">mdi-school</v-icon>
-                                <span
-                                    >{{ log.university_name }} ({{
-                                        log.university_type
-                                    }})</span
-                                >
-                            </div>
+                        <div class="mb-2">
+                            <v-icon small class="mr-1">mdi-school</v-icon>
+                            <span
+                                >{{ log.university_name }} ({{
+                                    log.university_type
+                                }})</span
+                            >
+                        </div>
 
-                            <div class="activity-description">
-                                {{ log.action_description }}
-                            </div>
+                        <div class="activity-description">
+                            {{ log.action_description }}
+                        </div>
 
-                            <v-divider class="my-2"></v-divider>
+                        <v-divider class="my-2"></v-divider>
 
+                        <div class="d-flex justify-space-between align-center">
                             <div class="text-caption text-medium-emphasis">
                                 <v-icon small>mdi-clock-outline</v-icon>
-                                {{ formatTimeAgo(log.created_at) }}
+                                {{ log.created_at
+                                    ? formatDate(log.created_at)
+                                    : "N/A" }}
                             </div>
-                        </v-card-text>
-                    </v-card>
-                </v-timeline-item>
-            </v-timeline>
+                            <div class="text-caption text-medium-emphasis">
+                                {{log.created_at
+                                    ? formatTimeAgo(log.created_at)
+                                    : "N/A"}}
+                            </div>
+                        </div>
+                    </v-card-text>
+                </v-card>
+            </div>
 
             <div
                 v-if="!loadingActivity && recentActivities.length === 0"
-                class="text-center py-4"
+                class="d-flex flex-column justify-center align-center text-center py-4"
             >
                 <v-icon size="64" color="grey lighten-1"
                     >mdi-information-outline</v-icon
@@ -393,6 +407,7 @@ onMounted(async () => {
     await fetchData();
     await fetchBarChart();
     await fetchTrends();
+    DashboardRepo.fetchUniversities();
 });
 
 // Helpers
@@ -427,18 +442,6 @@ function getUserInitials(name) {
         : "UU";
 }
 
-function getTimelineColor(type) {
-    return (
-        {
-            create: "green",
-            update: "blue",
-            delete: "red",
-            login: "purple",
-            logout: "orange",
-        }[type] || "grey"
-    );
-}
-
 function getActionColor(type) {
     return (
         {
@@ -453,15 +456,34 @@ function getActionColor(type) {
 </script>
 
 <style scoped>
-canvas {
-    width: 100% !important;
-    height: 300px !important;
+.activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 16px;
 }
+
+.activity-card {
+    height: 100%;
+    transition: transform 0.2s;
+}
+
+.activity-card:hover {
+    transform: translateY(-2px);
+}
+
 .activity-description {
     line-height: 1.6;
     margin: 8px 0;
 }
-.v-timeline-item {
-    min-height: 80px;
+
+canvas {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+@media (max-width: 600px) {
+    .activity-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>

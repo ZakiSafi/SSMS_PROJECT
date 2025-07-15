@@ -27,6 +27,8 @@ class LogRequest extends FormRequest
             'action_description' => 'nullable|string|max:255',
             'record_id' => 'nullable|integer',
             'ip_address' => 'nullable|ip',
+            'created_at' => 'nullable|date',
+            'updated_at' => 'nullable|date',
         ];
     }
 }

@@ -24,7 +24,7 @@ class StudentStatisticController extends Controller
     private $model = StudentStatistic::class;
     public function index()
     {
-        $studentStatistics = $this->listRecord(request(), $this->model, [ ], [ 'university', 'faculty', 'department']);
+        $studentStatistics = $this->listRecord(request(), $this->model, ['university_id'] ,[ 'university', 'faculty', 'department']);
         return StudentStatisticResource::collection($studentStatistics);
 
     }

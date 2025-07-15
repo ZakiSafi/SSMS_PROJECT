@@ -20,7 +20,7 @@ export const useUserRepository = defineStore("userRepository", {
             user: reactive({}),
             role: reactive({}),
             roles: reactive([]),
-            logs:reactive([])
+            logs: reactive([]),
         };
     },
 
@@ -193,11 +193,11 @@ export const useUserRepository = defineStore("userRepository", {
             }
         },
 
-        async fetchLogs({page,itemsPerPage}){
+        async fetchLogs({ page, itemsPerPage }) {
             try {
                 this.loading = true;
                 const response = await axios.get(
-                    `logs?page=${page}&perPage=${itemsPerPage}&name=${this.search}`
+                    `logs?page=${page}&perPage=${itemsPerPage}&user_id=${this.search}`
                 );
                 this.logs = response.data.data;
                 this.totalItems = response.data.meta.total;
@@ -205,7 +205,6 @@ export const useUserRepository = defineStore("userRepository", {
             } catch (err) {
                 console.error("Failed to fetch logs:", err);
             }
-
-        }
+        },
     },
 });

@@ -71,6 +71,8 @@
     "Department": "څانګه",
     "classrooms": "ټولګي",
     "Classroom": "ټولګی",
+    "departmentBase": "د څانګې پر بنسټ راپور",
+    "university_base_graduation": "د پوهنتون پر بنسټ فارغینو راپور",
     "statistics": "احصایې",
     "Teacher": "استاد",
     "student_statistic": "د محصلینو احصایې",

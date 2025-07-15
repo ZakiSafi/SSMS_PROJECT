@@ -24,7 +24,7 @@ class LogController extends Controller
     public function index(Request $request)
     {
         
-        $log = $this->listRecord($request, $this->model,$withtables = ['users']);
+        $log = $this->listRecord($request, $this->model,['user_id'],$withtables = ['user']);
         return LogResource::collection($log);
     }
 

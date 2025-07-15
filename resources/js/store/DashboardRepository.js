@@ -8,6 +8,7 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
         dashboards: reactive([]),
         totalExpenses: 0,
         expenses: reactive([]),
+        universities: reactive([]),
 
         // UI state
         dialog: false,
@@ -143,6 +144,13 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
             }
         },
 
-        // =========================================================================================================
+        async fetchUniversities() {
+            try {
+                const response = await axios.get(`universities`);
+                this.universities = response.data.data;
+            } catch (error) {
+                console.error("Failed to fetch universities:", error);
+            }
+        },
     },
 });
