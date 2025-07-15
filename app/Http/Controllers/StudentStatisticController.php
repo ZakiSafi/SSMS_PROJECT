@@ -24,10 +24,42 @@ class StudentStatisticController extends Controller
     private $model = StudentStatistic::class;
     public function index()
     {
-        $studentStatistics = $this->listRecord(request(), $this->model, ['university_id'] ,[ 'university', 'faculty', 'department']);
-        return StudentStatisticResource::collection($studentStatistics);
+        // Start query manually to apply relationship filters
+        $query = $this->model::with(['university', 'faculty', 'department']);
 
+        // Apply relationship-based filters
+        if (request()->filled('province')) {
+            $query->whereHas('university', function ($q) {
+                $q->where('province_id', request('province'));
+            });
+        }
+
+        if (request()->filled('university_type')) {
+            $query->whereHas('university', function ($q) {
+                $q->where('type', request('university_type'));
+            });
+        }
+
+        // Set the query temporarily on the model so listRecord works as is
+        $this->model = $query->getModel();
+
+        // Now use the existing listRecord to apply basic filters + pagination
+        $studentStatistics = $this->listRecord(
+            request(),
+            get_class($query->getModel()),
+            [
+                'university_id',
+                'faculty_id',
+                'department_id',
+                'academic_year',
+                'student_type',
+            ],
+            ['university', 'faculty', 'department']
+        );
+
+        return StudentStatisticResource::collection($studentStatistics);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +67,6 @@ class StudentStatisticController extends Controller
     public function store(StudentStatisticRequest $request)
     {
         return $this->storeRecord($request, $this->model);
-
     }
 
     /**
@@ -44,7 +75,6 @@ class StudentStatisticController extends Controller
     public function show(StudentStatistic $studentStatistic)
     {
         return new StudentStatisticResource($studentStatistic);
-
     }
 
     /**
@@ -63,5 +93,4 @@ class StudentStatisticController extends Controller
     {
         return $this->deleteRecord($studentStatistic);
     }
-
 }
