@@ -34,6 +34,7 @@ class UniversityClassReportController extends Controller
                 ->when(!$isAdmin, function ($query) use ($user) {
                     return $query->where('student_statistics.university_id', $user->university_id);
                 })
+                ->where('student_statistics.student_type', '!=', 'graduated')
                 ->groupBy('student_statistics.university_id', 'universities.name');
 
             // Use simplePaginate if you don't need total counts for performance
@@ -64,6 +65,7 @@ class UniversityClassReportController extends Controller
                 )
                 ->where('student_statistics.academic_year', $year)
                 ->where('student_statistics.shift', $shift)
+                ->where('student_statistics.student_type', '!=', 'graduated')
                 ->whereIn('student_statistics.university_id', $universityIds)
                 ->groupBy(
                     'student_statistics.university_id',
@@ -114,7 +116,6 @@ class UniversityClassReportController extends Controller
                 'per_page' => $universityPaginator->perPage(),
                 'total' => $universityPaginator->total(),
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Server error',

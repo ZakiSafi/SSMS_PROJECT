@@ -3,7 +3,7 @@
         <AppBar :pageTitle="$t('facultyBase')" />
         <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
-        <div class="w-full d-flex justify-space-between pt-6 pb-6">
+        <div class="w-full d-flex justify-space-between align-center pt-6 pb-6">
             <!-- Left side: Year Picker -->
             <div class="w-1/5">
                 <v-col cols="6">
@@ -19,8 +19,8 @@
             </div>
 
             <!-- Right side: Season and University Selects -->
-            <div class="w-1/3 flex">
-                <div class="w-2/3">
+            <div class="w-2/3 flex align-center">
+                <div class="w-2/3 mt-6">
                     <v-select
                         v-model="ReportRepository.shift"
                         :items="[
@@ -38,7 +38,7 @@
                 </div>
                 <div class="w-2/3">
                     <v-select
-                        class="mx-4"
+                        class="ml-4 mr-4"
                         v-model="ReportRepository.season"
                         :items="[
                             { title: $t('spring'), value: 'spring' },
@@ -66,6 +66,11 @@
                         hide-details
                         density="compact"
                     />
+                </div>
+                <div class="ml-4 flex align-center ">
+                    <v-btn color="primary" @click="printTable">
+                        {{ $t("print_report") }}
+                    </v-btn>
                 </div>
             </div>
         </div>
@@ -230,6 +235,58 @@ onMounted(() => {
     ReportRepository.fetchUniversities();
     fetchData();
 });
+
+// printing option function
+const printTable = () => {
+    const tableEl = document.querySelector(".gender-stats-table");
+    if (!tableEl) return;
+
+    const tableHtml = tableEl.outerHTML;
+    const season = t(ReportRepository.season || "");
+    const university = ReportRepository.university?.name || t("all");
+
+    const html = `
+    <html dir="${dir.value}">
+      <head>
+        <title></title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            direction: ${dir.value};
+          }
+          .title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+          }
+          th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+          }
+          th {
+            background-color: #e7f2f5;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="title">${t("facultyBase")}</div>
+        ${tableHtml}
+      </body>
+    </html>`;
+
+    const printWindow = window.open("", "PrintWindow");
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+};
 </script>
 
 <style scoped>

@@ -60,7 +60,7 @@
             <!-- Right side: Print Button -->
             <v-col cols="auto" class="mb-6">
                 <v-btn color="primary" @click="printTable">
-                    {{ $t("Print Report") }}
+                    {{ $t("print_report") }}
                 </v-btn>
             </v-col>
         </v-row>

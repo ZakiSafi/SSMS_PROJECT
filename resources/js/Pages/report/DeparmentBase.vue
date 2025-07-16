@@ -73,7 +73,7 @@
             </v-col>
 
             <!-- Print Button -->
-            <v-col cols="2" class="d-flex justify-end">
+            <v-col cols="2">
                 <v-btn color="primary" @click="printTable">
                     {{ $t("print_report") }}
                 </v-btn>
@@ -254,44 +254,47 @@ const printTable = () => {
     const season = t(ReportRepository.season || "");
     const university = ReportRepository.university?.name || t("all");
 
-    document.write(`
-    <html dir="${dir.value}">
-      <head>
-        <title>${t("Print Report")}</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            direction: ${dir.value};
-          }
-          .title {
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 12px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-          }
-          th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-          }
-          th {
-            background-color: #e7f2f5;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="title">
-          ${t("department_report")}
-        </div>
-        ${tableHtml}
-      </body>
-    </html>
-  `);
+    const html = `
+<html dir="${dir.value}">
+  <head>
+    <title></title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        direction: ${dir.value};
+      }
+      .title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 12px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+      }
+      th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+      }
+      th {
+        background-color: #e7f2f5;
+      }
+    </style>
+  </head>
+  <body>
+         <div class="title">${t("department_report")} - ${
+        ReportRepository.date
+    } (${t(ReportRepository.season)}, ${t(ReportRepository.shift)})</div>
+    ${tableHtml}
+  </body>
+</html>
+`;
+
+    const printWindow = window.open("", "PrintWindow");
+    printWindow.document.write(html);
     printWindow.document.close();
     printWindow.focus();
     printWindow.print();

@@ -24,7 +24,7 @@
         "currentStudents": "راپور محصلین برحال",
         "faculties": "پوهنځي"
     },
-   
+
     "form": {
         "create": "ایجاد کردن",
         "update": "آپدیت",
@@ -74,6 +74,7 @@
     "Department": "دیپارتمنت ",
     "classrooms": "صنف ها",
     "Classroom": "صنف ",
+    "departmentBase": "راپور دیپارتمنت ها",
     "statistics": "احصایه",
     "Teacher": "استاد",
     "student_statistic": "آمار محصلین",
@@ -91,6 +92,7 @@
     "University": "پوهنتون",
     "university": "پوهنتون",
     "Universities": "پوهنتون ها",
+    "university_base_graduation": "راپور فارغ‌التحصیلان براساس پوهنتون",
 
     "Class": "صنف",
     "Classes": "صنوف",

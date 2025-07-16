@@ -29,7 +29,8 @@ class StudentTeacherReportController extends Controller
                 'teachers.total_teachers as teachers',
                 DB::raw('SUM(student_statistics.male_total + student_statistics.female_total) as total_students'),
                 DB::raw('ROUND(SUM(student_statistics.male_total + student_statistics.female_total) / NULLIF(teachers.total_teachers, 0), 2) as students_per_teacher_ratio')
-            );
+            )
+            ->where('student_statistics.student_type', '!=', 'graduated');
             if(!$user->hasRole('admin')) {
                 $query->where('student_statistics.university_id', $user->university_id);
             }
