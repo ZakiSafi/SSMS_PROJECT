@@ -136,5 +136,15 @@
     "ip_address": "IP Address",
     "logs": "Logs",
     "users":"Users",
-    "description": "Description"
+    "description": "Description",
+    "english":"English",
+    "dari":"Dari",
+    "pashto":"Pashto",
+    "welcome":"Welcome",
+    "login_with_email":"Login with Email",
+    "login":"Login",
+    "email_id":"Email ID",
+    "password":"Password",
+    "login_successful":"Login Successful!",
+    "login_error":"Login failed! Please check your credentials."
 }

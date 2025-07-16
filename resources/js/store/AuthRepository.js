@@ -4,6 +4,8 @@ import { axios } from "../axios";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useRouter } from "vue-router";
+import { useI18n } from 'vue-i18n';
+
 
 export const useAuthRepository = defineStore("authRepository", {
     state() {
@@ -14,6 +16,7 @@ export const useAuthRepository = defineStore("authRepository", {
             loading: ref(false),
             error: ref(null),
             router: useRouter(),
+            t:useI18n(),
             isAuthenticated: ref(false),
         };
     },
@@ -50,7 +53,7 @@ export const useAuthRepository = defineStore("authRepository", {
         this.role = role;
         this.user = meResponse.data;
 
-                toast.success("Login successful!", {
+                toast.success(this.t("login_successful"), {
                     position: "top-right",
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -65,7 +68,7 @@ export const useAuthRepository = defineStore("authRepository", {
                     this.router.push("/dashboard");
                 }, 1000);
             } catch (error) {
-                toast.error("Login failed! Please check your credentials.", {
+                toast.error(this.t("login_error"), {
                     position: "top-right",
                     autoClose: 3000,
                     hideProgressBar: false,

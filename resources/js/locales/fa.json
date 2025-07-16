@@ -136,6 +136,18 @@
     "record_id": "شناسه رکورد",
     "ip_address": "آدرس آی پی",
     "logs": "لاگ ها",
-    "description": "توضیحات"
+    "description": "توضیحات",
+    "language_switcher": "تغییر زبان",
+    "select_language": "زبان را انتخاب کنید",
+    "english":"انگلیسی",
+    "dari":"دری",
+    "pashto":"پشتو",
+    "welcome":"خوش آمدید",
+    "login_with_email":"با ایمیل وارد شوید",
+    "login":"ورود به سیستم",
+    "email_id":"ایمیل آدی",
+    "password":"رمز عبور",
+    "login_successful":"!ورود موفقانه ",
+    "login_error":".ورود ناموفق بود! لطفاً اعتبارنامه‌های خود را بررسی کنید"
     
 }
