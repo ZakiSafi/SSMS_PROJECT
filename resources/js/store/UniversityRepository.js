@@ -19,10 +19,8 @@ export let useUniversityRepository = defineStore("universityRepository", {
             universities: reactive([]),
             university: reactive({}),
             provinces: ref([]),
-
-
-        }
-
+            faculties: ref([]),
+        };
     },
     actions: {
         async FetchUniversities({ page, itemsPerPage }) {
@@ -108,7 +106,13 @@ export let useUniversityRepository = defineStore("universityRepository", {
             }
         },
 
-
-    }
-
+        async FetchFaculties() {
+            try {
+                const response = await axios.get("faculties");
+                this.faculties = response.data.data;
+            } catch (err) {
+                console.error("Failed to fetch faculties:", err);
+            }
+        },
+    },
 });

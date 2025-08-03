@@ -21,26 +21,33 @@ class Controller extends BaseController
     /**
      * List records with optional filters, eager loading, and pagination.
      */
-    public function listRecord($request, $model, $filter = [], $withTables = null)
+    public function listRecord($request, $model, $filter = [], $withTables = null, $queryModifier = null)
     {
-        $requests = $request->all(); // Get all request parameters
-        $method = $request->has('page') ? 'paginate' : 'get'; // Determine if pagination is needed
-        $methodValue = $request->has('page') ? $request->get('perPage', 10) : '*'; // Get perPage value or use '*'
-        $orderColumn = $request->get('order_column', 'id'); // Column to order by (default: id)
-        $orderType = $request->get('order_type', 'desc'); // Order direction (default: descending)
+        $requests = $request->all();
+        $method = $request->has('page') ? 'paginate' : 'get';
+        $methodValue = $request->has('page') ? $request->get('perPage', 10) : '*';
+        $orderColumn = $request->get('order_column', 'id');
+        $orderType = $request->get('order_type', 'desc');
 
-        // Build query, optionally with eager-loaded relationships
         $query = $withTables ? $model::with($withTables) : $model::query();
 
-        // Apply filters only for allowed fields
-        return $query->where(function ($query) use ($requests, $filter) {
+        // Apply custom query modifier if given
+        if ($queryModifier && is_callable($queryModifier)) {
+            $queryModifier($query);
+        }
+
+        // Apply filter conditions
+        $query->where(function ($query) use ($requests, $filter) {
             foreach ($requests as $key => $value) {
                 if (in_array($key, $filter)) {
-                    $query->where($key, 'like', '%' . $value . '%'); // Apply LIKE filter
+                    $query->where($key, 'like', '%' . $value . '%');
                 }
             }
-        })->orderBy($orderColumn, $orderType)->$method($methodValue); // Order and fetch records
+        });
+
+        return $query->orderBy($orderColumn, $orderType)->$method($methodValue);
     }
+
 
     /**
      * Show a single record by its ID.
@@ -55,20 +62,30 @@ class Controller extends BaseController
      */
     public function storeRecord($request, $model)
     {
-        $validated = $request->validated(); // Get validated request data
-        $validated['user_id'] = Auth::id(); // Attach authenticated user's ID
-        $record = $model::create($validated); // Create the record
-        $this->storeImage($request, $record); // Upload and store associated images
+        $validated = $request->validated();
+        $facultyIds = $validated['faculty_ids'] ?? [];
 
+        unset($validated['faculty_ids']); // Don't include it in main record
 
-        // 🔍 Build dynamic description from validated data (excluding sensitive fields)
+        $validated['user_id'] = Auth::id();
+        $record = $model::create($validated); // Create university
+
+        // 🔗 Assign selected faculties to this university
+        if (!empty($facultyIds)) {
+            \App\Models\Faculty::whereIn('id', $facultyIds)->update([
+                'university_id' => $record->id,
+            ]);
+        }
+
+        $this->storeImage($request, $record);
+
+        // Logging
         $excludedFields = ['password'];
         $details = collect($validated)
             ->except($excludedFields)
             ->map(fn($value, $key) => "$key=$value")
             ->implode(', ');
 
-        // 📝 Log the action
         Log::create([
             'user_id' => Auth::id(),
             'university_id' => Auth::user()->university_id ?? null,
@@ -80,7 +97,7 @@ class Controller extends BaseController
             'agent' => $request->userAgent(),
         ]);
 
-        return $record; // Return newly created record
+        return $record;
     }
 
     /**

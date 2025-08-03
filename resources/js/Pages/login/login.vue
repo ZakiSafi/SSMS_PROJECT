@@ -97,7 +97,7 @@ onMounted(() => {
 const languageItems  = ref([
     { title: "english", lang: "en", icon: "/assets/english.png" },
     { title: "dari", lang: "fa", icon: "/assets/dari.png" },
-    { title: "pashto", lang: "ps", icon: "/assets/dari.png" },
+    { title: "pashto", lang: "ps", icon: "/assets/ps.png" },
 ]);
 
 const changeLanguage = (lang) => {
@@ -106,16 +106,15 @@ const changeLanguage = (lang) => {
     isRtl.value = lang !== "en";
 };
 
-// Validation rules
-const emailRules = [
-    (v) => !!v || "Email is required",
-    (v) => /.+@.+\..+/.test(v) || "Email must be valid",
-];
+ const emailRules = [
+      (v) => !!v || t('validations.email_required'),
+      (v) => /.+@.+\..+/.test(v) || t('validations.email_invalid'),
+    ];
 
-const passwordRules = [
-    (v) => !!v || "Password is required",
-    (v) => (v && v.length >= 6) || "Password must be at least 6 characters",
-];
+    const passwordRules = [
+      (v) => !!v || t('validations.password_required'),
+      (v) => (v && v.length >= 6) || t('validations.password_min'),
+    ];
 
 const loginFunc = async () => {
     // Validate form

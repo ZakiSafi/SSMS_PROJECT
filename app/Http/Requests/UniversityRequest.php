@@ -22,7 +22,9 @@ class UniversityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=> 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'faculty_ids' => 'array|nullable',
+            'faculty_ids.*' => 'exists:faculties,id',
             'type' => 'required|in:public,private',
             'province_id' => 'required|exists:provinces,id',
         ];

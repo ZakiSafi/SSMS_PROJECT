@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Redis;
 
 class FacultyController extends Controller
 {
-     public function __construct()
+    public function __construct()
     {
 
-        
+
         // Apply permission middleware with explicit guard
         $this->middleware('permission:faculties.view', ['guard' => 'api'])->only(['index', 'show']);
         $this->middleware('permission:faculties.edit', ['guard' => 'api'])->only(['edit', 'update']);
@@ -30,9 +30,19 @@ class FacultyController extends Controller
      */
     public function index(Request $request)
     {
-        $faculty = $this->listRecord($request, $this->model, ['name']);
+        $faculty = $this->listRecord(
+            $request,
+            $this->model,
+            ['name'],
+            null,
+            function ($query) {
+                $query->whereNull('university_id');  // filter only general faculties
+            }
+        );
+
         return FacultyResource::collection($faculty);
     }
+
 
     /**
      * Store a newly created resource in storage.
