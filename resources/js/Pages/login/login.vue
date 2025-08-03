@@ -1,5 +1,5 @@
 <template>
-    <div class="h-screen grid grid-cols-2 overflow-hidden" >
+    <div class="h-screen grid grid-cols-2 overflow-hidden" :dir="dir">
         <!-- Left Image Section -->
         <div class="h-screen">
             <img src="../../../../public/assets/login.jpg" alt="Jawad" class="object-cover h-screen w-full" />
@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted,computed } from "vue";
 import { useAuthRepository } from "../../store/AuthRepository";
 import { useI18n } from "vue-i18n";
 const { t, locale } = useI18n();
@@ -85,6 +85,7 @@ const visible = ref(false);
 const formRef = ref(null);
 
 const isRtl = ref(false);
+const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 // Initialize language from localStorage
 onMounted(() => {
     const savedLang = localStorage.getItem("locale");
@@ -117,20 +118,37 @@ const passwordRules = [
     (v) => (v && v.length >= 6) || "Password must be at least 6 characters",
 ];
 
-const loginFunc = async () => {
-    // Validate form
-    const { valid } = await formRef.value.validate();
 
-    if (!valid) {
-        // Form is invalid, show error to user (Vuetify will handle this automatically)
+
+const loginFunc = async () => {
+    // Manual check: if both fields are missing
+    if (!formData.email && !formData.password) {
+        alert("Both email and password are required.");
         return;
     }
 
-    try {
+    // Validate only existing fields — skip if removed via DOM
+    const emailInputExists = document.querySelector('[placeholder="Email"]');
+    const passwordInputExists = document.querySelector('[placeholder="enter your password "]');
+
+    if (!emailInputExists || !passwordInputExists) {
+        alert("Form is broken. Please refresh the page.");
+        return;
+    }
+
+    const isValid = await formRef.value?.validate?.();
+
+    if (!isValid) {
+        console.warn("Validation failed.");
+        return;
+    }
+
+     try {
         await AuthRepository.login(formData);
         console.log("Login successful", formData);
     } catch (error) {
         console.error("Login failed", error);
     }
-};
+};  
+
 </script>
