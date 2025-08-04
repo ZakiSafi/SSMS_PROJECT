@@ -8,9 +8,7 @@
         >
             <template v-slot:default="{ isActive }">
                 <v-card class="px-3">
-                    <v-card-title
-                        class="px-2 pt-4 d-flex justify-space-between"
-                    >
+                    <v-card-title class="px-2 pt-4 d-flex justify-space-between">
                         <h2 class="font-weight-bold pl-4">
                             {{
                                 UniversityRepository.isEditMode
@@ -25,11 +23,7 @@
                     <v-divider class="border-opacity-100 mx-6"></v-divider>
 
                     <v-card-text>
-                        <v-form
-                            ref="formRef"
-                            class="pt-4"
-                            v-model="formIsValid"
-                        >
+                        <v-form ref="formRef" class="pt-4" v-model="formIsValid">
                             <v-text-field
                                 v-model="formData.name"
                                 variant="outlined"
@@ -55,7 +49,7 @@
                                 v-model="formData.type"
                                 :items="[
                                     { label: $t('public'), value: 'public' },
-                                    { label: $t('private'), value: 'private' },
+                                    { label: $t('private'), value: 'private' }
                                 ]"
                                 item-title="label"
                                 item-value="value"
@@ -93,8 +87,7 @@
                                         v-if="index === 2"
                                         class="text-grey text-caption"
                                     >
-                                        +{{ formData.faculties.length - 2 }}
-                                        more
+                                        +{{ formData.faculties.length - 2 }} more
                                     </span>
                                 </template>
                             </v-select>
@@ -140,43 +133,36 @@ const formData = reactive({
     name: "",
     province_id: null,
     type: null,
-    faculties: [], // instead of faculty_ids
+    faculties: [], // Stores full faculty objects (required by return-object)
 });
 
-// Reset form to initial state
 const resetForm = () => {
     formData.id = null;
     formData.name = "";
     formData.province_id = null;
     formData.type = null;
-    formData.faculty_ids = [];
+    formData.faculties = [];
     formRef.value?.reset();
 };
 
-// Watch for university data changes (for edit mode)
 watch(
     () => UniversityRepository.university,
     async (newVal) => {
         if (newVal && UniversityRepository.isEditMode) {
-            // Load faculties if not already loaded
             if (UniversityRepository.faculties.length === 0) {
                 loadingFaculties.value = true;
                 await UniversityRepository.FetchFaculties();
                 loadingFaculties.value = false;
             }
 
-            // Set form data
             formData.id = newVal.id;
             formData.name = newVal.name;
             formData.province_id = newVal.province?.id || null;
             formData.type = newVal.type || null;
-
-            // Set faculty IDs - ensure we only store IDs
             formData.faculties = newVal.faculties || [];
+
             console.log("University Faculties:", newVal.faculties);
-            console.log("Available Faculties:", UniversityRepository.faculties);
         } else {
-            // Reset form for create mode
             resetForm();
         }
     },
@@ -189,7 +175,6 @@ const rules = {
         /^[a-zA-Z\u0600-\u06FF\s]*$/.test(value) || t("validation.valid_name"),
 };
 
-// Load initial data
 const loadData = async () => {
     try {
         await UniversityRepository.FetchProvinces();
@@ -199,14 +184,13 @@ const loadData = async () => {
     }
 };
 
-// Remove a faculty from selection
+// ✅ Fix: remove faculty from `formData.faculties` by ID
 const removeFaculty = (facultyId) => {
-    formData.faculty_ids = formData.faculty_ids.filter(
-        (id) => id !== facultyId
+    formData.faculties = formData.faculties.filter(
+        (faculty) => faculty.id !== facultyId
     );
 };
 
-// Save university data
 const save = async () => {
     const { valid } = await formRef.value.validate();
     if (!valid) return;
@@ -215,7 +199,7 @@ const save = async () => {
     try {
         const payload = {
             ...formData,
-            faculty_ids: formData.faculties.map((f) => f.id),
+            faculty_ids: formData.faculties.map((f) => f.id), // ✅ convert back to IDs
         };
 
         if (UniversityRepository.isEditMode) {
@@ -223,6 +207,7 @@ const save = async () => {
         } else {
             await UniversityRepository.CreateUniversity(payload);
         }
+
         closeDialog();
     } catch (error) {
         console.error("Error saving university:", error);
@@ -231,7 +216,6 @@ const save = async () => {
     }
 };
 
-// Close dialog and reset form
 const closeDialog = (isActive = null) => {
     if (isActive?.value !== undefined) {
         isActive.value = false;
@@ -241,7 +225,6 @@ const closeDialog = (isActive = null) => {
     resetForm();
 };
 
-// Load data when component mounts
 onMounted(loadData);
 </script>
 

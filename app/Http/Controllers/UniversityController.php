@@ -34,7 +34,7 @@ class UniversityController extends Controller
 
     public function show(University $university)
     {
-        return new UniversityResource($university->load('faculties', 'province'));
+        return new UniversityResource($university->load('faculties'));
     }
 
 
