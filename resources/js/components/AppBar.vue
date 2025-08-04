@@ -128,9 +128,9 @@ const props = defineProps({
 });
 
 const items = ref([
-    { title: "English", lang: "en", icon: "/assets/english.png" },
-    { title: "Dari", lang: "fa", icon: "/assets/dari.png" },
-    { title: "Pashto", lang: "ps", icon: "/assets/dari.png" },
+    { title: t("English"), lang: "en", icon: "/assets/english.png" },
+    { title: t("Dari"), lang: "fa", icon: "/assets/dari.png" },
+    { title: t("Pashto"), lang: "ps", icon: "/assets/dari.png" },
 ]);
 
 const isRtl = ref(false);

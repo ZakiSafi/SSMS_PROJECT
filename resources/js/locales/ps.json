@@ -21,7 +21,8 @@
         "department_base_graduation": "د څانګې فارغینو راپور",
         "graduated_students": "د فارغ شوو محصلینو راپور",
         "currentStudents": "د روانو محصلینو راپور",
-        "faculties": "پوهنځي"
+        "faculties": "پوهنځي",
+        "student_type_report": "د محصل ډول پر اساس راپور"
     },
     "user": {
         "name": "ذکي الله صافي"
@@ -127,5 +128,36 @@
     "Delete": "ړنګول",
     "ST Ratio": "د محصل او استاد تناسب",
     "StudentTeacherRatio": "د محصل او استاد تناسب",
-    "email": "بریښنالیک"
+    "email": "بریښنالیک",
+    "action_type": " عمل ډول",
+    "action_description": " عمل تفصیل",
+    "table_name": "د جدول نوم",
+    "record_id": "ریکارډ ID",
+    "ip_address": " IP پته",
+    "logs": "لاګونه",
+    "description": "تفصیل",
+    "language_switcher": "ژبه بدلول",
+    "select_language": "ژبه وټاکئ",
+    "english": "انگلیسی",
+    "dari": "دری",
+    "pashto": "پښتو",
+    "welcome": "ښه راغلاست",
+    "login_with_email": "بریښنالیک سره ننوځئ",
+    "login": "ننوتل",
+    "email_id": "بریښنالیک ID",
+    "password": "رمز",
+    "login_successful": "!ننوتل بریالی شول",
+    "login_error": "ننوتل ناکام شول! مهرباني وکړئ خپل اسناد (کرېدڼشلونه) بیا وګورئ",
+
+    "validations": {
+        "email_required": "برېښنالیک اړین دی",
+        "email_invalid": "برېښنالیک باید معتبر وي",
+        "password_required": " رمز اړین دی",
+        "password_min": "پټنوم باید لږ تر لږه ۶ توري ولري"
+    },
+
+    "English": "انگلیسی",
+    "Dari": "دری",
+    "Pashto": "پښتو",
+    "student_type_report": "د محصل ډول پر اساس راپور"
 }

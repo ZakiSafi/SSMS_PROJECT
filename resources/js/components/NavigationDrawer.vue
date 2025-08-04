@@ -9,7 +9,7 @@
                     class="w-[2.9rem] h-[2.9rem] rounded-full object-cover transition-all duration-300"
                 />
             </v-list-item>
-           <h3>{{ user.name || 'Guest' }}</h3>
+            <h3>{{ user.name || "Guest" }}</h3>
         </div>
 
         <v-divider :thickness="1" class="border-opacity-100 full"></v-divider>
@@ -19,7 +19,7 @@
             <v-list density="compact" nav>
                 <!-- Main Items -->
                 <v-list-item
-                v-if="hasPermission('dashboard.view')"
+                    v-if="hasPermission('dashboard.view')"
                     class="menu-item"
                     :title="$t('menu.dashboard')"
                     prepend-icon="mdi-home-lightning-bolt-outline"
@@ -30,7 +30,7 @@
                     }"
                 />
                 <v-list-item
-                v-if="hasPermission('provinces.view')"
+                    v-if="hasPermission('provinces.view')"
                     class="menu-item"
                     prepend-icon="mdi-map-marker-outline"
                     :title="$t('menu.provinces')"
@@ -67,7 +67,6 @@
                     prepend-icon="mdi-office-building-outline"
                     v-if="hasPermission('departments.view')"
                     :title="$t('menu.departments')"
-                    
                     to="/departments"
                     value="departments"
                     :class="{
@@ -104,8 +103,7 @@
                         <v-list-item
                             v-bind="props"
                             :title="$t('menu.currentStudents')"
-                             v-if="hasPermission('current_students.view')"
-                            
+                            v-if="hasPermission('current_students.view')"
                             prepend-icon="mdi-file-chart-outline"
                             class="menu-item"
                         />
@@ -114,7 +112,6 @@
                     <!-- Submenu Items -->
                     <v-list-item
                         v-for="(item, index) in currentStudents"
-                       
                         :key="index"
                         :to="item.to"
                         :title="$t(`menu.${item.translationKey}`)"
@@ -132,8 +129,7 @@
                     <template #activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                             v-if="hasPermission('graduated_students.view')"
-                            
+                            v-if="hasPermission('graduated_students.view')"
                             :title="$t('menu.graduated_students')"
                             prepend-icon="mdi-file-chart-outline"
                             class="menu-item"
@@ -144,8 +140,6 @@
                     <v-list-item
                         v-for="(item, index) in graduatedStudents"
                         :key="index"
-                         
-                        
                         :to="item.to"
                         :title="$t(`menu.${item.translationKey}`)"
                         class="submenu-item"
@@ -189,11 +183,11 @@
 </template>
 
 <script setup>
-import { ref ,onMounted} from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useAuthRepository } from "../store/AuthRepository";
-const AuthRepository=useAuthRepository();
+const AuthRepository = useAuthRepository();
 
 const { t } = useI18n();
 const route = useRoute();
@@ -226,7 +220,6 @@ const hasPermission = (permission) => {
     return permissions.value.includes(permission);
 };
 
-
 const settingItems = [
     {
         to: "/users",
@@ -255,7 +248,6 @@ const currentStudents = [
         icon: "mdi-circle-medium",
         value: "university-base-report",
     },
-
     {
         to: "/student-teacher-ratio",
         translationKey: "student_teacher_ratio",
@@ -279,6 +271,12 @@ const currentStudents = [
         translationKey: "deparment_base",
         icon: "mdi-circle-medium",
         value: "fawad",
+    },
+    {
+        to: "/students-type", // OR better: to: { name: "students-type" }
+        translationKey: "student_type_report",
+        icon: "mdi-circle-medium",
+        value: "students-type", // must exactly match route.name
     },
 ];
 const graduatedStudents = [

@@ -22,7 +22,8 @@
         "department_base_graduation": "راپور فارغ‌التحصیلان دیپارتمنت",
         "graduated_students": " راپور محصلین فارغ شده ",
         "currentStudents": "راپور محصلین برحال",
-        "faculties": "پوهنځي"
+        "faculties": "پوهنځي",
+        "student_type_report": "راپور بر اساس نوعیت محصل"
     },
 
     "form": {
@@ -141,15 +142,25 @@
     "description": "توضیحات",
     "language_switcher": "تغییر زبان",
     "select_language": "زبان را انتخاب کنید",
-    "english":"انگلیسی",
-    "dari":"دری",
-    "pashto":"پشتو",
-    "welcome":"خوش آمدید",
-    "login_with_email":"با ایمیل وارد شوید",
-    "login":"ورود به سیستم",
-    "email_id":"ایمیل آدی",
-    "password":"رمز عبور",
-    "login_successful":"!ورود موفقانه ",
-    "login_error":".ورود ناموفق بود! لطفاً اعتبارنامه‌های خود را بررسی کنید"
-    
+    "english": "انگلیسی",
+    "dari": "دری",
+    "pashto": "پشتو",
+    "welcome": "خوش آمدید",
+    "login_with_email": "با ایمیل وارد شوید",
+    "login": "ورود به سیستم",
+    "email_id": "ایمیل آدی",
+    "password": "رمز عبور",
+    "login_successful": "!ورود موفقانه ",
+    "login_error": ".ورود ناموفق بود! لطفاً اعتبارنامه‌های خود را بررسی کنید",
+    "validations": {
+        "email_required": "ایمیل الزامی است",
+        "email_invalid": "ایمیل باید معتبر باشد",
+        "password_required": "رمز عبور الزامی است",
+        "password_min": "رمز عبور باید حداقل ۶ نویسه داشته باشد"
+    },
+    "shift": "شیفت",
+    "English": "انگلیسی",
+    "Dari": "دری",
+    "Pashto": "پشتو",
+    "student_type_report": "راپور بر اساس نوعیت محصل"
 }

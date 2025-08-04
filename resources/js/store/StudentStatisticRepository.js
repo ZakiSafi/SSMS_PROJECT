@@ -192,6 +192,43 @@ export const useStudentStatisticRepository = defineStore(
                     console.error("Failed to fetch departments:", error);
                 }
             },
+
+            async fetchFormFacultiesByUniversity(universityId) {
+                try {
+                    this.faculties = [];
+                    if (!universityId) return;
+
+                    const response = await axios.get("faculties", {
+                        params: { university_id: universityId },
+                    });
+                    this.faculties = response.data.data;
+                } catch (error) {
+                    console.error("Failed to fetch faculties:", error);
+                }
+            },
+
+            async fetchFormDepartmentsByFaculty(facultyId) {
+                try {
+                    this.departments = [];
+                    if (!facultyId) return;
+
+                    const response = await axios.get("departments", {
+                        params: { faculty_id: facultyId },
+                    });
+                    this.departments = response.data.data;
+                } catch (error) {
+                    console.error("Failed to fetch departments:", error);
+                }
+            },
+
+            resetFormDependencies() {
+                this.faculties = [];
+                this.departments = [];
+                if (this.statistic) {
+                    this.statistic.faculty_id = null;
+                    this.statistic.department_id = null;
+                }
+            },
         },
     }
 );

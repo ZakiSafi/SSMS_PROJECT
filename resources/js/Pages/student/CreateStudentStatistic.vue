@@ -44,7 +44,7 @@
                                 </v-col>
 
                                 <v-col cols="6">
-                                    <v-combobox
+                                    <v-select
                                         v-model="formData.university_id"
                                         :items="
                                             StudentStatisticsRepository.universities
@@ -56,29 +56,36 @@
                                         density="compact"
                                         :rules="[rules.required]"
                                         :return-object="false"
+                                        @update:modelValue="
+                                            handleUniversityChange
+                                        "
+                                        clearable
                                     />
                                 </v-col>
 
                                 <!-- Row 2 -->
-                                <v-col cols="6">
-                                    <v-select
-                                        v-model="formData.faculty_id"
-                                        :items="
-                                            StudentStatisticsRepository.faculties
-                                        "
-                                        item-title="name"
-                                        item-value="id"
-                                        :label="$t('Faculty')"
-                                        variant="outlined"
-                                        density="compact"
-                                        :rules="[rules.required]"
-                                    />
-                                </v-col>
+                                <v-select
+                                    v-model="formData.faculty_id"
+                                    :items="
+                                        StudentStatisticsRepository.faculties
+                                    "
+                                    item-title="name"
+                                    item-value="id"
+                                    :label="$t('Faculty')"
+                                    variant="outlined"
+                                    density="compact"
+                                    :rules="[rules.required]"
+                                    :disabled="!formData.university_id"
+                                    @update:modelValue="handleFacultyChange"
+                                    clearable
+                                />
 
                                 <v-col cols="6">
                                     <v-select
                                         v-model="formData.department_id"
-                                        :items="filteredDepartments"
+                                        :items="
+                                            StudentStatisticsRepository.departments
+                                        "
                                         item-title="name"
                                         item-value="id"
                                         :label="$t('Department')"
@@ -86,6 +93,7 @@
                                         density="compact"
                                         :rules="[rules.required]"
                                         :disabled="!formData.faculty_id"
+                                        clearable
                                     />
                                 </v-col>
 
@@ -118,9 +126,22 @@
                                     <v-select
                                         v-model="formData.student_type"
                                         :items="[
-                                            { value: 'new', title: $t('student_type.new') },
-                                            { value: 'current', title: $t('student_type.current') },
-                                            { value: 'graduated', title: $t('student_type.graduated') }
+                                            {
+                                                value: 'new',
+                                                title: $t('student_type.new'),
+                                            },
+                                            {
+                                                value: 'current',
+                                                title: $t(
+                                                    'student_type.current'
+                                                ),
+                                            },
+                                            {
+                                                value: 'graduated',
+                                                title: $t(
+                                                    'student_type.graduated'
+                                                ),
+                                            },
                                         ]"
                                         item-title="title"
                                         item-value="value"
@@ -135,11 +156,14 @@
                                     <v-select
                                         v-model="formData.shift"
                                         :items="[
-                                            {value: 'day', title:$t('day')},
-                                            {value: 'night', title:$t('night')},
-                                            ]"
+                                            { value: 'day', title: $t('day') },
+                                            {
+                                                value: 'night',
+                                                title: $t('night'),
+                                            },
+                                        ]"
                                         :item-title="title"
-                                        :item-value ="value"
+                                        :item-value="value"
                                         :label="$t('Shift')"
                                         variant="outlined"
                                         density="compact"
@@ -151,9 +175,7 @@
                                     <v-select
                                         v-model="formData.season"
                                         :items="['spring', 'autumn']"
-                                        :item-title="
-                                            (item) => $t(`${item}`)
-                                        "
+                                        :item-title="(item) => $t(`${item}`)"
                                         :label="$t('Season')"
                                         variant="outlined"
                                         density="compact"
@@ -209,20 +231,18 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch, computed } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import { useStudentStatisticRepository } from "@/store/StudentStatisticRepository";
 import persianDate from "persian-date";
 import DatePicker from "vue3-persian-datetime-picker";
 import { useI18n } from "vue-i18n";
+import { computed } from "vue";
 
 const { t, locale } = useI18n();
 const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
 
 const StudentStatisticsRepository = useStudentStatisticRepository();
-
-// currentYear
 const currentYear = ref(new persianDate().year().toString());
-
 const formRef = ref(null);
 const formIsValid = ref(false);
 
@@ -246,19 +266,45 @@ const formData = reactive({
     student_type: StudentStatisticsRepository.statistic.student_type || "new",
 });
 
-// Filter departments based on selected faculty
-const filteredDepartments = computed(() => {
-    return StudentStatisticsRepository.departments.filter(
-        (dept) => dept.faculty?.id === formData.faculty_id
-    );
-});
+// Handle university change
+const handleUniversityChange = (universityId) => {
+    formData.faculty_id = null;
+    formData.department_id = null;
+    StudentStatisticsRepository.fetchFormFacultiesByUniversity(universityId);
+};
 
-watch(
-    () => formData.faculty_id,
-    () => {
-        formData.department_id = null;
+// Handle faculty change
+const handleFacultyChange = (facultyId) => {
+    formData.department_id = null;
+    StudentStatisticsRepository.fetchFormDepartmentsByFaculty(facultyId);
+};
+
+// Reset form when dialog closes
+const resetForm = () => {
+    StudentStatisticsRepository.resetFormDependencies();
+};
+
+// Initialize form when mounted
+onMounted(() => {
+    StudentStatisticsRepository.fetchUniversities();
+
+    // If editing, initialize the form with existing data
+    if (
+        StudentStatisticsRepository.isEditMode &&
+        StudentStatisticsRepository.statistic.id
+    ) {
+        // Load faculties if university is set
+        if (formData.university_id) {
+            handleUniversityChange(formData.university_id);
+        }
+        // Load departments if faculty is set (with slight delay to ensure faculties are loaded)
+        if (formData.faculty_id) {
+            setTimeout(() => {
+                handleFacultyChange(formData.faculty_id);
+            }, 100);
+        }
     }
-);
+});
 
 const classOptions = [
     { id: 1, name: t("class1"), semesters: [1, 2] },

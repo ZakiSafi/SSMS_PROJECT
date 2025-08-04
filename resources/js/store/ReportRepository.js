@@ -177,6 +177,27 @@ export const useReportRepository = defineStore("reportRepository", {
             }
         },
 
+        // student type base graduation
+        async fetchStudentTypeReport(
+            { page, itemsPerPage },
+            date = this.date,
+            shift = this.shift
+        ) {
+            this.loading = true;
+            try {
+                const response = await axios.get(
+                    `report/studentsTypeBased?year=${date}&shift=${shift}&page=${page}&perPage=${itemsPerPage}`
+                );
+                this.studentTypeReport = response.data.data || [];
+                this.totalItems = response.data.total;
+            } catch (error) {
+                console.error("Error fetching student type report:", error);
+                this.studentTypeReport = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+
         async fetchDepartmentBaseGraduation(
             { page, itemsPerPage },
             date = this.date,

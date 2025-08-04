@@ -145,12 +145,6 @@ const deleteItem = async (item) => {
 
 const headers = computed(() => [
     { title: t("Name"), key: "name", align: "start", sortable: false },
-    {
-        title: t("University"),
-        key: "university.name",
-        align: "start",
-        sortable: false,
-    },
     { title: t("Action"), key: "action", align: "end", sortable: false },
 ]);
 </script>

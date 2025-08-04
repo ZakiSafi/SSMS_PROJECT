@@ -17,8 +17,36 @@ class StudentsTypeBasedController extends Controller
         $shift = $request->query('shift');
         $perPage = $request->query('perPage', 10);
 
-        // Fetch all types in one query
-        $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
+        // STEP 1: Paginate faculties
+        $facultyPaginator = DB::table('student_statistics')
+            ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
+            ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
+            ->select(
+                'student_statistics.university_id',
+                'universities.name as university_name',
+                'student_statistics.faculty_id',
+                'faculties.name as faculty_name'
+            )
+            ->when(!$user->hasRole('admin') && $user->university_id, function ($query) use ($user) {
+                return $query->where('student_statistics.university_id', $user->university_id);
+            })
+            ->where('student_statistics.academic_year', $year)
+            ->when($shift && $shift !== 'all', function ($query) use ($shift) {
+                return $query->whereRaw('LOWER(student_statistics.shift) = ?', [strtolower(trim($shift))]);
+            })
+            ->groupBy(
+                'student_statistics.university_id',
+                'universities.name',
+                'student_statistics.faculty_id',
+                'faculties.name'
+            )
+            ->paginate($perPage);
+
+        $facultyIds = $facultyPaginator->pluck('faculty_id')->toArray();
+
+        // STEP 2: Fetch student type stats for faculties
+        $typeResults = DB::table('student_statistics')
+            ->join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->join('faculties', 'student_statistics.faculty_id', '=', 'faculties.id')
             ->select(
                 'student_statistics.faculty_id',
@@ -31,21 +59,12 @@ class StudentsTypeBasedController extends Controller
                 DB::raw('SUM(student_statistics.male_total) as males'),
                 DB::raw('SUM(student_statistics.female_total) as females'),
                 DB::raw('SUM(student_statistics.female_total + student_statistics.male_total) as total')
-            );
-
-        if (!$user->hasRole('admin')) {
-            $query->where('student_statistics.university_id', $user->university_id);
-        }
-
-        if ($shift && $shift !== 'all') {
-            $query->whereRaw('LOWER(student_statistics.shift) = ?', [strtolower(trim($shift))]);
-        }
-
-        if ($year && $year !== 'all') {
-            $query->where('student_statistics.academic_year', intval($year));
-        }
-
-        $data = $query
+            )
+            ->where('student_statistics.academic_year', $year)
+            ->when($shift && $shift !== 'all', function ($query) use ($shift) {
+                return $query->whereRaw('LOWER(student_statistics.shift) = ?', [strtolower(trim($shift))]);
+            })
+            ->whereIn('student_statistics.faculty_id', $facultyIds)
             ->groupBy(
                 'student_statistics.academic_year',
                 'student_statistics.student_type',
@@ -57,53 +76,74 @@ class StudentsTypeBasedController extends Controller
             )
             ->get();
 
-        // Group by university and faculty
-        $grouped = $data->groupBy('university')->map(function ($facultyStats, $university) {
-            return [
-                'university' => $university,
-                'faculties' => $facultyStats->groupBy('faculty')->map(function ($types) {
-                    $result = [
-                        'faculty' => $types->first()->faculty,
-                        'students' => [
-                            'newly_enrolled' => ['males' => 0, 'females' => 0, 'total' => 0],
-                            'graduated' => ['males' => 0, 'females' => 0, 'total' => 0],
-                            'current' => ['males' => 0, 'females' => 0, 'total' => 0],
-                        ]
-                    ];
+        // STEP 3: Build nested structure
+        $universities = [];
+        $facultiesMap = [];
 
-                    foreach ($types as $type) {
-                        if ($type->type === 'current') {
-                            $result['students']['current'] = [
-                                'males' => $type->males,
-                                'females' => $type->females,
-                                'total' => $type->total,
-                            ];
-                        } elseif ($type->type === 'graduated') {
-                            $result['students']['graduated'] = [
-                                'males' => $type->males,
-                                'females' => $type->females,
-                                'total' => $type->total,
-                            ];
-                        } elseif ($type->type === 'new') {
-                            $result['students']['new'] = [
-                                'males' => $type->males,
-                                'females' => $type->females,
-                                'total' => $type->total,
-                            ];
-                        }
-                    }
+        foreach ($facultyPaginator as $fac) {
+            $uniId = $fac->university_id;
+            $facId = $fac->faculty_id;
 
-                    return $result;
-                })->values(),
-            ];
-        })->values();
+            // Create university if not exists
+            if (!isset($universities[$uniId])) {
+                $universities[$uniId] = [
+                    'university' => $fac->university_name,
+                    'faculties' => []
+                ];
+            }
 
-        if ($grouped->isEmpty()) {
-            return response()->json(['message' => 'No data found'], 404);
+            // Create faculty if not exists
+            if (!isset($facultiesMap[$facId])) {
+                $facultiesMap[$facId] = [
+                    'faculty' => $fac->faculty_name,
+                    'students' => [
+                        'new' => ['males' => 0, 'females' => 0, 'total' => 0],
+                        'graduated' => ['males' => 0, 'females' => 0, 'total' => 0],
+                        'current' => ['males' => 0, 'females' => 0, 'total' => 0],
+                    ]
+                ];
+                $universities[$uniId]['faculties'][] = &$facultiesMap[$facId];
+            }
         }
 
+        // Fill in student type stats
+        foreach ($typeResults as $row) {
+            if (isset($facultiesMap[$row->faculty_id])) {
+                if ($row->type === 'current') {
+                    $facultiesMap[$row->faculty_id]['students']['current'] = [
+                        'males' => $row->males,
+                        'females' => $row->females,
+                        'total' => $row->total,
+                    ];
+                } elseif ($row->type === 'graduated') {
+                    $facultiesMap[$row->faculty_id]['students']['graduated'] = [
+                        'males' => $row->males,
+                        'females' => $row->females,
+                        'total' => $row->total,
+                    ];
+                } elseif ($row->type === 'new') {
+                    $facultiesMap[$row->faculty_id]['students']['new'] = [
+                        'males' => $row->males,
+                        'females' => $row->females,
+                        'total' => $row->total,
+                    ];
+                }
+            }
+        }
+
+        // Convert to sequential arrays
+        $final = array_values(array_map(function ($uni) {
+            $uni['faculties'] = array_values($uni['faculties']);
+            return $uni;
+        }, $universities));
+
+        // STEP 4: Return result
         return response()->json([
-            'data' => $grouped,
+            'data' => $final,
+            'current_page' => $facultyPaginator->currentPage(),
+            'last_page' => $facultyPaginator->lastPage(),
+            'per_page' => $facultyPaginator->perPage(),
+            'total' => $facultyPaginator->total(),
         ]);
     }
 }

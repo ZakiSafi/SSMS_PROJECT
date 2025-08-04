@@ -12,6 +12,7 @@ import Faculties from "./Pages/faculty/Faculties.vue";
 import StudentStatistics from "./Pages/student/StudentStatistics.vue";
 import UniversityBaseReport from "./Pages/report/UniversityBase.vue";
 import UniversityBaseGraduation from "./Pages/report/UniversityBaseGraduation.vue";
+import StudentTypeReport from "./Pages/report/StudentTypeReport.vue";
 import StudentTeacherRatio from "./Pages/report/StudentTeacherRatio.vue";
 import UniversitiesClasses from "./Pages/report/UniversitiesClasses.vue";
 import Dashboard from "./Pages/Dashboard.vue";
@@ -52,7 +53,10 @@ const routes = [
                 path: "/university",
                 name: "university",
                 component: University,
-                meta: { authentication: true, permissions: ["university.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["university.view"],
+                },
             },
             {
                 path: "/users",
@@ -76,7 +80,10 @@ const routes = [
                 path: "/departments",
                 name: "departments",
                 component: Departments,
-                meta: { authentication: true, permissions: ["departments.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["departments.view"],
+                },
             },
             {
                 path: "/faculties",
@@ -88,55 +95,91 @@ const routes = [
                 path: "/student-statistic",
                 name: "student-statistic",
                 component: StudentStatistics,
-                meta: { authentication: true, permissions: ["student_statistic.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["student_statistic.view"],
+                },
             },
             {
                 path: "/university-base-report",
                 name: "university-base-report",
                 component: UniversityBaseReport,
-                meta: { authentication: true, permissions: ["current_students.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["current_students.view"],
+                },
             },
             {
                 path: "/university-graduation-report",
                 name: "university-graduation-report",
                 component: UniversityBaseGraduation,
-                meta: { authentication: true, permissions: ["graduated_students.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["graduated_students.view"],
+                },
+            },
+            {
+                path: "/students-type",
+                name: "students-type",
+                component: StudentTypeReport,
+                meta: {
+                    authentication: true,
+                    permissions: ["current_students.view"],
+                },
             },
             {
                 path: "/student-teacher-ratio",
                 name: "student-teacher-ratio",
                 component: StudentTeacherRatio,
-                meta: { authentication: true, permissions: ["current_students.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["current_students.view"],
+                },
             },
             {
                 path: "/university-classes",
                 name: "university-classes",
                 component: UniversitiesClasses,
-                meta: { authentication: true, permissions: ["current_students.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["current_students.view"],
+                },
             },
             {
                 path: "/faculty_base",
                 name: "jawad",
                 component: FacultyBase,
-                meta: { authentication: true, permissions: ["current_students.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["current_students.view"],
+                },
             },
             {
                 path: "/deparment_base",
                 name: "fawad",
                 component: DepartmentBase,
-                meta: { authentication: true, permissions: ["current_students.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["current_students.view"],
+                },
             },
             {
                 path: "/faculty-graduation",
                 name: "faculty-graduation",
                 component: FacultyBaseGraduation,
-                meta: { authentication: true, permissions: ["graduated_students.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["graduated_students.view"],
+                },
             },
             {
                 path: "/department-base-graduation",
                 name: "department-base-graduation",
                 component: DepartmentBaseGraduation,
-                meta: { authentication: true, permissions: ["graduated_students.view"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["graduated_students.view"],
+                },
             },
             {
                 path: "/teachers",
@@ -154,7 +197,10 @@ const routes = [
                 path: "/CreateRole",
                 name: "create-permission",
                 component: CreateRolePermission,
-                meta: { authentication: true, permissions: ["settings.create"] },
+                meta: {
+                    authentication: true,
+                    permissions: ["settings.create"],
+                },
             },
             {
                 path: "/UpdateRole/:id",
@@ -174,7 +220,9 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const token = sessionStorage.getItem("token");
-    const userPermissions = JSON.parse(sessionStorage.getItem("permissions") || "[]");
+    const userPermissions = JSON.parse(
+        sessionStorage.getItem("permissions") || "[]"
+    );
 
     // Route requires login
     if (to.meta.authentication && !token) {
@@ -186,7 +234,9 @@ router.beforeEach((to, from, next) => {
     }
     // Route requires specific permissions
     else if (to.meta.permissions) {
-        const hasPermission = to.meta.permissions.every(p => userPermissions.includes(p));
+        const hasPermission = to.meta.permissions.every((p) =>
+            userPermissions.includes(p)
+        );
         if (hasPermission) {
             next();
         } else {

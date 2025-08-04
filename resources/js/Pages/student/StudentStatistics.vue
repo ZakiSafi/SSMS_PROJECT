@@ -43,14 +43,19 @@
                         </v-col>
                         <v-col cols="12" md="3">
                             <v-select
-        v-model="StudentStatisticRepository.filters.university"
-        :items="filteredUniversities"
-        :label="t('university')"
-        item-title="name"
-        item-value="id"
-        clearable
-        @update:modelValue="StudentStatisticRepository.fetchFacultiesByUniversity"
-    ></v-select>
+                                v-model="
+                                    StudentStatisticRepository.filters
+                                        .university
+                                "
+                                :items="filteredUniversities"
+                                :label="t('university')"
+                                item-title="name"
+                                item-value="id"
+                                clearable
+                                @update:modelValue="
+                                    StudentStatisticRepository.fetchFacultiesByUniversity
+                                "
+                            ></v-select>
                         </v-col>
                         <v-col cols="12" md="3">
                             <v-select
@@ -339,7 +344,7 @@ const loadStatistics = (options) => {
 // Fetch initial data
 onMounted(() => {
     StudentStatisticRepository.fetchUniversities();
-    ProvinceRepository.FetchProvinces({page: 1, itemsPerPage: 10 });
+    ProvinceRepository.FetchProvinces({ page: 1, itemsPerPage: 10 });
     // StudentTypeRepository.fetchStudentTypes();
     StudentStatisticRepository.fetchFaculties();
     StudentStatisticRepository.fetchDepartments();

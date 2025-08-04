@@ -22,7 +22,20 @@ class FacultyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $exists = \App\Models\Faculty::where('name', $value)
+                        ->whereNull('university_id')
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('This faculty name already exists in the general list.');
+                    }
+                }
+            ],
         ];
     }
 }
