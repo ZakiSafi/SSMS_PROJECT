@@ -16,9 +16,6 @@ class UniversityResource extends JsonResource
      */
     public function toArray($request)
     {
-
-
-
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -27,6 +24,7 @@ class UniversityResource extends JsonResource
                 'id' => $this->province->id,
                 'name' => $this->province->name,
             ],
+            'faculties' => FacultyResource::collection($this->whenLoaded('faculties')),
         ];
     }
 }

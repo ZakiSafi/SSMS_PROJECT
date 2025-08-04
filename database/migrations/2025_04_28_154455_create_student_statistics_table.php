@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('university_id')->constrained()->cascadeOnDelete();
             $table->foreignId('faculty_id')->constrained()->cascadeOnDelete();
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
-            $table->string('classroom')->default('first');
+            $table->string('classroom')->default('class1');
             $table->enum('shift', ['day', 'night'])->default('day');
             $table->enum('season', ['spring', 'autumn', 'summer', 'winter'])->default('spring');
             $table->tinyInteger('semester_number')->default(1); // 1 for first semester, 2 for second semester

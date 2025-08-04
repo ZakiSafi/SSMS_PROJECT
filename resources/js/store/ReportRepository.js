@@ -177,6 +177,34 @@ export const useReportRepository = defineStore("reportRepository", {
             }
         },
 
+        // student type base graduation
+        actions: {
+            async fetchStudentTypeReport({ page, itemsPerPage }, date, shift) {
+                this.loading = true;
+                try {
+                    const response = await axios.get(
+                        "api/report/studentsTypeBased",
+                        {
+                            params: {
+                                year: date,
+                                shift: shift,
+                                page: page,
+                                perPage: itemsPerPage,
+                            },
+                        }
+                    );
+                    this.studentTypeReport = response.data.data || [];
+                    this.totalItems = response.data.total;
+                    console.log("API response:", response.data);
+                } catch (error) {
+                    console.error("API Error:", error.response || error);
+                    this.studentTypeReport = [];
+                } finally {
+                    this.loading = false;
+                }
+            },
+        },
+
         async fetchDepartmentBaseGraduation(
             { page, itemsPerPage },
             date = this.date,

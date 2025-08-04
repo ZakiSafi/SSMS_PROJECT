@@ -4,6 +4,7 @@
             transition="dialog-top-transition"
             width="50rem"
             v-model="UniversityRepository.createDialog"
+            persistent
         >
             <template v-slot:default="{ isActive }">
                 <v-card class="px-3">
@@ -17,7 +18,7 @@
                                     : $t("create")
                             }}
                         </h2>
-                        <v-btn variant="text" @click="isActive.value = false">
+                        <v-btn variant="text" @click="closeDialog(isActive)">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                     </v-card-title>
@@ -65,24 +66,48 @@
                                 :rules="[rules.required]"
                             />
 
-                            <!-- 🆕 Faculties Multi-select -->
                             <v-select
-                                v-model="formData.faculty_ids"
+                                v-model="formData.faculties"
                                 :items="UniversityRepository.faculties"
                                 item-title="name"
                                 item-value="id"
-                                :label="$t('Faculties')"
+                                return-object
                                 multiple
                                 chips
+                                closable-chips
                                 variant="outlined"
                                 density="compact"
                                 class="pb-4"
-                            />
+                                persistent-hint
+                                :label="$t('Faculties')"
+                            >
+                                <template v-slot:selection="{ item, index }">
+                                    <v-chip
+                                        v-if="index < 2"
+                                        closable
+                                        @click:close="removeFaculty(item.id)"
+                                    >
+                                        {{ item.name }}
+                                    </v-chip>
+                                    <span
+                                        v-if="index === 2"
+                                        class="text-grey text-caption"
+                                    >
+                                        +{{ formData.faculties.length - 2 }}
+                                        more
+                                    </span>
+                                </template>
+                            </v-select>
                         </v-form>
                     </v-card-text>
 
-                    <div class="d-flex flex-row-reverse mb-6 mx-6">
-                        <v-btn color="primary" class="px-4" @click="save">
+                    <div class="d-flex flex-row-reverse mb-6 mx-6 gap-2">
+                        <v-btn
+                            color="primary"
+                            class="px-4"
+                            @click="save"
+                            :loading="isSaving"
+                        >
                             {{
                                 UniversityRepository.isEditMode
                                     ? $t("form.update")
@@ -97,7 +122,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, watch, onMounted, computed } from "vue";
 import { useUniversityRepository } from "@/store/UniversityRepository";
 import { useI18n } from "vue-i18n";
 
@@ -107,19 +132,56 @@ const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
 const UniversityRepository = useUniversityRepository();
 const formRef = ref(null);
 const formIsValid = ref(false);
-
-onMounted(() => {
-    UniversityRepository.FetchProvinces();
-    UniversityRepository.FetchFaculties(); // 🔁 Get all available faculties
-});
+const isSaving = ref(false);
+const loadingFaculties = ref(false);
 
 const formData = reactive({
-    id: UniversityRepository.university.id || null,
-    name: UniversityRepository.university.name || "",
-    province_id: UniversityRepository.university.province?.id || null,
-    type: UniversityRepository.university.type || null,
-    faculty_ids: [], // 🔗 Selected faculties
+    id: null,
+    name: "",
+    province_id: null,
+    type: null,
+    faculties: [], // instead of faculty_ids
 });
+
+// Reset form to initial state
+const resetForm = () => {
+    formData.id = null;
+    formData.name = "";
+    formData.province_id = null;
+    formData.type = null;
+    formData.faculty_ids = [];
+    formRef.value?.reset();
+};
+
+// Watch for university data changes (for edit mode)
+watch(
+    () => UniversityRepository.university,
+    async (newVal) => {
+        if (newVal && UniversityRepository.isEditMode) {
+            // Load faculties if not already loaded
+            if (UniversityRepository.faculties.length === 0) {
+                loadingFaculties.value = true;
+                await UniversityRepository.FetchFaculties();
+                loadingFaculties.value = false;
+            }
+
+            // Set form data
+            formData.id = newVal.id;
+            formData.name = newVal.name;
+            formData.province_id = newVal.province?.id || null;
+            formData.type = newVal.type || null;
+
+            // Set faculty IDs - ensure we only store IDs
+            formData.faculties = newVal.faculties || [];
+            console.log("University Faculties:", newVal.faculties);
+            console.log("Available Faculties:", UniversityRepository.faculties);
+        } else {
+            // Reset form for create mode
+            resetForm();
+        }
+    },
+    { immediate: true, deep: true }
+);
 
 const rules = {
     required: (value) => !!value || t("validation.required"),
@@ -127,14 +189,65 @@ const rules = {
         /^[a-zA-Z\u0600-\u06FF\s]*$/.test(value) || t("validation.valid_name"),
 };
 
+// Load initial data
+const loadData = async () => {
+    try {
+        await UniversityRepository.FetchProvinces();
+        await UniversityRepository.FetchFaculties();
+    } catch (error) {
+        console.error("Error loading data:", error);
+    }
+};
+
+// Remove a faculty from selection
+const removeFaculty = (facultyId) => {
+    formData.faculty_ids = formData.faculty_ids.filter(
+        (id) => id !== facultyId
+    );
+};
+
+// Save university data
 const save = async () => {
     const { valid } = await formRef.value.validate();
     if (!valid) return;
 
-    if (UniversityRepository.isEditMode) {
-        await UniversityRepository.UpdateUniversity(formData.id, formData);
-    } else {
-        await UniversityRepository.CreateUniversity(formData);
+    isSaving.value = true;
+    try {
+        const payload = {
+            ...formData,
+            faculty_ids: formData.faculties.map((f) => f.id),
+        };
+
+        if (UniversityRepository.isEditMode) {
+            await UniversityRepository.UpdateUniversity(formData.id, payload);
+        } else {
+            await UniversityRepository.CreateUniversity(payload);
+        }
+        closeDialog();
+    } catch (error) {
+        console.error("Error saving university:", error);
+    } finally {
+        isSaving.value = false;
     }
 };
+
+// Close dialog and reset form
+const closeDialog = (isActive = null) => {
+    if (isActive?.value !== undefined) {
+        isActive.value = false;
+    } else {
+        UniversityRepository.createDialog = false;
+    }
+    resetForm();
+};
+
+// Load data when component mounts
+onMounted(loadData);
 </script>
+
+<style scoped>
+.v-chip {
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+</style>
