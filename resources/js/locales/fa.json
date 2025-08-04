@@ -22,7 +22,8 @@
         "department_base_graduation": "راپور فارغ‌التحصیلان دیپارتمنت",
         "graduated_students": " راپور محصلین فارغ شده ",
         "currentStudents": "راپور محصلین برحال",
-        "faculties": "پوهنځي"
+        "faculties": "پوهنځي",
+        "student_type_report": "راپور بر اساس نوعیت محصل"
     },
 
     "form": {
@@ -156,5 +157,10 @@
         "email_invalid": "ایمیل باید معتبر باشد",
         "password_required": "رمز عبور الزامی است",
         "password_min": "رمز عبور باید حداقل ۶ نویسه داشته باشد"
-    }
+    },
+    "shift": "شیفت",
+    "English": "انگلیسی",
+    "Dari": "دری",
+    "Pashto": "پشتو",
+    "student_type_report": "راپور بر اساس نوعیت محصل"
 }

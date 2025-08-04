@@ -1,9 +1,10 @@
 <template>
     <div :dir="dir">
         <AppBar :pageTitle="$t('student_type_report')" />
-        <v-divider :thickness="1" class="border-opacity-100"></v-divider>
+        <v-divider :thickness="1" class="border-opacity-100" />
 
-        <v-row class="pt-6 pb-6" align="center" justify="space-between">
+        <!-- Filters and Print Button -->
+        <v-row class="pt-6 pb-6" align="center">
             <!-- Year Combobox -->
             <v-col cols="3">
                 <v-combobox
@@ -13,12 +14,13 @@
                     variant="outlined"
                     density="compact"
                     hide-details
-                    @update:modelValue="onFilterChange"
+                    :rules="[validateYearInput]"
+                    @update:modelValue="onDateChange"
                 />
             </v-col>
 
             <!-- Shift Select -->
-            <v-col cols="2">
+            <v-col cols="3">
                 <v-select
                     v-model="ReportRepository.shift"
                     :items="[
@@ -31,12 +33,14 @@
                     :label="$t('Select Shift')"
                     variant="outlined"
                     density="compact"
-                    @update:modelValue="onFilterChange"
+                    hide-details
+                    :rules="[validateShift]"
+                    @update:modelValue="onShiftChange"
                 />
             </v-col>
 
             <!-- Print Button -->
-            <v-col cols="2">
+            <v-col cols="auto">
                 <v-btn color="primary" @click="printTable">
                     {{ $t("print_report") }}
                 </v-btn>
@@ -67,11 +71,9 @@
                     </tr>
                 </thead>
 
-                <!-- Loading State -->
                 <tr v-if="ReportRepository.loading" class="loading-row">
                     <td colspan="11">
                         <v-progress-linear
-                            :reverse="dir === 'rtl'"
                             indeterminate
                             color="primary"
                             height="4"
@@ -80,62 +82,22 @@
                     </td>
                 </tr>
 
-                <!-- Data Rows -->
-                <tbody v-if="ReportRepository.studentTypeReport.length">
-                    <template
-                        v-for="(
-                            university, uIndex
-                        ) in ReportRepository.studentTypeReport"
-                        :key="'uni-' + uIndex"
-                    >
-                        <template
-                            v-for="(faculty, fIndex) in university.faculties"
-                            :key="'fac-' + fIndex"
-                        >
-                            <tr>
-                                <template v-if="fIndex === 0">
-                                    <td :rowspan="university.faculties.length">
-                                        {{ university.university }}
-                                    </td>
-                                </template>
-                                <td>{{ faculty.faculty }}</td>
-
-                                <!-- Newly Enrolled -->
-                                <td>{{ faculty.students.new?.males || 0 }}</td>
-                                <td>
-                                    {{ faculty.students.new?.females || 0 }}
-                                </td>
-                                <td>{{ faculty.students.new?.total || 0 }}</td>
-
-                                <!-- Graduated -->
-                                <td>
-                                    {{ faculty.students.graduated?.males || 0 }}
-                                </td>
-                                <td>
-                                    {{
-                                        faculty.students.graduated?.females || 0
-                                    }}
-                                </td>
-                                <td>
-                                    {{ faculty.students.graduated?.total || 0 }}
-                                </td>
-
-                                <!-- Current -->
-                                <td>
-                                    {{ faculty.students.current?.males || 0 }}
-                                </td>
-                                <td>
-                                    {{ faculty.students.current?.females || 0 }}
-                                </td>
-                                <td>
-                                    {{ faculty.students.current?.total || 0 }}
-                                </td>
-                            </tr>
-                        </template>
-                    </template>
+                <tbody v-if="flatRows.length">
+                    <tr v-for="(row, index) in flatRows" :key="index">
+                        <td>{{ row.university }}</td>
+                        <td>{{ row.faculty }}</td>
+                        <td>{{ row.new_males }}</td>
+                        <td>{{ row.new_females }}</td>
+                        <td>{{ row.new_total }}</td>
+                        <td>{{ row.graduated_males }}</td>
+                        <td>{{ row.graduated_females }}</td>
+                        <td>{{ row.graduated_total }}</td>
+                        <td>{{ row.current_males }}</td>
+                        <td>{{ row.current_females }}</td>
+                        <td>{{ row.current_total }}</td>
+                    </tr>
                 </tbody>
 
-                <!-- No Data -->
                 <tbody v-else>
                     <tr>
                         <td colspan="11" class="text-center py-4">
@@ -150,110 +112,130 @@
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useReportRepository } from "@/store/ReportRepository";
 import { useI18n } from "vue-i18n";
 import persianDate from "persian-date";
 
 const { t, locale } = useI18n();
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
-
 const ReportRepository = useReportRepository();
 
-const getCurrentPersianYear = () => new persianDate().year();
+const getCurrentPersianYear = () => new persianDate().year().toString();
 const currentYear = ref(getCurrentPersianYear());
 
 const yearRange = computed(() => {
     const years = [];
-    for (let i = currentYear.value - 10; i <= currentYear.value + 10; i++) {
-        years.push(i);
+    const startYear = parseInt(currentYear.value) - 10;
+    const endYear = parseInt(currentYear.value) + 10;
+    for (let i = startYear; i <= endYear; i++) {
+        years.push(i.toString());
     }
     return years;
 });
 
-const onFilterChange = () => {
-    fetchData();
+const validateYearInput = (value) => {
+    if (!value) return "Year is required";
+    const yearNum = parseInt(value);
+    if (isNaN(yearNum)) return "Must be a valid year";
+    const minYear = parseInt(currentYear.value) - 10;
+    const maxYear = parseInt(currentYear.value) + 10;
+    if (yearNum < minYear || yearNum > maxYear) {
+        return `Year must be between ${minYear} and ${maxYear}`;
+    }
+    return true;
 };
 
-const fetchData = () => {
+const validateShift = (value) => {
+    if (!value) return "Shift is required";
+    return true;
+};
+
+// Flatten nested data for the table
+const flatRows = computed(() => {
+    if (!ReportRepository.studentTypeReport) return [];
+    const rows = [];
+    ReportRepository.studentTypeReport.forEach((uni) => {
+        uni.faculties.forEach((faculty) => {
+            rows.push({
+                university: uni.university,
+                faculty: faculty.faculty,
+                new_males: faculty.students?.new?.males || 0,
+                new_females: faculty.students?.new?.females || 0,
+                new_total: faculty.students?.new?.total || 0,
+                graduated_males: faculty.students?.graduated?.males || 0,
+                graduated_females: faculty.students?.graduated?.females || 0,
+                graduated_total: faculty.students?.graduated?.total || 0,
+                current_males: faculty.students?.current?.males || 0,
+                current_females: faculty.students?.current?.females || 0,
+                current_total: faculty.students?.current?.total || 0,
+            });
+        });
+    });
+    return rows;
+});
+
+const fetchData = (options = {}) => {
+    const page = options.page || 1;
+    const itemsPerPage = options.itemsPerPage || ReportRepository.itemsPerPage;
     ReportRepository.fetchStudentTypeReport(
-        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
+        { page, itemsPerPage },
         ReportRepository.date,
         ReportRepository.shift
     );
 };
 
-onMounted(() => {
-    // Initialize default values
-    ReportRepository.date = currentYear.value;
-    ReportRepository.shift = "day";
-    fetchData();
-});
+const onDateChange = (date) => {
+    ReportRepository.date = date;
+    fetchData({ page: 1 });
+};
 
-// Debugging - log when component mounts
-onMounted(() => {
-    console.log("StudentTypeReport mounted");
-    console.log("Current filters:", {
-        date: ReportRepository.date,
-        shift: ReportRepository.shift,
-    });
-});
-
-// Add this to watch for data changes
-watch(
-    () => ReportRepository.studentTypeReport,
-    (newData) => {
-        console.log("Data updated:", newData);
-    },
-    { deep: true }
-);
+const onShiftChange = (shift) => {
+    ReportRepository.shift = shift;
+    fetchData({ page: 1 });
+};
 
 const printTable = () => {
     const tableEl = document.querySelector(".student-type-table");
     if (!tableEl) return;
 
     const tableHtml = tableEl.outerHTML;
-    const shift =
-        ReportRepository.shift === "all" ? t("all") : t(ReportRepository.shift);
 
     const html = `
-<html dir="${dir.value}">
-  <head>
-    <title></title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        direction: ${dir.value};
-      }
-      .title {
-        text-align: center;
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 12px;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: center;
-      }
-      th, td {
-        border: 1px solid #ccc;
-        padding: 8px;
-      }
-      th {
-        background-color: #e7f2f5;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="title">${t("student_type_report")} - ${
-        ReportRepository.date
-    } (${shift})</div>
-    ${tableHtml}
-  </body>
-</html>
-`;
+    <html dir="${dir.value}">
+      <head>
+        <title></title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            direction: ${dir.value};
+          }
+          .title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+          }
+          th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+          }
+          th {
+            background-color: #e7f2f5;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="title">${t("student_type_report")}</div>
+        ${tableHtml}
+      </body>
+    </html>`;
 
     const printWindow = window.open("", "PrintWindow");
     printWindow.document.write(html);
@@ -261,6 +243,12 @@ const printTable = () => {
     printWindow.focus();
     printWindow.print();
 };
+
+onMounted(() => {
+    ReportRepository.date = currentYear.value;
+    ReportRepository.shift = "day";
+    fetchData();
+});
 </script>
 
 <style scoped>
@@ -272,23 +260,19 @@ const printTable = () => {
     border-collapse: collapse;
     text-align: center;
 }
-
 .student-type-table th {
     background-color: #e7f2f5;
     padding: 8px;
     border: 1px solid #ddd;
 }
-
 .student-type-table td {
     padding: 10px 8px;
     border: 1px solid #ddd;
 }
-
 .loading-row td {
     padding: 0 !important;
     border: none !important;
 }
-
 .v-progress-linear {
     margin: 0;
 }

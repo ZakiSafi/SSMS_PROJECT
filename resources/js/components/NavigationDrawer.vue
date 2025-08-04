@@ -273,10 +273,10 @@ const currentStudents = [
         value: "fawad",
     },
     {
-        to: "students-type", // Frontend route
+        to: "/students-type", // OR better: to: { name: "students-type" }
         translationKey: "student_type_report",
         icon: "mdi-circle-medium",
-        value: "students-type",
+        value: "students-type", // must exactly match route.name
     },
 ];
 const graduatedStudents = [

@@ -119,7 +119,7 @@ const routes = [
                 },
             },
             {
-                path: "students-type",
+                path: "/students-type",
                 name: "students-type",
                 component: StudentTypeReport,
                 meta: {

@@ -186,7 +186,7 @@ export const useReportRepository = defineStore("reportRepository", {
             this.loading = true;
             try {
                 const response = await axios.get(
-                    `api/report/studentsTypeBased?year=${date}&shift=${shift}&page=${page}&perPage=${itemsPerPage}`
+                    `report/studentsTypeBased?year=${date}&shift=${shift}&page=${page}&perPage=${itemsPerPage}`
                 );
                 this.studentTypeReport = response.data.data || [];
                 this.totalItems = response.data.total;
