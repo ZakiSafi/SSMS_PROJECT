@@ -1,9 +1,5 @@
 <template>
-<<<<<<< HEAD
     <div class="h-screen grid grid-cols-2 overflow-hidden" :dir="dir">
-=======
-    <div class="h-screen grid grid-cols-2 overflow-hidden">
->>>>>>> 386ab67bd8f57d347e4d57e775ce04159f1b4f61
         <!-- Left Image Section -->
         <div class="h-screen">
             <img
@@ -103,6 +99,7 @@
                         flat
                         :rules="emailRules"
                         required
+                        placeholder="Email"
                     />
 
                     <v-text-field
@@ -121,6 +118,7 @@
                         flat
                         :rules="passwordRules"
                         required
+                        placeholder="enter your password"
                     />
                     <v-btn
                         type="submit"
@@ -195,7 +193,7 @@ const loginFunc = async () => {
 
     // Validate only existing fields — skip if removed via DOM
     const emailInputExists = document.querySelector('[placeholder="Email"]');
-    const passwordInputExists = document.querySelector('[placeholder="enter your password "]');
+    const passwordInputExists = document.querySelector('[placeholder="enter your password"]');
 
     if (!emailInputExists || !passwordInputExists) {
         alert("Form is broken. Please refresh the page.");
@@ -215,11 +213,6 @@ const loginFunc = async () => {
     } catch (error) {
         console.error("Login failed", error);
     }
-<<<<<<< HEAD
 };  
 
 </script>
-=======
-};
-</script>
->>>>>>> 386ab67bd8f57d347e4d57e775ce04159f1b4f61
