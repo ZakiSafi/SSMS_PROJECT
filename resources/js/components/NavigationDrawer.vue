@@ -273,10 +273,10 @@ const currentStudents = [
         value: "fawad",
     },
     {
-        to: "/reports/students-type", // Frontend route
+        to: "students-type", // Frontend route
         translationKey: "student_type_report",
         icon: "mdi-circle-medium",
-        value: "student-type-report",
+        value: "students-type",
     },
 ];
 const graduatedStudents = [

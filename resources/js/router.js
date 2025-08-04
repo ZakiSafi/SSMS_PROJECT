@@ -12,6 +12,7 @@ import Faculties from "./Pages/faculty/Faculties.vue";
 import StudentStatistics from "./Pages/student/StudentStatistics.vue";
 import UniversityBaseReport from "./Pages/report/UniversityBase.vue";
 import UniversityBaseGraduation from "./Pages/report/UniversityBaseGraduation.vue";
+import StudentTypeReport from "./Pages/report/StudentTypeReport.vue";
 import StudentTeacherRatio from "./Pages/report/StudentTeacherRatio.vue";
 import UniversitiesClasses from "./Pages/report/UniversitiesClasses.vue";
 import Dashboard from "./Pages/Dashboard.vue";
@@ -118,9 +119,9 @@ const routes = [
                 },
             },
             {
-                path: "/reports/students-type",
-                name: "StudentTypeReport",
-                component: () => import("@/Pages/report/StudentTypeReport.vue"),
+                path: "students-type",
+                name: "students-type",
+                component: StudentTypeReport,
                 meta: {
                     authentication: true,
                     permissions: ["current_students.view"],
