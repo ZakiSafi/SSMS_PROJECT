@@ -16,9 +16,6 @@
                 ></v-combobox>
             </v-col>
 
-            <!-- Spacer pushes the button to the far right
-            <v-spacer></v-spacer> -->
-
             <!-- Print Button (right side) -->
             <v-col cols="auto" class="mb-6">
                 <v-btn color="primary" class="ml-4" @click="printTable">
@@ -34,21 +31,35 @@
             :items="ReportRepository.studentTeacher"
             :loading="ReportRepository.loading"
             :search="ReportRepository.search"
-            @update:options="
-                (options) =>
-                    ReportRepository.fetchStudentTeacherRatio(
-                        options,
-                        ReportRepository.date
-                    )
-            "
+            @update:options="onOptionsUpdate"
             class="w-100 mx-auto"
             hover
         >
             <template #bottom>
-                <div class="d-flex align-center justify-end pa-2">
-                    <span class="mx-2">{{
-                        $t("pagination.items_per_page")
-                    }}</span>
+                <div class="d-flex flex-wrap align-center justify-center pa-2">
+                    <!-- Pagination with forced LTR direction -->
+                    <div dir="ltr" class="mr-4">
+                        <v-pagination
+                            v-model="ReportRepository.page"
+                            :length="
+                                ReportRepository.itemsPerPage === -1
+                                    ? 1
+                                    : Math.ceil(
+                                          ReportRepository.totalItems /
+                                              ReportRepository.itemsPerPage
+                                      )
+                            "
+                            @update:modelValue="onPageChange"
+                            total-visible="7"
+                            color="primary"
+                            v-if="
+                                ReportRepository.totalItems >
+                                ReportRepository.itemsPerPage
+                            "
+                        />
+                    </div>
+
+                    <!-- Items per page selector -->
                     <v-select
                         v-model="ReportRepository.itemsPerPage"
                         :items="[
@@ -60,11 +71,13 @@
                         ]"
                         item-title="text"
                         item-value="value"
-                        density="compact"
+                        :label="$t('pagination.items_per_page')"
                         variant="outlined"
+                        density="compact"
                         hide-details
-                        style="max-width: 100px"
-                    ></v-select>
+                        style="max-width: 160px"
+                        @update:modelValue="onItemsPerPageChange"
+                    />
                 </div>
             </template>
         </v-data-table-server>
@@ -75,21 +88,23 @@
 import AppBar from "@/components/AppBar.vue";
 import { useReportRepository } from "@/store/ReportRepository";
 import { ref, computed } from "vue";
-const ReportRepository = useReportRepository();
 import persianDate from "persian-date";
 import { useI18n } from "vue-i18n";
+
 const { t, locale } = useI18n();
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 const dir = computed(() => {
-    return locale.value === "en" ? "ltr" : "rtl"; // Correctly set "rtl" and "ltr"
+    return locale.value === "en" ? "ltr" : "rtl";
 });
 
-const getCurrentPersianYear = () => {
-    return new persianDate().year();
-};
+const ReportRepository = useReportRepository();
 
+// Initialize pagination values
+ReportRepository.page = ReportRepository.page || 1;
+ReportRepository.itemsPerPage = ReportRepository.itemsPerPage || 10;
+
+const getCurrentPersianYear = () => new persianDate().year();
 const currentYear = ref(getCurrentPersianYear());
+
 const yearRange = computed(() => {
     const years = [];
     const startYear = currentYear.value - 10;
@@ -101,9 +116,33 @@ const yearRange = computed(() => {
     return years;
 });
 
+const onOptionsUpdate = (options) => {
+    ReportRepository.page = options.page;
+    ReportRepository.itemsPerPage = options.itemsPerPage;
+    fetchData();
+};
+
+const onPageChange = (newPage) => {
+    ReportRepository.page = newPage;
+    fetchData();
+};
+
+const onItemsPerPageChange = () => {
+    ReportRepository.page = 1;
+    fetchData();
+};
+
 const onDateChange = () => {
+    ReportRepository.page = 1;
+    fetchData();
+};
+
+const fetchData = () => {
     ReportRepository.fetchStudentTeacherRatio(
-        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
+        {
+            page: ReportRepository.page,
+            itemsPerPage: ReportRepository.itemsPerPage,
+        },
         ReportRepository.date
     );
 };
@@ -123,6 +162,7 @@ const headers = computed(() => [
         align: "center",
     },
 ]);
+
 const printTable = () => {
     const printContent = ReportRepository.studentTeacher
         .map(
@@ -194,4 +234,12 @@ const printTable = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Pagination styling */
+.d-flex.flex-wrap {
+    gap: 16px;
+    margin-top: 20px;
+    padding: 16px 0;
+    border-top: 1px solid #eee;
+}
+</style>

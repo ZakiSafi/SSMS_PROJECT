@@ -59,7 +59,6 @@
                             { value: 10, text: '10' },
                             { value: 25, text: '25' },
                             { value: 50, text: '50' },
-                            { value: -1, text: $t('pagination.all') },
                         ]"
                         item-title="text"
                         item-value="value"

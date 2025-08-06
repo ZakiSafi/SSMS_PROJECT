@@ -32,7 +32,7 @@
             </v-col>
 
             <!-- Print Button -->
-            <v-col cols="3" >
+            <v-col cols="3">
                 <v-btn color="primary" @click="printTable">
                     {{ $t("print_report") }}
                 </v-btn>
@@ -112,13 +112,46 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination & Items per page -->
+        <div class="d-flex flex-wrap align-center justify-center py-4">
+            <div dir="ltr" class="mr-4">
+                <!-- Force LTR for pagination -->
+                <v-pagination
+                    v-model="ReportRepository.page"
+                    :length="
+                        Math.ceil(
+                            ReportRepository.totalItems /
+                                ReportRepository.itemsPerPage
+                        )
+                    "
+                    @update:modelValue="onPageChange"
+                    total-visible="7"
+                    color="primary"
+                    v-if="
+                        ReportRepository.totalItems >
+                        ReportRepository.itemsPerPage
+                    "
+                />
+            </div>
+            <v-select
+                v-model="ReportRepository.itemsPerPage"
+                :items="[5, 10, 20, 50, 100]"
+                :label="$t('pagination.items_per_page')"
+                variant="outlined"
+                density="compact"
+                hide-details
+                style="max-width: 160px"
+                @update:modelValue="onItemsPerPageChange"
+            />
+        </div>
     </div>
 </template>
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
 import { ref, computed, onMounted } from "vue";
-import { useReportRepository } from "../../store/ReportRepository";
+import { useReportRepository } from "@/store/ReportRepository";
 import { useI18n } from "vue-i18n";
 import persianDate from "persian-date";
 
@@ -137,18 +170,46 @@ const yearRange = computed(() => {
     }
     return years;
 });
-
-const onDateChange = () => {
+// In your <script setup>
+const onPageChange = (newPage) => {
+    ReportRepository.page = newPage;
     ReportRepository.fetchUniversityClasses(
-        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
+        { page: newPage, itemsPerPage: ReportRepository.itemsPerPage },
+        ReportRepository.date,
+        ReportRepository.shift
+    );
+};
+
+const onItemsPerPageChange = () => {
+    ReportRepository.page = 1;
+    ReportRepository.fetchUniversityClasses(
+        {
+            page: ReportRepository.page,
+            itemsPerPage: ReportRepository.itemsPerPage,
+        },
+        ReportRepository.date,
+        ReportRepository.shift
+    );
+};
+const onDateChange = () => {
+    ReportRepository.page = 1;
+    ReportRepository.fetchUniversityClasses(
+        {
+            page: ReportRepository.page,
+            itemsPerPage: ReportRepository.itemsPerPage,
+        },
         ReportRepository.date,
         ReportRepository.shift
     );
 };
 
 onMounted(() => {
+    ReportRepository.page = 1;
     ReportRepository.fetchUniversityClasses(
-        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
+        {
+            page: ReportRepository.page,
+            itemsPerPage: ReportRepository.itemsPerPage,
+        },
         ReportRepository.date,
         ReportRepository.shift
     );

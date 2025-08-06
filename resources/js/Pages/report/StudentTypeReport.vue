@@ -107,6 +107,49 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex flex-wrap align-center justify-center pa-2">
+            <div dir="ltr" class="mr-4">
+                <v-pagination
+                    v-model="ReportRepository.page"
+                    :length="
+                        ReportRepository.itemsPerPage === -1
+                            ? 1
+                            : Math.ceil(
+                                  ReportRepository.totalItems /
+                                      ReportRepository.itemsPerPage
+                              )
+                    "
+                    @update:modelValue="onPageChange"
+                    total-visible="7"
+                    color="primary"
+                    v-if="
+                        ReportRepository.totalItems >
+                        ReportRepository.itemsPerPage
+                    "
+                />
+            </div>
+
+            <v-select
+                v-model="ReportRepository.itemsPerPage"
+                :items="[
+                    { value: 5, text: '5' },
+                    { value: 10, text: '10' },
+                    { value: 25, text: '25' },
+                    { value: 50, text: '50' },
+                    { value: -1, text: $t('pagination.all') },
+                ]"
+                item-title="text"
+                item-value="value"
+                :label="$t('pagination.items_per_page')"
+                variant="outlined"
+                density="compact"
+                hide-details
+                style="max-width: 160px"
+                @update:modelValue="onItemsPerPageChange"
+            />
+        </div>
     </div>
 </template>
 
@@ -120,6 +163,10 @@ import persianDate from "persian-date";
 const { t, locale } = useI18n();
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 const ReportRepository = useReportRepository();
+
+// Initialize pagination
+ReportRepository.page = ReportRepository.page || 1;
+ReportRepository.itemsPerPage = ReportRepository.itemsPerPage || 10;
 
 const getCurrentPersianYear = () => new persianDate().year().toString();
 const currentYear = ref(getCurrentPersianYear());
@@ -175,11 +222,22 @@ const flatRows = computed(() => {
     return rows;
 });
 
-const fetchData = (options = {}) => {
-    const page = options.page || 1;
-    const itemsPerPage = options.itemsPerPage || ReportRepository.itemsPerPage;
+const onPageChange = (newPage) => {
+    ReportRepository.page = newPage;
+    fetchData();
+};
+
+const onItemsPerPageChange = () => {
+    ReportRepository.page = 1;
+    fetchData();
+};
+
+const fetchData = () => {
     ReportRepository.fetchStudentTypeReport(
-        { page, itemsPerPage },
+        {
+            page: ReportRepository.page,
+            itemsPerPage: ReportRepository.itemsPerPage,
+        },
         ReportRepository.date,
         ReportRepository.shift
     );
@@ -187,12 +245,14 @@ const fetchData = (options = {}) => {
 
 const onDateChange = (date) => {
     ReportRepository.date = date;
-    fetchData({ page: 1 });
+    ReportRepository.page = 1;
+    fetchData();
 };
 
 const onShiftChange = (shift) => {
     ReportRepository.shift = shift;
-    fetchData({ page: 1 });
+    ReportRepository.page = 1;
+    fetchData();
 };
 
 const printTable = () => {
@@ -275,5 +335,12 @@ onMounted(() => {
 }
 .v-progress-linear {
     margin: 0;
+}
+/* Pagination styling */
+.d-flex.flex-wrap {
+    gap: 16px;
+    margin-top: 20px;
+    padding: 16px 0;
+    border-top: 1px solid #eee;
 }
 </style>

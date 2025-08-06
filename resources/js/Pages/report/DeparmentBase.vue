@@ -200,6 +200,50 @@
                 </tbody>
             </table>
         </div>
+        <!-- Add this pagination section at the bottom -->
+        <div class="d-flex flex-wrap align-center justify-center pa-2">
+            <!-- Pagination with forced LTR direction -->
+            <div dir="ltr" class="mr-4">
+                <v-pagination
+                    v-model="ReportRepository.page"
+                    :length="
+                        ReportRepository.itemsPerPage === -1
+                            ? 1
+                            : Math.ceil(
+                                  ReportRepository.totalItems /
+                                      ReportRepository.itemsPerPage
+                              )
+                    "
+                    @update:modelValue="onPageChange"
+                    total-visible="7"
+                    color="primary"
+                    v-if="
+                        ReportRepository.totalItems >
+                        ReportRepository.itemsPerPage
+                    "
+                />
+            </div>
+
+            <!-- Items per page selector -->
+            <v-select
+                v-model="ReportRepository.itemsPerPage"
+                :items="[
+                    { value: 5, text: '5' },
+                    { value: 10, text: '10' },
+                    { value: 25, text: '25' },
+                    { value: 50, text: '50' },
+                    { value: -1, text: $t('pagination.all') },
+                ]"
+                item-title="text"
+                item-value="value"
+                :label="$t('pagination.items_per_page')"
+                variant="outlined"
+                density="compact"
+                hide-details
+                style="max-width: 160px"
+                @update:modelValue="onItemsPerPageChange"
+            />
+        </div>
     </div>
 </template>
 
@@ -215,6 +259,10 @@ const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 
 const ReportRepository = useReportRepository();
 
+// Initialize pagination values
+ReportRepository.page = ReportRepository.page || 1;
+ReportRepository.itemsPerPage = ReportRepository.itemsPerPage || 10;
+
 const getCurrentPersianYear = () => new persianDate().year();
 const currentYear = ref(getCurrentPersianYear());
 
@@ -226,10 +274,23 @@ const yearRange = computed(() => {
     return years;
 });
 
-const onDateChange = () => {
+const onPageChange = (newPage) => {
+    ReportRepository.page = newPage;
+    fetchData();
+};
+
+const onItemsPerPageChange = () => {
+    ReportRepository.page = 1; // Reset to first page when items per page changes
+    fetchData();
+};
+
+const fetchData = () => {
     const universityId = ReportRepository.university?.id || "all";
     ReportRepository.fetchFawad(
-        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
+        {
+            page: ReportRepository.page,
+            itemsPerPage: ReportRepository.itemsPerPage,
+        },
         ReportRepository.date,
         ReportRepository.season,
         universityId,
@@ -237,15 +298,16 @@ const onDateChange = () => {
     );
 };
 
+const onDateChange = () => {
+    ReportRepository.page = 1;
+    fetchData();
+};
+
 onMounted(() => {
     ReportRepository.fetchUniversities();
-    ReportRepository.fetchFawad(
-        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
-        ReportRepository.date,
-        ReportRepository.season,
-        "all"
-    );
+    fetchData();
 });
+
 const printTable = () => {
     const tableEl = document.querySelector(".gender-stats-table");
     if (!tableEl) return;

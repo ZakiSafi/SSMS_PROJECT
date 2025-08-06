@@ -1,309 +1,350 @@
 <template>
-  <div :dir="dir">
-    <AppBar :pageTitle="$t('DBGR')" />
-    <v-divider :thickness="1" class="border-opacity-100"></v-divider>
+    <div :dir="dir">
+        <AppBar :pageTitle="$t('DBGR')" />
+        <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
-    <div class="w-full flex items-center justify-between pt-6 pb-6">
-  <!-- Left side: Year Picker -->
-  <div class="w-1/5">
-    <v-col cols="6">
-      <DatePicker
-        v-model="selectedYear"
-        format="jYYYY"
-        type="year"
-        :placeholder="$t('Select or Type Year')"
-        rounded
-        :rules="[rules.required]"
-      />
-    </v-col>
-  </div>
+        <!-- Filters and Print -->
+        <div class="w-full d-flex flex-wrap align-center pt-6 pb-6">
+            <!-- Year -->
+            <div class="w-[200px] mx-4">
+                <v-combobox
+                    v-model="ReportRepository.date"
+                    :items="yearRange"
+                    :label="$t('Select or Type Year')"
+                    variant="outlined"
+                    density="compact"
+                    hide-details
+                    @update:modelValue="onDateChange"
+                />
+            </div>
 
-  <!-- Center: Season and Shift selects -->
-  <div class="w-2/5 flex">
-    <div class="flex-1 mx-2">
-      <v-select
-        v-model="ReportRepository.season"
-        :items="[
-          { title: $t('spring'), value: 'spring' },
-          { title: $t('autumn'), value: 'autumn' },
-        ]"
-        item-title="title"
-        item-value="value"
-        :label="$t('select_season')"
-        variant="outlined"
-        hide-details
-        density="compact"
-      />
-    </div>
+            <!-- Season -->
+            <div class="w-[200px] mx-4">
+                <v-select
+                    v-model="ReportRepository.season"
+                    :items="[
+                        { text: $t('spring'), value: 'spring' },
+                        { text: $t('autumn'), value: 'autumn' },
+                    ]"
+                    item-title="text"
+                    item-value="value"
+                    :label="$t('Select season')"
+                    variant="outlined"
+                    hide-details
+                    density="compact"
+                    @update:modelValue="onDateChange"
+                />
+            </div>
 
-    <div class="flex-1 mx-2">
-      <v-combobox
-        v-model="ReportRepository.shift"
-        :items="[
-          { title: $t('day'), value: 'day' },
-          { title: $t('night'), value: 'night' },
-        ]"
-        item-title="title"
-        item-value="value"
-        :label="$t('shift')"
-        variant="outlined"
-        hide-details
-        density="compact"
-      />
-    </div>
-    <div class="w-auto">
-    <v-btn color="primary" class="ml-4" @click="printTable">
-      {{ $t("print_report") }}
-    </v-btn>
-  </div>
-  </div>
-  
-</div>
+            <!-- Shift -->
+            <div class="w-[200px] mx-4">
+                <v-select
+                    v-model="ReportRepository.shift"
+                    :items="[
+                        { text: $t('day'), value: 'day' },
+                        { text: $t('night'), value: 'night' },
+                    ]"
+                    item-title="text"
+                    item-value="value"
+                    :label="$t('shift')"
+                    variant="outlined"
+                    hide-details
+                    density="compact"
+                    @update:modelValue="onDateChange"
+                />
+            </div>
 
+            <!-- Print Button -->
+            <div class="shrink-0 mx-4">
+                <v-btn color="primary" @click="printTable">
+                    {{ $t("print_report") }}
+                </v-btn>
+            </div>
+        </div>
 
-    <!-- Table -->
-    <div class="table-container">
-      <table class="gender-stats-table">
-        <thead>
-          <tr>
-            <th rowspan="2">{{ $t("University") }}</th>
-            <th rowspan="2">{{ $t("Faculty") }}</th>
-            <th rowspan="2">{{ $t("Department") }}</th>
-            <th>{{ $t("Male") }}</th>
-            <th>{{ $t("Female") }}</th>
-            <th>{{ $t("Total") }}</th>
-          </tr>
-        </thead>
+        <!-- Data Table -->
+        <v-data-table-server
+            v-model:items-per-page="ReportRepository.itemsPerPage"
+            :headers="headers"
+            :items-length="ReportRepository.totalItems"
+            :items="flatDepartmentData"
+            :loading="ReportRepository.loading"
+            :search="ReportRepository.search"
+            :dir="dir"
+            @update:options="onOptionsUpdate"
+            class="w-100 mx-auto"
+            hover
+        >
+            <template #bottom>
+                <div class="d-flex flex-wrap align-center justify-center pa-2">
+                    <!-- Pagination with forced LTR direction -->
+                    <div dir="ltr" class="mr-4">
+                        <v-pagination
+                            v-model="ReportRepository.page"
+                            :length="totalPages"
+                            @update:modelValue="onPageChange"
+                            total-visible="7"
+                            color="primary"
+                            v-if="showPagination"
+                        />
+                    </div>
 
-        <!-- Loading State -->
-        <tr v-if="ReportRepository.loading" class="loading-row">
-          <td colspan="21">
-            <v-progress-linear
-              :reverse="dir === 'rtl'"
-              indeterminate
-              color="primary"
-              height="4"
-              class="ma-0"
-            />
-          </td>
-        </tr>
-
-        <!-- Data Rows -->
-        <tbody v-if="ReportRepository.departmentBaseGraduation.length">
-          <template
-            v-for="(institution, index) in ReportRepository.departmentBaseGraduation"
-            :key="'uni-' + index"
-          >
-            <template
-              v-for="(faculty, fIndex) in institution.faculties"
-              :key="'fac-' + fIndex"
-            >
-              <template
-                v-for="(department, dIndex) in faculty.departments"
-                :key="'dep-' + dIndex"
-              >
-                <tr>
-                  <template v-if="fIndex === 0 && dIndex === 0">
-                    <td
-                      :rowspan="
-                        institution.faculties.reduce(
-                          (acc, fac) => acc + fac.departments.length,
-                          0
-                        )
-                      "
-                    >
-                      {{ institution.university }}
-                    </td>
-                  </template>
-                  <template v-if="dIndex === 0">
-                    <td :rowspan="faculty.departments.length">
-                      {{ faculty.faculty }}
-                    </td>
-                  </template>
-                  <td>{{ department.department }}</td>
-
-                  <td>{{ department?.Total_Males || 0 }}</td>
-                  <td>{{ department?.Total_Females || 0 }}</td>
-                  <td>{{ department?.Total_Students || 0 }}</td>
-                </tr>
-              </template>
+                    <!-- Items per page selector -->
+                    <v-select
+                        v-model="ReportRepository.itemsPerPage"
+                        :items="pageSizeOptions"
+                        item-title="text"
+                        item-value="value"
+                        :label="$t('pagination.items_per_page')"
+                        variant="outlined"
+                        density="compact"
+                        hide-details
+                        style="max-width: 160px"
+                        @update:modelValue="onItemsPerPageChange"
+                    />
+                </div>
             </template>
-          </template>
-        </tbody>
-
-        <!-- No Data -->
-        <tbody v-else>
-          <tr>
-            <td colspan="21" class="text-center py-4">
-              {{ $t("No data available") }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        </v-data-table-server>
     </div>
-  </div>
 </template>
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
-import { ref, computed, watch, onMounted } from "vue";
-import { useReportRepository } from "../../store/ReportRepository";
+import { useReportRepository } from "@/store/ReportRepository";
+import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import persianDate from "persian-date";
-import DatePicker from "vue3-persian-datetime-picker";
 
 const { t, locale } = useI18n();
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 
 const ReportRepository = useReportRepository();
 
-// Initialize selectedYear with current Persian year or repository date if set
-const selectedYear = ref(ReportRepository.date || new persianDate().year());
+// Initialize pagination values
+ReportRepository.page = ReportRepository.page || 1;
+ReportRepository.itemsPerPage = ReportRepository.itemsPerPage || 10;
 
-const rules = {
-  required: (v) => !!v || t("validation.required"),
-  positiveNumber: (v) => v >= 0 || t("validation.positive_number"),
+// Page size options
+const pageSizeOptions = [
+    { value: 5, text: "5" },
+    { value: 10, text: "10" },
+    { value: 25, text: "25" },
+    { value: 50, text: "50" },
+    { value: 100, text: "100" },
+];
+
+// Computed properties
+const getCurrentPersianYear = () => new persianDate().year();
+const currentYear = ref(getCurrentPersianYear());
+
+const yearRange = computed(() => {
+    const years = [];
+    const start = currentYear.value - 10;
+    const end = currentYear.value + 10;
+    for (let i = start; i <= end; i++) years.push(i);
+    return years;
+});
+
+const totalPages = computed(() => {
+    return ReportRepository.itemsPerPage === -1
+        ? 1
+        : Math.ceil(
+              ReportRepository.totalItems / ReportRepository.itemsPerPage
+          );
+});
+
+const showPagination = computed(() => {
+    return ReportRepository.totalItems > ReportRepository.itemsPerPage;
+});
+
+// Flatten the nested department data for the table
+const flatDepartmentData = computed(() => {
+    if (!ReportRepository.departmentBaseGraduation.length) return [];
+
+    const flatData = [];
+    ReportRepository.departmentBaseGraduation.forEach((institution) => {
+        institution.faculties.forEach((faculty) => {
+            faculty.departments.forEach((department) => {
+                flatData.push({
+                    university: institution.university,
+                    faculty: faculty.faculty,
+                    department: department.department,
+                    Total_Males: department.Total_Males || 0,
+                    Total_Females: department.Total_Females || 0,
+                    Total_Students: department.Total_Students || 0,
+                    Male_Percentage: department.Male_Percentage || 0,
+                    Female_Percentage: department.Female_Percentage || 0,
+                });
+            });
+        });
+    });
+    return flatData;
+});
+
+// Methods
+const onOptionsUpdate = (options) => {
+    ReportRepository.page = options.page;
+    ReportRepository.itemsPerPage = options.itemsPerPage;
+    fetchData();
+};
+
+const onPageChange = (newPage) => {
+    ReportRepository.page = newPage;
+    fetchData();
+};
+
+const onItemsPerPageChange = () => {
+    ReportRepository.page = 1;
+    fetchData();
+};
+
+const onDateChange = () => {
+    ReportRepository.page = 1;
+    fetchData();
 };
 
 const fetchData = () => {
-  console.log(
-    "Fetching data for:",
-    ReportRepository.date,
-    ReportRepository.season,
-    ReportRepository.shift
-  );
-  ReportRepository.fetchDepartmentBaseGraduation(
-    { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
-    ReportRepository.date,
-    ReportRepository.season,
-    ReportRepository.shift
-  );
+    ReportRepository.fetchDepartmentBaseGraduation(
+        {
+            page: ReportRepository.page,
+            itemsPerPage: ReportRepository.itemsPerPage,
+        },
+        ReportRepository.date,
+        ReportRepository.season,
+        ReportRepository.shift
+    );
 };
 
-// Watch for changes on selectedYear, update store and fetch
-watch(selectedYear, (newYear) => {
-  console.log("Year changed to:", newYear);
-  ReportRepository.date = newYear;
-  fetchData();
-});
-
-// Watch season and shift in store and fetch when they change
-watch(
-  () => ReportRepository.season,
-  (newSeason) => {
-    console.log("Season changed to:", newSeason);
-    fetchData();
-  }
-);
-watch(
-  () => ReportRepository.shift,
-  (newShift) => {
-    console.log("Shift changed to:", newShift);
-    fetchData();
-  }
-);
+const headers = computed(() => [
+    {
+        title: t("University"),
+        key: "university",
+        align: "start",
+        sortable: false,
+    },
+    {
+        title: t("Faculty"),
+        key: "faculty",
+        align: "start",
+        sortable: false,
+    },
+    {
+        title: t("Department"),
+        key: "department",
+        align: "start",
+        sortable: false,
+    },
+    {
+        title: t("Male"),
+        key: "Total_Males",
+        align: "center",
+    },
+    {
+        title: t("Female"),
+        key: "Total_Females",
+        align: "center",
+    },
+    {
+        title: t("Total"),
+        key: "Total_Students",
+        align: "center",
+    },
+    {
+        title: t("male_percentage"),
+        key: "Male_Percentage",
+        align: "center",
+    },
+    {
+        title: t("female_percentage"),
+        key: "Female_Percentage",
+        align: "center",
+    },
+]);
 
 const printTable = () => {
-  const content = document.querySelector(".gender-stats-table");
-  if (!content) return;
+    const data = flatDepartmentData.value;
+    if (!data.length) return;
 
-  const tableHtml = content.outerHTML;
-  const head = `
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        direction: ${dir.value};
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: center;
-        margin-top: 20px;
-      }
-      th, td {
-        border: 1px solid #ddd;
-        padding: 10px 8px;
-      }
-      th {
-        background-color: #e7f2f5;
-      }
-      .title {
-        text-align: center;
-        font-size: 20px;
-        margin-bottom: 10px;
-        font-weight: bold;
-      }
-    </style>
-  `;
+    const rows = data
+        .map((item) => {
+            return `<tr>
+                <td>${item.university}</td>
+                <td>${item.faculty}</td>
+                <td>${item.department}</td>
+                <td>${item.Total_Males || 0}</td>
+                <td>${item.Total_Females || 0}</td>
+                <td>${item.Total_Students || 0}</td>
+                <td>${item.Male_Percentage || 0}%</td>
+                <td>${item.Female_Percentage || 0}%</td>
+            </tr>`;
+        })
+        .join("");
 
-  const printWindow = window.open("", "_blank");
-  printWindow.document.write(`
-    <html>
+    const html = `
+    <html dir="${dir.value}">
       <head>
-        <title>${t("DBGR")}</title>
-        ${head}
+        <title></title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            direction: ${dir.value};
+          }
+          .title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+          }
+          th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+          }
+          th {
+            background-color: #e7f2f5;
+          }
+        </style>
       </head>
       <body>
-        <div class="title">${t("DBGR")} - ${ReportRepository.date} (${t(ReportRepository.season)}, ${t(ReportRepository.shift)})</div>
-        ${tableHtml}
+        <div class="title">${t("DBGR")} - ${ReportRepository.date} (${t(
+        ReportRepository.season
+    )}, ${t(ReportRepository.shift)})</div>
+        <table>
+          <thead>
+            <tr>
+              <th>${t("University")}</th>
+              <th>${t("Faculty")}</th>
+              <th>${t("Department")}</th>
+              <th>${t("Male")}</th>
+              <th>${t("Female")}</th>
+              <th>${t("Total")}</th>
+              <th>${t("male_percentage")}</th>
+              <th>${t("female_percentage")}</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
       </body>
-    </html>
-  `);
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
+    </html>`;
+
+    const printWindow = window.open("", "PRINT");
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
 };
-
-
-onMounted(() => {
-  // Initialize store date if not set
-  if (!ReportRepository.date) {
-    ReportRepository.date = selectedYear.value;
-  }
-  fetchData();
-});
 </script>
 
 <style scoped>
-.table-container {
-  overflow-x: auto;
-}
-.gender-stats-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-}
-
-.gender-stats-table th {
-  background-color: #e7f2f5;
-  padding: 8px;
-  border: 1px solid #ddd;
-}
-
-.gender-stats-table td {
-  padding: 10px 8px;
-  border: 1px solid #ddd;
-}
-
-.total {
-  font-size: small;
-  font-weight: bold;
-  color: #333;
-  background-color: #f9f9f9;
-}
-
-th {
-  font-size: small;
-  color: #333;
-}
-
-.loading-row td {
-  padding: 0 !important;
-  border: none !important;
-}
-
-.v-progress-linear {
-  margin: 0;
+.d-flex.flex-wrap {
+    gap: 16px;
+    margin-top: 20px;
+    padding: 16px 0;
+    border-top: 1px solid #eee;
 }
 </style>
