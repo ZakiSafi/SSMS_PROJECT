@@ -51,6 +51,8 @@ export const useAuthRepository = defineStore("authRepository", {
                     "Authorization"
                 ] = `Bearer ${token}`;
 
+                this.refreshPermissions();
+
                 toast.success("Login successful!", {
                     position: "top-right",
                     autoClose: 500,
@@ -110,115 +112,113 @@ export const useAuthRepository = defineStore("authRepository", {
             if (storedRole) this.role = JSON.parse(storedRole);
         },
 
-        async fetchRolePermissions({ page, itemsPerPage }) {
-            this.loading = true;
-
-            const response = await axios.get(
-                `role?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
-            );
-            this.roles = response.data.data;
-            this.totalItems = response.data.meta.total;
-            this.loading = false;
+       async fetchRoless() {
+            try {
+                const response = await axios.get("role");
+                this.roles = response.data.data;
+            } catch (err) {
+                // handle error if needed
+            }
         },
-        async fetchRolePermission(id) {
-            // this.error = null;
+
+        async fetchRoles({ page, itemsPerPage }) {
+            try {
+                this.loading = true;
+                const response = await axios.get(
+                    `role?page=${page}&perPage=${itemsPerPage}&name=${this.search}`
+                );
+                this.roles = response.data.data;
+                this.totalItems = response.data.meta.total;
+                this.loading = false;
+            } catch (err) {
+                console.error("Failed to fetch roles:", err);
+            }
+        },
+
+        async fetchRole(id) {
             try {
                 const response = await axios.get(`role/${id}`);
-
-                this.permission = response.data.data;
-                console.log(this.permission);
+                this.role = response.data.data;
             } catch (err) {
-                // this.error = err.message;
+                console.error("Failed to fetch role:", err);
             }
         },
-        async updateRole(id, data) {
-            try {
-                const response = await axios.put(
-                    "role/" + id,
-                    data
-                );
 
-                // Using Axios to make a post request with async/await and custom headers
-                //        if (this.role && this.role.id === id) {
-
-                // }
-                await this.refreshPermissions();
-                this.router.push("/role");
-                this.fetchRolePermissions({
-                    page: this.page,
-                    itemsPerPage: this.itemsPerPage,
-                });
-            } catch (err) {
-                // If there's an error, set the error in the store
-                this.error = err;
-            }
-        },
         async createRole(formData) {
-            console.log(formData);
             try {
-                // Adding a custom header to the Axios request
+                this.loading = true;
                 const config = {
                     method: "POST",
                     url: "role",
-
                     data: formData,
                 };
 
-                // Using Axios to make a GET request with async/await and custom headers
-                const response = await axios(config);
-                toast.success("Permission Created successful!", {
-                    position: "top-right",
-                    autoClose: 4000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                this.router.push("/rolePermissions");
-                this.fetchRolePermissions({
-                    page: this.page,
-                    itemsPerPage: this.itemsPerPage,
-                });
-            } catch (err) {
-                this.error =
-                    err.response?.data?.message ||
-                    "Failed to create Permission. Please try again.";
+                // Wait for creation to complete
+                await axios(config);
 
-                // Show toast
-                toast.error(this.error, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                // Reset to first page to see the new role
+
+                this.router.push("/role-permission");
+                // Refresh the list
+            } catch (err) {
+                console.error("Failed to create role:", err);
+            } finally {
+                this.loading = false;
             }
         },
-        async DeleteRolePermission(id) {
-            this.isLoading = true;
-            this.setting = [];
-            this.error = null;
 
+        async deleteRole(id) {
             try {
                 const config = {
                     method: "DELETE",
-                    url: "role_permissions/" + id,
+                    url: `role/${id}`,
                 };
-
-                const response = await axios(config);
-
-                // this.setting = response.data.data;
-                this.fetchRolePermissions({
+                await axios(config);
+                this.fetchRoles({
                     page: this.page,
                     itemsPerPage: this.itemsPerPage,
                 });
             } catch (err) {
-                this.error = err;
+                console.error("Failed to delete role:", err);
             }
         },
+        async updateRole(id, formData) {
+            try {
+                const config = {
+                    method: "PUT",
+                    url: `role/${id}`,
+                    data: formData,
+                };
+                await axios(config);
+                
+
+                this.createDialog = false;
+                this.fetchRoles({
+                    page: this.page,
+                    itemsPerPage: this.itemsPerPage,
+                });
+                this.refreshPermissions();
+            } catch (err) {
+                console.error("Failed to update user:", err);
+            }
+        },
+
+        async refreshPermissions() {
+            const meResponse = await axios.get("/me");
+            const permissions = meResponse.data.data.permissions;
+            console.log("Permissions:", permissions);
+            const role = meResponse.data.data.role;
+
+            sessionStorage.setItem("permissions", JSON.stringify(permissions));
+            sessionStorage.setItem("role", JSON.stringify(role));
+
+            this.permissions = permissions;
+            this.role = role;
+            this.user = meResponse.data;
+
+            sessionStorage.setItem("user", JSON.stringify(this.user));
+        },
+
 
 
         loadFromSession() {
