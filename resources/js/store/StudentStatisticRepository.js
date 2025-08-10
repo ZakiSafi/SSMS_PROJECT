@@ -5,38 +5,41 @@ import { axios } from "../axios";
 export const useStudentStatisticRepository = defineStore(
     "StudentStatisticRepository",
     {
-        state() {
-            return {
-                isEditMode: ref(false),
-                search: ref(""),
-                statistics: reactive([]),
-                statistic: reactive({}),
-                departments: reactive([]),
-                universities: reactive([]),
-                faculties: reactive([]),
-                itemsPerPage: ref(5),
-                totalItems: ref(0),
-                loading: ref(false),
-                createDialog: ref(false),
+        state: () => ({
+            isEditMode: ref(false),
+            search: ref(""),
+            statistics: reactive([]),
+            statistic: reactive({}),
+            departments: reactive([]),
+            universities: reactive([]),
+            faculties: reactive([]),
+            itemsPerPage: ref(10),
+            totalItems: ref(0),
+            loading: ref(false),
+            createDialog: ref(false),
+            filterOptions: reactive({}),
 
-                // Add filters state
-                filters: reactive({
-                    province: null,
-                    university_type: null,
-                    university: null,
-                    faculty: null,
-                    department: null,
-                    academic_year: null,
-                    student_type: null,
-                }),
-            };
-        },
+            studentTypes: reactive([
+                { text: "Current", value: "current" },
+                { text: "Graduated", value: "graduated" },
+                { text: "New", value: "new" },
+            ]),
+
+            filters: reactive({
+                province: null,
+                university_type: null,
+                university: null,
+                faculty: null,
+                department: null,
+                academic_year: null,
+                student_type: null,
+            }),
+        }),
 
         actions: {
             async fetchStatistics({ page, itemsPerPage }) {
                 this.loading = true;
                 try {
-                    // Build query params from filters
                     const params = {
                         page,
                         perPage: itemsPerPage,
@@ -44,7 +47,7 @@ export const useStudentStatisticRepository = defineStore(
                         ...this.filters,
                     };
 
-                    // Remove null/undefined filters
+                    // Remove empty filters
                     Object.keys(params).forEach((key) => {
                         if (
                             params[key] === null ||
@@ -60,10 +63,93 @@ export const useStudentStatisticRepository = defineStore(
                     });
                     this.statistics = response.data.data;
                     this.totalItems = response.data.meta.total;
+                    this.filterOptions = response.data.filter_options || {};
+
+                    // Update dropdown options based on active filters
+                    if (this.filterOptions.universities) {
+                        this.universities = this.filterOptions.universities;
+                    }
+                    if (this.filterOptions.faculties) {
+                        this.faculties = this.filterOptions.faculties;
+                    }
+                    if (this.filterOptions.departments) {
+                        this.departments = this.filterOptions.departments;
+                    }
                 } catch (error) {
-                    console.error("Failed to fetch student statistics:", error);
+                    console.error("Failed to fetch statistics:", error);
+                    throw error;
                 } finally {
                     this.loading = false;
+                }
+            },
+
+            async fetchUniversitiesByProvince(provinceId) {
+                try {
+                    const params = provinceId ? { province: provinceId } : {};
+                    const response = await axios.get("universities", {
+                        params,
+                    });
+                    this.universities = response.data.data;
+                } catch (error) {
+                    console.error("Error fetching universities:", error);
+                    throw error;
+                }
+            },
+
+            async fetchFacultiesByUniversity(universityId) {
+                try {
+                    const params = universityId
+                        ? { university_id: universityId }
+                        : {};
+                    const response = await axios.get("faculties", { params });
+                    this.faculties = response.data.data;
+                } catch (error) {
+                    console.error("Error fetching faculties:", error);
+                    throw error;
+                }
+            },
+
+            async fetchDepartmentsByFaculty(facultyId) {
+                try {
+                    const params = facultyId ? { faculty_id: facultyId } : {};
+                    const response = await axios.get("departments", { params });
+                    this.departments = response.data.data;
+                } catch (error) {
+                    console.error("Error fetching departments:", error);
+                    throw error;
+                }
+            },
+
+            async fetchUniversities() {
+                try {
+                    const response = await axios.get("universities");
+                    this.universities = response.data.data.filter(
+                        (item) =>
+                            Array.isArray(item) === false || item.length > 0
+                    );
+                } catch (error) {
+                    console.error("Failed to fetch universities:", error);
+                    throw error;
+                }
+            },
+
+            async fetchFaculties() {
+                try {
+                    const response = await axios.get("faculties");
+                    this.faculties = response.data.data;
+                } catch (error) {
+                    console.error("Failed to fetch faculties:", error);
+                    throw error;
+                }
+            },
+
+            async fetchDepartments() {
+                try {
+                    const response = await axios.get("departments");
+                    this.departments = response.data.data;
+                } catch (error) {
+                    console.error("Failed to fetch departments:", error);
+                    throw error;
                 }
             },
 
@@ -73,6 +159,7 @@ export const useStudentStatisticRepository = defineStore(
                     this.statistic = response.data.data;
                 } catch (error) {
                     console.error("Failed to fetch student statistic:", error);
+                    throw error;
                 }
             },
 
@@ -86,6 +173,7 @@ export const useStudentStatisticRepository = defineStore(
                     });
                 } catch (error) {
                     console.error("Failed to create statistic:", error);
+                    throw error;
                 }
             },
 
@@ -99,6 +187,7 @@ export const useStudentStatisticRepository = defineStore(
                     });
                 } catch (error) {
                     console.error("Failed to update statistic:", error);
+                    throw error;
                 }
             },
 
@@ -111,41 +200,10 @@ export const useStudentStatisticRepository = defineStore(
                     });
                 } catch (error) {
                     console.error("Failed to delete statistic:", error);
+                    throw error;
                 }
             },
 
-            async fetchDepartments() {
-                try {
-                    const response = await axios.get(`departments`);
-                    this.departments = response.data.data;
-                } catch (error) {
-                    console.error("Failed to fetch departments:", error);
-                }
-            },
-
-            async fetchFaculties() {
-                try {
-                    const response = await axios.get(`faculties`);
-                    this.faculties = response.data.data;
-                } catch (error) {
-                    console.error("Failed to fetch faculties:", error);
-                }
-            },
-
-            async fetchUniversities() {
-                try {
-                    const response = await axios.get(`universities`);
-                    const allUniversities = response.data.data;
-                    this.universities = allUniversities.filter(
-                        (item) =>
-                            Array.isArray(item) === false || item.length > 0
-                    );
-                } catch (error) {
-                    console.error("Failed to fetch universities:", error);
-                }
-            },
-
-            // Add reset filters method
             resetFilters() {
                 this.filters = {
                     province: null,
@@ -158,69 +216,6 @@ export const useStudentStatisticRepository = defineStore(
                 };
             },
 
-            // Add methods to fetch filtered data
-            async fetchUniversitiesByProvince(province) {
-                try {
-                    const params = province ? { province } : {};
-                    const response = await axios.get("universities", {
-                        params,
-                    });
-                    this.universities = response.data.data;
-                } catch (error) {
-                    console.error("Failed to fetch universities:", error);
-                }
-            },
-
-            async fetchFacultiesByUniversity(universityId) {
-                try {
-                    const params = universityId
-                        ? { university_id: universityId }
-                        : {};
-                    const response = await axios.get("faculties", { params });
-                    this.faculties = response.data.data;
-                } catch (error) {
-                    console.error("Failed to fetch faculties:", error);
-                }
-            },
-
-            async fetchDepartmentsByFaculty(facultyId) {
-                try {
-                    const params = facultyId ? { faculty_id: facultyId } : {};
-                    const response = await axios.get("departments", { params });
-                    this.departments = response.data.data;
-                } catch (error) {
-                    console.error("Failed to fetch departments:", error);
-                }
-            },
-
-            async fetchFormFacultiesByUniversity(universityId) {
-                try {
-                    this.faculties = [];
-                    if (!universityId) return;
-
-                    const response = await axios.get("faculties", {
-                        params: { university_id: universityId },
-                    });
-                    this.faculties = response.data.data;
-                } catch (error) {
-                    console.error("Failed to fetch faculties:", error);
-                }
-            },
-
-            async fetchFormDepartmentsByFaculty(facultyId) {
-                try {
-                    this.departments = [];
-                    if (!facultyId) return;
-
-                    const response = await axios.get("departments", {
-                        params: { faculty_id: facultyId },
-                    });
-                    this.departments = response.data.data;
-                } catch (error) {
-                    console.error("Failed to fetch departments:", error);
-                }
-            },
-
             resetFormDependencies() {
                 this.faculties = [];
                 this.departments = [];
@@ -228,6 +223,20 @@ export const useStudentStatisticRepository = defineStore(
                     this.statistic.faculty_id = null;
                     this.statistic.department_id = null;
                 }
+            },
+
+            getStudentTypeText(value) {
+                const type = this.studentTypes.find((t) => t.value === value);
+                return type ? type.text : "";
+            },
+        },
+
+        getters: {
+            translatedStudentTypes() {
+                return this.studentTypes.map((type) => ({
+                    ...type,
+                    text: this.$i18n?.t(type.text) || type.text,
+                }));
             },
         },
     }

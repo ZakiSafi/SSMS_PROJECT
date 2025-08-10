@@ -72,7 +72,11 @@
                 alt="Decoration"
                 class="absolute bottom-0 right-0"
             />
-            <v-form @submit.prevent="loginFunc" ref="formRef">
+            <v-form
+                @submit.prevent="loginFunc"
+                ref="formRef"
+                :validate-on="'submit'"
+            >
                 <div
                     class="mt-[120px] mx-auto flex flex-column items-center justify-center"
                     style="width: 400px"
@@ -127,6 +131,8 @@
                         class="font-bold text-white w-full"
                         elevation="0"
                         rounded="lg"
+                        :loading="AuthRepository.loading"
+                        :disabled="AuthRepository.loading"
                     >
                         {{ $t("login") }}
                     </v-btn>
@@ -137,9 +143,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted,computed } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { useAuthRepository } from "../../store/AuthRepository";
 import { useI18n } from "vue-i18n";
+
 const { t, locale } = useI18n();
 const AuthRepository = useAuthRepository();
 const formData = reactive({
@@ -148,9 +155,10 @@ const formData = reactive({
 });
 const visible = ref(false);
 const formRef = ref(null);
-
 const isRtl = ref(false);
+
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
+
 // Initialize language from localStorage
 onMounted(() => {
     const savedLang = localStorage.getItem("locale");
@@ -159,6 +167,7 @@ onMounted(() => {
         isRtl.value = savedLang !== "en";
     }
 });
+
 // Language switcher items
 const languageItems = ref([
     { title: "english", lang: "en", icon: "/assets/english.png" },
@@ -182,37 +191,21 @@ const passwordRules = [
     (v) => (v && v.length >= 6) || t("validations.password_min"),
 ];
 
-
-
 const loginFunc = async () => {
-    // Manual check: if both fields are missing
-    if (!formData.email && !formData.password) {
-        alert("Both email and password are required.");
-        return;
+    // Reset any previous validation
+    formRef.value?.resetValidation();
+
+    // Validate form
+    const { valid } = await formRef.value?.validate();
+
+    if (!valid) {
+        return; // Stop if validation fails
     }
 
-    // Validate only existing fields — skip if removed via DOM
-    const emailInputExists = document.querySelector('[placeholder="Email"]');
-    const passwordInputExists = document.querySelector('[placeholder="enter your password"]');
-
-    if (!emailInputExists || !passwordInputExists) {
-        alert("Form is broken. Please refresh the page.");
-        return;
-    }
-
-    const isValid = await formRef.value?.validate?.();
-
-    if (!isValid) {
-        console.warn("Validation failed.");
-        return;
-    }
-
-     try {
+    try {
         await AuthRepository.login(formData);
-        console.log("Login successful", formData);
     } catch (error) {
         console.error("Login failed", error);
     }
-};  
-
+};
 </script>

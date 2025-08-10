@@ -1,3 +1,4 @@
+// src/store/AuthRepository.js
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
 import { axios } from "../axios";
@@ -25,54 +26,41 @@ export const useAuthRepository = defineStore("authRepository", {
 
             try {
                 const response = await axios.post("login", credentials);
-                this.user = response.data.user;
+
+                const { user, token, role, permissions } = response.data;
+
+                // Save state
+                this.user = user;
+                this.role = role;
+                this.permissions = permissions;
                 this.isAuthenticated = true;
 
-                sessionStorage.setItem("token", response.data.token);
+                // Save to sessionStorage
+                sessionStorage.setItem("token", token);
+                sessionStorage.setItem("user", JSON.stringify(user));
+                sessionStorage.setItem("role", JSON.stringify(role));
                 sessionStorage.setItem(
-                    "user",
-                    JSON.stringify(response.data.user)
+                    "permissions",
+                    JSON.stringify(permissions)
                 );
+
+                // Set token for axios
                 axios.defaults.headers.common[
                     "Authorization"
-                ] = `Bearer ${response.data.token}`;
-
-                const meResponse = await axios.get("/me");
-
-        const permissions = meResponse.data.data.permissions;
-        console.log("Permissions:", permissions);
-        const role = meResponse.data.data.role;
-
-        sessionStorage.setItem("permissions", JSON.stringify(permissions));
-        sessionStorage.setItem("role", JSON.stringify(role));
-
-        this.permissions = permissions;
-        this.role = role;
-        this.user = meResponse.data;
+                ] = `Bearer ${token}`;
 
                 toast.success("Login successful!", {
                     position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                    autoClose: 500,
                 });
 
-                // Wait 1 second before redirect
                 setTimeout(() => {
                     this.router.push("/dashboard");
-                }, 1000);
+                }, 500); //
             } catch (error) {
                 toast.error("Login failed! Please check your credentials.", {
                     position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                    autoClose: 500,
                 });
 
                 this.error = error.response
@@ -85,37 +73,30 @@ export const useAuthRepository = defineStore("authRepository", {
 
         async logout() {
             this.error = null;
-            const formData = {
-                token: sessionStorage.getItem("token"),
-            };
             try {
-                await axios.post("logout", formData);
-                sessionStorage.removeItem("token");
-                sessionStorage.removeItem("user");
+                await axios.post("logout", {
+                    token: sessionStorage.getItem("token"),
+                });
+
+                // Clear storage
+                sessionStorage.clear();
+                this.user = {};
+                this.role = null;
+                this.permissions = [];
+                this.isAuthenticated = false;
 
                 toast.success("Logout successful!", {
                     position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                    autoClose: 500,
                 });
 
-                // Wait 1 second before redirect
                 setTimeout(() => {
                     this.router.push("/");
-                }, 1000);
+                }, 500); // Redirect to login after 1 second
             } catch (error) {
                 toast.error("Logout failed! Please try again.", {
                     position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                    autoClose: 500,
                 });
 
                 this.error = error.response
@@ -127,4 +108,3 @@ export const useAuthRepository = defineStore("authRepository", {
         },
     },
 });
-
