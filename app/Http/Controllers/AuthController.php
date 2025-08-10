@@ -30,13 +30,20 @@ class AuthController extends Controller
         // Create token (Laravel Sanctum)
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        // Fetch role & permissions (assuming spatie/laravel-permission)
+        $role = $user->getRoleNames()->first(); // Single role
+        $permissions = $user->getAllPermissions()->pluck('name');
+
         return response()->json([
             'message' => 'Login successful',
             'token' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
+            'role' => $role,
+            'permissions' => $permissions,
         ]);
     }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

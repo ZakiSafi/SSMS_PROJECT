@@ -36,9 +36,8 @@
                                     StudentStatisticRepository.filters
                                         .university_type
                                 "
-                                :items="universityTypes"
+                                :items="['private', 'public']"
                                 :label="t('university_type')"
-                                clearable
                             ></v-select>
                         </v-col>
                         <v-col cols="12" md="3">
@@ -164,7 +163,7 @@
         <v-data-table-server
             :dir="dir"
             v-model:items-per-page="StudentStatisticRepository.itemsPerPage"
-            :headers="headers"
+            :headers="dynamicHeaders"
             :items-length="StudentStatisticRepository.totalItems"
             :items="StudentStatisticRepository.statistics"
             :loading="StudentStatisticRepository.loading"
@@ -241,37 +240,120 @@
     </div>
 </template>
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
 import AppBar from "@/components/AppBar.vue";
 import CreateStudentStatistic from "./CreateStudentStatistic.vue";
 import { useStudentStatisticRepository } from "../../store/StudentStatisticRepository";
 import { useUniversityRepository } from "../../store/UniversityRepository";
 import { useProvinceRepository } from "../../store/ProvinceRepository";
-// import { useStudentTypeRepository } from "../../store/StudentTypeRepository";
+import { useI18n } from "vue-i18n";
 
+const { t, locale } = useI18n();
 const StudentStatisticRepository = useStudentStatisticRepository();
 const UniversityRepository = useUniversityRepository();
 const ProvinceRepository = useProvinceRepository();
-// const StudentTypeRepository = useStudentTypeRepository();
 
-import { useI18n } from "vue-i18n";
-const { t, locale } = useI18n();
+const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
+// Dynamic headers based on active filters
+const dynamicHeaders = computed(() => {
+    const baseHeaders = [
+        { title: t("Academic Year"), key: "academic_year", align: "start" },
+        { title: t("University"), key: "university.name" },
+        { title: t("Faculty"), key: "faculty.name" },
+        { title: t("Department"), key: "department.name" },
+    ];
 
-const dir = computed(() => {
-    return locale.value === "en" ? "ltr" : "rtl";
+    // Add filtered columns if specific filters are active
+    if (StudentStatisticRepository.filters.student_type) {
+        baseHeaders.push({
+            title: t("Students Count"),
+            key: "student_count",
+            value: (item) => {
+                switch (StudentStatisticRepository.filters.student_type) {
+                    case "current":
+                        return item.current_count;
+                    case "graduated":
+                        return item.graduated_count;
+                    case "new":
+                        return item.new_count;
+                    default:
+                        return item.male_total + item.female_total;
+                }
+            },
+        });
+    } else {
+        baseHeaders.push(
+            { title: t("Male"), key: "male_total" },
+            { title: t("Female"), key: "female_total" },
+            { title: t("Total"), key: "total_students" }
+        );
+    }
+
+    // Add other columns
+    baseHeaders.push(
+        { title: t("Classroom"), key: "classroom" },
+        { title: t("Shift"), key: "shift" },
+        { title: t("Action"), key: "action", align: "end", sortable: false }
+    );
+
+    return baseHeaders;
 });
 
+// Watch for filter changes to update dependent dropdowns
+watch(
+    () => StudentStatisticRepository.filters.province,
+    (newVal) => {
+        if (newVal) {
+            StudentStatisticRepository.fetchUniversitiesByProvince(newVal);
+        }
+    }
+);
+
+watch(
+    () => StudentStatisticRepository.filters.university,
+    (newVal) => {
+        if (newVal) {
+            StudentStatisticRepository.fetchFacultiesByUniversity(newVal);
+        }
+    }
+);
+
+watch(
+    () => StudentStatisticRepository.filters.faculty,
+    (newVal) => {
+        if (newVal) {
+            StudentStatisticRepository.fetchDepartmentsByFaculty(newVal);
+        }
+    }
+);
+// Define academic years and student types (you can fetch these from backend if dynamic)
+const academicYears = computed(() => {
+    const currentYear = new Date().getFullYear();
+    return Array.from({ length: 10 }, (_, i) => (currentYear - i).toString());
+});
+
+const studentTypes = computed(() => [
+    { text: t("Current"), value: "current" },
+    { text: t("Graduated"), value: "graduated" },
+    { text: t("New"), value: "new" },
+]);
 // Computed properties for filter options
 const provinces = computed(() => ProvinceRepository.provinces);
 const universityTypes = computed(() => UniversityRepository.universityTypes);
-// const studentTypes = computed(() => StudentTypeRepository.studentTypes);
 
-// Computed properties for filtered dropdowns
 const filteredUniversities = computed(() => {
+    // If no province or type filter, return all universities
+    if (
+        !StudentStatisticRepository.filters.province &&
+        !StudentStatisticRepository.filters.university_type
+    ) {
+        return UniversityRepository.universities;
+    }
+
     return UniversityRepository.universities.filter((uni) => {
         const provinceMatch =
             !StudentStatisticRepository.filters.province ||
-            uni.province_id === StudentStatisticRepository.filters.province;
+            uni.province_id == StudentStatisticRepository.filters.province;
         const typeMatch =
             !StudentStatisticRepository.filters.university_type ||
             uni.type === StudentStatisticRepository.filters.university_type;
@@ -285,7 +367,7 @@ const filteredFaculties = computed(() => {
     }
     return StudentStatisticRepository.faculties.filter(
         (faculty) =>
-            faculty.university_id ===
+            faculty.university_id ==
             StudentStatisticRepository.filters.university
     );
 });
@@ -295,7 +377,7 @@ const filteredDepartments = computed(() => {
         return StudentStatisticRepository.departments;
     }
     return StudentStatisticRepository.departments.filter(
-        (dept) => dept.faculty_id === StudentStatisticRepository.filters.faculty
+        (dept) => dept.faculty_id == StudentStatisticRepository.filters.faculty
     );
 });
 
@@ -306,20 +388,29 @@ const showCreateDialog = () => {
     StudentStatisticRepository.createDialog = true;
 };
 
-const edit = (item) => {
-    StudentStatisticRepository.isEditMode = true;
-    StudentStatisticRepository.statistic = {};
-    StudentStatisticRepository.fetchStatistic(item.id)
-        .then(() => {
-            StudentStatisticRepository.createDialog = true;
-        })
-        .catch((error) => {
-            console.error("Error fetching statistic:", error);
-        });
+const edit = async (item) => {
+    try {
+        StudentStatisticRepository.isEditMode = true;
+        await StudentStatisticRepository.fetchStatistic(item.id);
+        StudentStatisticRepository.createDialog = true;
+    } catch (error) {
+        console.error("Error fetching statistic:", error);
+        toast.error(t("error_fetching_statistic"));
+    }
 };
 
 const deleteItem = async (item) => {
-    await StudentStatisticRepository.deleteStatistic(item.id);
+    try {
+        await StudentStatisticRepository.deleteStatistic(item.id);
+        toast.success(t("statistic_deleted"));
+        loadStatistics({
+            page: 1,
+            itemsPerPage: StudentStatisticRepository.itemsPerPage,
+        });
+    } catch (error) {
+        console.error("Error deleting statistic:", error);
+        toast.error(t("error_deleting_statistic"));
+    }
 };
 
 const applyFilters = () => {
@@ -341,26 +432,30 @@ const loadStatistics = (options) => {
     StudentStatisticRepository.fetchStatistics(options);
 };
 
-// Fetch initial data
-onMounted(() => {
-    StudentStatisticRepository.fetchUniversities();
-    ProvinceRepository.FetchProvinces({ page: 1, itemsPerPage: 10 });
-    // StudentTypeRepository.fetchStudentTypes();
-    StudentStatisticRepository.fetchFaculties();
-    StudentStatisticRepository.fetchDepartments();
-    loadStatistics({
-        page: 1,
-        itemsPerPage: StudentStatisticRepository.itemsPerPage,
-    });
+onMounted(async () => {
+    try {
+        // Load provinces first
+        await ProvinceRepository.FetchProvinces();
+
+        // Then load universities and other data
+        await Promise.all([
+            StudentStatisticRepository.fetchUniversities(),
+            StudentStatisticRepository.fetchFaculties(),
+            StudentStatisticRepository.fetchDepartments(),
+        ]);
+
+        // Finally load statistics
+        loadStatistics({
+            page: 1,
+            itemsPerPage: StudentStatisticRepository.itemsPerPage,
+        });
+    } catch (error) {
+        console.error("Initialization error:", error);
+    }
 });
 
 const headers = computed(() => [
-    {
-        title: t("Academic Year"),
-        key: "academic_year",
-        align: "start",
-        sortable: false,
-    },
+    { title: t("Academic Year"), key: "academic_year", align: "start" },
     { title: t("University"), key: "university.name" },
     { title: t("Faculty"), key: "faculty.name" },
     { title: t("Department"), key: "department.name" },

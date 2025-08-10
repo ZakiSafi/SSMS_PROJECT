@@ -96,7 +96,7 @@ const formData = reactive({
     id: UserRepository.user.id,
     name: UserRepository.user.name,
     email: UserRepository.user.email,
-    password: "",
+    password: UserRepository.user.password,
     university_id: UserRepository.user.university?.id || null,
     role_id: UserRepository.user.role?.id || null,
 });
@@ -108,7 +108,7 @@ const rules = {
 
 onMounted(() => {
     UserRepository.fetchUniversities();
-    UserRepository.fetchRoles( { page: 1, itemsPerPage:10});
+    UserRepository.fetchRoles({ page: 1, itemsPerPage: 10 });
 });
 
 const save = async () => {

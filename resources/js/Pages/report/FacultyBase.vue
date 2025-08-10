@@ -67,7 +67,7 @@
                         density="compact"
                     />
                 </div>
-                <div class="ml-4 flex align-center ">
+                <div class="ml-4 flex align-center">
                     <v-btn color="primary" @click="printTable">
                         {{ $t("print_report") }}
                     </v-btn>
@@ -166,6 +166,51 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination and Items per page -->
+        <div class="d-flex flex-wrap align-center justify-center pa-2">
+            <!-- Pagination with forced LTR direction -->
+            <div dir="ltr" class="mr-4">
+                <v-pagination
+                    v-model="ReportRepository.page"
+                    :length="
+                        ReportRepository.itemsPerPage === -1
+                            ? 1
+                            : Math.ceil(
+                                  ReportRepository.totalItems /
+                                      ReportRepository.itemsPerPage
+                              )
+                    "
+                    @update:modelValue="onPageChange"
+                    total-visible="7"
+                    color="primary"
+                    v-if="
+                        ReportRepository.totalItems >
+                        ReportRepository.itemsPerPage
+                    "
+                />
+            </div>
+
+            <!-- Items per page selector -->
+            <v-select
+                v-model="ReportRepository.itemsPerPage"
+                :items="[
+                    { value: 5, text: '5' },
+                    { value: 10, text: '10' },
+                    { value: 25, text: '25' },
+                    { value: 50, text: '50' },
+                    { value: -1, text: $t('pagination.all') },
+                ]"
+                item-title="text"
+                item-value="value"
+                :label="$t('pagination.items_per_page')"
+                variant="outlined"
+                density="compact"
+                hide-details
+                style="max-width: 160px"
+                @update:modelValue="onItemsPerPageChange"
+            />
+        </div>
     </div>
 </template>
 
@@ -182,54 +227,82 @@ const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 
 const ReportRepository = useReportRepository();
 
+// Initialize pagination values
+ReportRepository.page = ReportRepository.page || 1;
+ReportRepository.itemsPerPage = ReportRepository.itemsPerPage || 10;
+
 // Reactive year (DatePicker)
 const selectedYear = ref(ReportRepository.date || new persianDate().year());
+
+const rules = {
+    required: (v) => !!v || t("validation.required"),
+};
+
+const onPageChange = (newPage) => {
+    ReportRepository.page = newPage;
+    fetchData();
+};
+
+const onItemsPerPageChange = () => {
+    ReportRepository.page = 1; // Reset to first page when items per page changes
+    fetchData();
+};
 
 // Update repository and fetch data when year changes
 watch(selectedYear, (newYear) => {
     ReportRepository.date = newYear;
+    ReportRepository.page = 1;
     fetchData();
 });
 
 // Watch season or university change
 watch(
     () => ReportRepository.season,
-    () => fetchData()
+    () => {
+        ReportRepository.page = 1;
+        fetchData();
+    }
 );
 watch(
     () => ReportRepository.university,
-    () => fetchData()
+    () => {
+        ReportRepository.page = 1;
+        fetchData();
+    }
 );
 
 watch(
     () => ReportRepository.shift,
     (newShift) => {
         if (newShift) {
+            ReportRepository.page = 1;
             fetchData();
         }
     }
 );
-
-const rules = {
-    required: (v) => !!v || t("validation.required"),
-};
 
 // Centralized fetch
 const fetchData = () => {
     const universityId =
         ReportRepository.university?.id || ReportRepository.university;
     ReportRepository.fecthJawad(
-        { page: 1, itemsPerPage: ReportRepository.itemsPerPage },
+        {
+            page: ReportRepository.page,
+            itemsPerPage: ReportRepository.itemsPerPage,
+        },
         ReportRepository.date,
         ReportRepository.season,
         universityId
     );
 };
+
 // fetch shift
 const onShiftChange = (shift) => {
     ReportRepository.shift = shift;
+    ReportRepository.page = 1;
     fetchData();
 };
+
 // Initial load
 onMounted(() => {
     ReportRepository.fetchUniversities();
@@ -330,5 +403,10 @@ th {
 
 .v-progress-linear {
     margin: 0;
+}
+
+/* Pagination container styling */
+.d-flex.flex-wrap {
+    gap: 16px;
 }
 </style>

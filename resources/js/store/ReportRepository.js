@@ -166,11 +166,8 @@ export const useReportRepository = defineStore("reportRepository", {
                 );
                 this.facultyBaseGraduation = response.data.data;
                 this.totalItems = response.data.total;
-            } catch {
-                console.error(
-                    "Error fetching data sdgdvfbgfvdsdfbfvdcsaxscdvfdcscdfvdc:",
-                    error
-                );
+            } catch (error) {
+                console.error("Error fetching data:", error);
                 this.facultyBaseGraduation = [];
             } finally {
                 this.loading = false;

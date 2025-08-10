@@ -86,7 +86,7 @@ const submitPermissions = async () => {
 };
 </script>
 
-<template>
+<template>updateRole
   <v-container fluid>
     <AppBar pageTitle="Update Role Permissions" />
     <v-divider :thickness="1" class="border-opacity-100" />

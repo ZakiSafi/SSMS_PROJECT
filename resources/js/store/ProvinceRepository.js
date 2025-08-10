@@ -1,6 +1,6 @@
-import {defineStore} from 'pinia';
-import {reactive, ref} from 'vue';
-import {axios} from '../axios';
+import { defineStore } from "pinia";
+import { reactive, ref } from "vue";
+import { axios } from "../axios";
 
 export let useProvinceRepository = defineStore("", {
     state() {
@@ -19,30 +19,33 @@ export let useProvinceRepository = defineStore("", {
             provinceSearch: ref(""),
             provinces: reactive([]),
             province: reactive({}),
-
-
-        }
-
+        };
     },
 
     actions: {
-        async FetchProvinces({ page, itemsPerPage }) {
+        async FetchProvinces(params = { page: 1, itemsPerPage: 10 }) {
             this.loading = true;
-
-            const response = await axios.get(
-                `provinces?page=${page}&perPage=${itemsPerPage}&name=${this.provinceSearch}`
-            );
-            this.provinces = response.data.data;
-            this.totalItems = response.data.meta.total;
-            this.loading = false;
+            try {
+                const response = await axios.get(
+                    `provinces?page=${params.page}&perPage=${params.itemsPerPage}&name=${this.provinceSearch}`
+                );
+                this.provinces = response.data.data;
+                this.totalItems = response.data.meta.total;
+            } catch (error) {
+                console.error("Error fetching provinces:", error);
+                throw error;
+            } finally {
+                this.loading = false;
+            }
         },
+
         async FetchProvince(id) {
             try {
                 const response = await axios.get(`provinces/${id}`);
                 this.province = response.data.data;
-                console.log(this.province);
-            } catch (err) {
-                // handle error if needed
+            } catch (error) {
+                console.error("Error fetching province:", error);
+                throw error;
             }
         },
         async CreateProvince(formData) {
@@ -99,8 +102,6 @@ export let useProvinceRepository = defineStore("", {
             } catch (err) {
                 this.error = err;
             }
-        }
-    }
-
-
+        },
+    },
 });

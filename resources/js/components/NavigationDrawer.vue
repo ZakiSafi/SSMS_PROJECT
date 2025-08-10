@@ -103,7 +103,7 @@
                         <v-list-item
                             v-bind="props"
                             :title="$t('menu.currentStudents')"
-                            v-if="useAuthRepository.permission && AuthRepository.permission.includes('current_students.view')"
+                            v-if="AuthRepository.permissions && AuthRepository.permissions.includes('current_students.view')"
                             prepend-icon="mdi-file-chart-outline"
                             class="menu-item"
                         />
@@ -208,7 +208,6 @@ onMounted(() => {
         user.value.photo = parsed.photo;
     }
 });
-
 const settingItems = [
     { to: "/users", translationKey: "users", icon: "mdi-circle-medium", value: "users" },
     { to: "/role-permission", translationKey: "role_permissions", icon: "mdi-circle-medium", value: "roles" },

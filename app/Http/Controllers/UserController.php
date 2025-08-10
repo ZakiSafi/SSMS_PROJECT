@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-     
+
     /**
      * Display a listing of the resource.
      */
@@ -27,41 +27,40 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(UserRequest $request)
-{
-    DB::beginTransaction();
-    try {
-        $validated = $request->validated();
-        
-        // Create user
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'university_id' => $validated['university_id'] ?? null,
-        ]);
+    public function store(UserRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validated = $request->validated();
 
-        // Assign role (using either role ID or name)
-        if (isset($validated['role_id'])) {
-            $role = Role::findById($validated['role_id'], 'api');
-            $user->assignRole($role);
+            // Create user
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'university_id' => $validated['university_id'] ?? null,
+            ]);
+
+            // Assign role (using either role ID or name)
+            if (isset($validated['role_id'])) {
+                $role = Role::findById($validated['role_id'], 'api');
+                $user->assignRole($role);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'User created successfully',
+                'user' => $user->load('roles')
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'User creation failed',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        DB::commit();
-
-        return response()->json([
-            'message' => 'User created successfully',
-            'user' => $user->load('roles')
-        ], 201);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'message' => 'User creation failed',
-            'error' => $e->getMessage()
-        ], 500);
     }
-}
 
     /**
      * Display the specified resource.
@@ -76,19 +75,22 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        return $this->updateRecord($request, $user);
+        $user = $this->updateRecord($request, $user);
+        $validated = $request->validated();
+        $role = Role::findOrFail($validated['role_id'] ?? null);
+        $user->syncRoles([$role]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( User $user)
+    public function destroy(User $user)
     {
         return $this->deleteRecord($user);
     }
 
     public function me(Request $request)
-{
-    return new UserResource($request->user());
-}
+    {
+        return new UserResource($request->user());
+    }
 }

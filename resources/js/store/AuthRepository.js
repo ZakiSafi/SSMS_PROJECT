@@ -1,3 +1,4 @@
+// src/store/AuthRepository.js
 import { defineStore } from "pinia";
 import { ref, reactive } from "vue";
 import { axios } from "../axios";
@@ -27,172 +28,198 @@ export const useAuthRepository = defineStore("authRepository", {
             try {
                 // 1. Login request
                 const response = await axios.post("login", credentials);
-                const token = response.data.token;
 
-                // Save token in sessionStorage
-                sessionStorage.setItem("token", token);
-                axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+                const { user, token, role, permissions } = response.data;
+
+                // Save state
+                this.user = user;
+                this.role = role;
+                this.permissions = permissions;
                 this.isAuthenticated = true;
 
-                // 2. Get user + permissions
-                const meResponse = await axios.get("/me");
-                const { user, permissions, role } = meResponse.data.data;
-
                 // Save to sessionStorage
+                sessionStorage.setItem("token", token);
                 sessionStorage.setItem("user", JSON.stringify(user));
-                sessionStorage.setItem("permissions", JSON.stringify(permissions));
                 sessionStorage.setItem("role", JSON.stringify(role));
+                sessionStorage.setItem(
+                    "permissions",
+                    JSON.stringify(permissions)
+                );
 
-                // ✅ Update reactivity (mutate instead of replace)
-                Object.assign(this.user, user); 
-                this.permissions.splice(0, this.permissions.length, ...permissions);
-                this.role = role;
+                // Set token for axios
+                axios.defaults.headers.common[
+                    "Authorization"
+                ] = `Bearer ${token}`;
 
-                // 3. Success toast + redirect
-                toast.success("Login successful!", { position: "top-right", autoClose: 3000 });
+                toast.success("Login successful!", {
+                    position: "top-right",
+                    autoClose: 500,
+                });
+
                 setTimeout(() => {
                     this.router.push("/dashboard");
-                }, 1000);
-
+                }, 500); //
             } catch (error) {
-                toast.error("Login failed! Please check your credentials.", { position: "top-right", autoClose: 3000 });
-                this.error = error.response ? error.response.data.message : "An error occurred!";
+                toast.error("Login failed! Please check your credentials.", {
+                    position: "top-right",
+                    autoClose: 500,
+                });
+
+                this.error = error.response
+                    ? error.response.data.message
+                    : "An error occurred!";
             } finally {
                 this.loading = false;
             }
         },
 
         async logout() {
+            this.error = null;
             try {
-                await axios.post("logout", { token: sessionStorage.getItem("token") });
-            } catch {
-                // ignore logout errors
-            }
+                await axios.post("logout", {
+                    token: sessionStorage.getItem("token"),
+                });
 
-            // Clear session + state
-            sessionStorage.clear();
-            Object.keys(this.user).forEach(key => delete this.user[key]);
-            this.permissions.splice(0);
-            this.role = null;
-            this.isAuthenticated = false;
+                // Clear storage
+                sessionStorage.clear();
+                this.user = {};
+                this.role = null;
+                this.permissions = [];
+                this.isAuthenticated = false;
 
-            toast.success("Logout successful!", { position: "top-right", autoClose: 3000 });
-            this.router.push("/");
-        },
+                toast.success("Logout successful!", {
+                    position: "top-right",
+                    autoClose: 500,
+                });
 
+                setTimeout(() => {
+                    this.router.push("/");
+                }, 500); // Redirect to login after 1 second
+            } catch (error) {
+                toast.error("Logout failed! Please try again.", {
+                    position: "top-right",
+                    autoClose: 500,
+                });
 
-
-         async fetchRoles({ page, itemsPerPage }) {
-            try {
-                this.loading = true;
-                const response = await axios.get(
-                    `role?page=${page}&perPage=${itemsPerPage}&name=${this.search}`
-                );
-                this.roles = response.data.data;
-                this.totalItems = response.data.meta.total;
-                this.loading = false;
-            } catch (err) {
-                console.error("Failed to fetch roles:", err);
-            }
-        },
-
-        async fetchRole(id) {
-            try {
-                const response = await axios.get(`role/${id}`);
-                this.role = response.data.data;
-            } catch (err) {
-                console.error("Failed to fetch role:", err);
-            }
-        },
-
-        async createRole(formData) {
-            try {
-                this.loading = true;
-                const config = {
-                    method: "POST",
-                    url: "role",
-                    data: formData,
-                };
-
-                // Wait for creation to complete
-                await axios(config);
-
-                // Reset to first page to see the new role
-
-                this.router.push("/role-permission");
-                // Refresh the list
-            } catch (err) {
-                console.error("Failed to create role:", err);
+                this.error = error.response
+                    ? error.response.data.message
+                    : "An error occurred!";
             } finally {
                 this.loading = false;
             }
+            if (storedRole) this.role = JSON.parse(storedRole);
         },
 
-        async deleteRole(id) {
+        async fetchRolePermissions({ page, itemsPerPage }) {
+            this.loading = true;
+
+            const response = await axios.get(
+                `role?page=${page}&perPage=${itemsPerPage}&search=${this.search}`
+            );
+            this.roles = response.data.data;
+            this.totalItems = response.data.meta.total;
+            this.loading = false;
+        },
+        async fetchRolePermission(id) {
+            // this.error = null;
+            try {
+                const response = await axios.get(`role/${id}`);
+
+                this.permission = response.data.data;
+                console.log(this.permission);
+            } catch (err) {
+                // this.error = err.message;
+            }
+        },
+        async updateRole(id, data) {
+            try {
+                const response = await axios.put(
+                    "role/" + id,
+                    data
+                );
+
+                // Using Axios to make a post request with async/await and custom headers
+                //        if (this.role && this.role.id === id) {
+
+                // }
+                await this.refreshPermissions();
+                this.router.push("/role");
+                this.fetchRolePermissions({
+                    page: this.page,
+                    itemsPerPage: this.itemsPerPage,
+                });
+            } catch (err) {
+                // If there's an error, set the error in the store
+                this.error = err;
+            }
+        },
+        async createRole(formData) {
+            console.log(formData);
+            try {
+                // Adding a custom header to the Axios request
+                const config = {
+                    method: "POST",
+                    url: "role",
+
+                    data: formData,
+                };
+
+                // Using Axios to make a GET request with async/await and custom headers
+                const response = await axios(config);
+                toast.success("Permission Created successful!", {
+                    position: "top-right",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                this.router.push("/rolePermissions");
+                this.fetchRolePermissions({
+                    page: this.page,
+                    itemsPerPage: this.itemsPerPage,
+                });
+            } catch (err) {
+                this.error =
+                    err.response?.data?.message ||
+                    "Failed to create Permission. Please try again.";
+
+                // Show toast
+                toast.error(this.error, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        },
+        async DeleteRolePermission(id) {
+            this.isLoading = true;
+            this.setting = [];
+            this.error = null;
+
             try {
                 const config = {
                     method: "DELETE",
-                    url: `role/${id}`,
+                    url: "role_permissions/" + id,
                 };
-                await axios(config);
-                this.fetchRoles({
+
+                const response = await axios(config);
+
+                // this.setting = response.data.data;
+                this.fetchRolePermissions({
                     page: this.page,
                     itemsPerPage: this.itemsPerPage,
                 });
             } catch (err) {
-                console.error("Failed to delete role:", err);
-            }
-        },
-        async updateRole(id, formData) {
-            try {
-                const config = {
-                    method: "PUT",
-                    url: `role/${id}`,
-                    data: formData,
-                };
-                
-                await axios(config);
-                await this.refreshPermissions();
-                this.createDialog = false;
-                this.fetchRoles({
-                    page: this.page,
-                    itemsPerPage: this.itemsPerPage,
-                });
-            } catch (err) {
-                console.error("Failed to update user:", err);
+                this.error = err;
             }
         },
 
-        async fetchLogs({ page, itemsPerPage }) {
-            try {
-                this.loading = true;
-                const response = await axios.get(
-                    `logs?page=${page}&perPage=${itemsPerPage}&user_id=${this.search}`
-                );
-                this.logs = response.data.data;
-                this.totalItems = response.data.meta.total;
-                this.loading = false;
-            } catch (err) {
-                console.error("Failed to fetch logs:", err);
-            }
-        },
-
-        async refreshPermissions() {
-            const meResponse = await axios.get("/me");
-
-        const permissions = meResponse.data.data.permissions;
-        console.log("Permissions:", permissions);
-        const role = meResponse.data.data.role;
-
-        sessionStorage.setItem("permissions", JSON.stringify(permissions));
-        sessionStorage.setItem("role", JSON.stringify(role));
-
-        this.permissions = permissions;
-        this.role = role;
-        this.user = meResponse.data;
-
-            sessionStorage.setItem("user", JSON.stringify(this.user));
-        },
 
         loadFromSession() {
             const storedUser = sessionStorage.getItem("user");

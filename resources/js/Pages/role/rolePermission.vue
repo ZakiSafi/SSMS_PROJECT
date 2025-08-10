@@ -42,7 +42,7 @@
             :items="AuthRepository.roles"
             :loading="AuthRepository.loading"
             :search="AuthRepository.search"
-            @update:options="AuthRepository.fetchRoles"
+            @update:options="AuthRepository.fetchRolePermissions"
             class="w-100 mx-auto"
             hover
         >

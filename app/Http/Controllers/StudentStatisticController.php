@@ -22,42 +22,111 @@ class StudentStatisticController extends Controller
      * Display a listing of the resource.
      */
     private $model = StudentStatistic::class;
-    public function index()
+    public function index(Request $request)
     {
-        // Start query manually to apply relationship filters
-        $query = $this->model::with(['university', 'faculty', 'department']);
+        $query = StudentStatistic::with(['university', 'faculty', 'department']);
 
-        // Apply relationship-based filters
-        if (request()->filled('province')) {
-            $query->whereHas('university', function ($q) {
-                $q->where('province_id', request('province'));
+        // Apply filters
+        if ($request->filled('province')) {
+            $query->whereHas('university', function ($q) use ($request) {
+                $q->where('province_id', $request->province);
             });
         }
 
-        if (request()->filled('university_type')) {
-            $query->whereHas('university', function ($q) {
-                $q->where('type', request('university_type'));
+        if ($request->filled('university_type')) {
+            $query->whereHas('university', function ($q) use ($request) {
+                $q->where('type', $request->university_type);
             });
         }
 
-        // Set the query temporarily on the model so listRecord works as is
-        $this->model = $query->getModel();
+        if ($request->filled('university')) {
+            $query->where('university_id', $request->university);
+        }
 
-        // Now use the existing listRecord to apply basic filters + pagination
-        $studentStatistics = $this->listRecord(
-            request(),
-            get_class($query->getModel()),
-            [
-                'university_id',
-                'faculty_id',
-                'department_id',
-                'academic_year',
-                'student_type',
-            ],
-            ['university', 'faculty', 'department']
-        );
+        if ($request->filled('faculty')) {
+            $query->where('faculty_id', $request->faculty);
+        }
 
-        return StudentStatisticResource::collection($studentStatistics);
+        if ($request->filled('department')) {
+            $query->where('department_id', $request->department);
+        }
+
+        if ($request->filled('academic_year')) {
+            $query->where('academic_year', $request->academic_year);
+        }
+
+        if ($request->filled('student_type')) {
+            $query->where('student_type', $request->student_type);
+        }
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('classroom', 'like', "%$search%")
+                    ->orWhere('shift', 'like', "%$search%")
+                    ->orWhere('season', 'like', "%$search%")
+                    ->orWhereHas('university', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })
+                    ->orWhereHas('faculty', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })
+                    ->orWhereHas('department', function ($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    });
+            });
+        }
+
+        // Get filter options for active filters
+        $filterOptions = [];
+        if ($request->filled('province') || $request->filled('university_type')) {
+            $filterOptions['universities'] = $query->clone()
+                ->select('university_id')
+                ->with('university:id,name')
+                ->get()
+                ->pluck('university')
+                ->unique()
+                ->values();
+        }
+
+        if ($request->filled('university') || $request->filled('faculty')) {
+            $filterOptions['faculties'] = $query->clone()
+                ->select('faculty_id')
+                ->with('faculty:id,name')
+                ->get()
+                ->pluck('faculty')
+                ->unique()
+                ->values();
+        }
+
+        if ($request->filled('faculty') || $request->filled('department')) {
+            $filterOptions['departments'] = $query->clone()
+                ->select('department_id')
+                ->with('department:id,name')
+                ->get()
+                ->pluck('department')
+                ->unique()
+                ->values();
+        }
+
+        // Pagination
+        $perPage = $request->get('perPage', 10);
+        if ($perPage == -1) {
+            $perPage = $query->count();
+        }
+
+        $studentStatistics = $query->paginate($perPage);
+
+        return response()->json([
+            'data' => StudentStatisticResource::collection($studentStatistics),
+            'filter_options' => $filterOptions,
+            'meta' => [
+                'total' => $studentStatistics->total(),
+                'per_page' => $studentStatistics->perPage(),
+                'current_page' => $studentStatistics->currentPage(),
+            ]
+        ]);
     }
 
 
