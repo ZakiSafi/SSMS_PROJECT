@@ -61,11 +61,10 @@
                             />
 
                             <v-select
-                                v-model="formData.faculties"
+                                v-model="selectedFaculties"
                                 :items="UniversityRepository.faculties"
                                 item-title="name"
                                 item-value="id"
-                                return-object
                                 multiple
                                 chips
                                 closable-chips
@@ -79,15 +78,15 @@
                                     <v-chip
                                         v-if="index < 2"
                                         closable
-                                        @click:close="removeFaculty(item.id)"
+                                        @click:close="removeFaculty(item.value)"
                                     >
-                                        {{ item.name }}
+                                        {{ item.title }}
                                     </v-chip>
                                     <span
                                         v-if="index === 2"
                                         class="text-grey text-caption"
                                     >
-                                        +{{ formData.faculties.length - 2 }} more
+                                        +{{ selectedFaculties.length - 2 }} more
                                     </span>
                                 </template>
                             </v-select>
@@ -128,40 +127,47 @@ const formIsValid = ref(false);
 const isSaving = ref(false);
 const loadingFaculties = ref(false);
 
+// Main form data
 const formData = reactive({
     id: null,
     name: "",
     province_id: null,
     type: null,
-    faculties: [], // Stores full faculty objects (required by return-object)
 });
 
+// Separate array for selected faculty IDs
+const selectedFaculties = ref([]);
+
+// Initialize form data
 const resetForm = () => {
     formData.id = null;
     formData.name = "";
     formData.province_id = null;
     formData.type = null;
-    formData.faculties = [];
+    selectedFaculties.value = [];
     formRef.value?.reset();
 };
 
+// Watch for university changes (edit mode)
 watch(
     () => UniversityRepository.university,
     async (newVal) => {
         if (newVal && UniversityRepository.isEditMode) {
+            // Load faculties if not already loaded
             if (UniversityRepository.faculties.length === 0) {
                 loadingFaculties.value = true;
                 await UniversityRepository.FetchFaculties();
                 loadingFaculties.value = false;
             }
 
+            // Set basic form data
             formData.id = newVal.id;
             formData.name = newVal.name;
             formData.province_id = newVal.province?.id || null;
             formData.type = newVal.type || null;
-            formData.faculties = newVal.faculties || [];
-
-            console.log("University Faculties:", newVal.faculties);
+            
+            // Set selected faculties (just IDs)
+            selectedFaculties.value = newVal.faculties?.map(f => f.id) || [];
         } else {
             resetForm();
         }
@@ -175,6 +181,7 @@ const rules = {
         /^[a-zA-Z\u0600-\u06FF\s]*$/.test(value) || t("validation.valid_name"),
 };
 
+// Load initial data
 const loadData = async () => {
     try {
         await UniversityRepository.FetchProvinces();
@@ -184,13 +191,12 @@ const loadData = async () => {
     }
 };
 
-// ✅ Fix: remove faculty from `formData.faculties` by ID
+// Remove faculty from selection
 const removeFaculty = (facultyId) => {
-    formData.faculties = formData.faculties.filter(
-        (faculty) => faculty.id !== facultyId
-    );
+    selectedFaculties.value = selectedFaculties.value.filter(id => id !== facultyId);
 };
 
+// Save function
 const save = async () => {
     const { valid } = await formRef.value.validate();
     if (!valid) return;
@@ -199,7 +205,7 @@ const save = async () => {
     try {
         const payload = {
             ...formData,
-            faculty_ids: formData.faculties.map((f) => f.id), // ✅ convert back to IDs
+            faculty_ids: selectedFaculties.value, // Always send faculty IDs
         };
 
         if (UniversityRepository.isEditMode) {

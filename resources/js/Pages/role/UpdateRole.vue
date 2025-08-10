@@ -2,14 +2,13 @@
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AppBar from "@/components/AppBar.vue";
-import { useUserRepository } from "@/store/UserRepository";
+import { useAuthRepository } from "@/store/AuthRepository";
 
 const router = useRouter();
 const route = useRoute();
 const id = route.params.id;
 
-const UserRepository = useUserRepository();
-
+const AuthRepository = useAuthRepository();
 const roleName = ref("");
 const roleDescription = ref("");
 
@@ -37,10 +36,10 @@ pages.forEach((page) => {
 
 onMounted(async () => {
   // Fetch role from backend
-  await UserRepository.fetchRole(id);
+  await AuthRepository.fetchRole(id);
 
-  roleName.value = UserRepository.role.name;
-  roleDescription.value = UserRepository.role.description;
+  roleName.value = AuthRepository.role.name;
+  roleDescription.value = AuthRepository.role.description;
 
   // Reset all permissions to false
   pages.forEach((page) => {
@@ -50,7 +49,7 @@ onMounted(async () => {
   });
 
   // Set existing permissions from backend as true
-  UserRepository.role.permissions.forEach((perm) => {
+  AuthRepository.role.permissions.forEach((perm) => {
     const [pageKey, action] = perm.split(".");
     if (permissions.value[pageKey]) {
       permissions.value[pageKey][action] = true;
@@ -79,7 +78,7 @@ const submitPermissions = async () => {
   console.log("Payload to send:", payload);
 
   try {
-    await UserRepository.updateRole(id, payload);
+    await AuthRepository.updateRole(id, payload);
     router.push({ name: "role-permission" });
   } catch (error) {
     console.error("Error updating role:", error);

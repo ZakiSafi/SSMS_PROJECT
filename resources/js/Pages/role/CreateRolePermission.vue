@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from "vue";
 import AppBar from "@/components/AppBar.vue";
-import { useUserRepository } from "@/store/UserRepository";
-const UserRepository = useUserRepository();
+import { useAuthRepository } from "@/store/AuthRepository";
+const AuthRepository = useAuthRepository();
 
 const roleName = ref("");
 const roleDescription = ref("");
@@ -87,7 +87,7 @@ const submitPermissions = async () => {
     };
 
     try {
-        await UserRepository.createRole(payload);
+        await AuthRepository.createRole(payload);
         console.log("Role created successfully");
 
         // Reset form

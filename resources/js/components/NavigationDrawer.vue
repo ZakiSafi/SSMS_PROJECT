@@ -19,7 +19,7 @@
             <v-list density="compact" nav>
                 <!-- Main Items -->
                 <v-list-item
-                    v-if="hasPermission('dashboard.view')"
+                    v-if="AuthRepository.permissions.includes('dashboard.view')"
                     class="menu-item"
                     :title="$t('menu.dashboard')"
                     prepend-icon="mdi-home-lightning-bolt-outline"
@@ -30,7 +30,7 @@
                     }"
                 />
                 <v-list-item
-                    v-if="hasPermission('provinces.view')"
+                    v-if="AuthRepository.permissions && AuthRepository.permissions.includes('provinces.view')"
                     class="menu-item"
                     prepend-icon="mdi-map-marker-outline"
                     :title="$t('menu.provinces')"
@@ -42,7 +42,7 @@
                 />
                 <v-list-item
                     class="menu-item"
-                    v-if="hasPermission('university.view')"
+                    v-if="AuthRepository.permissions && AuthRepository.permissions.includes('university.view')"
                     prepend-icon="mdi-school-outline"
                     :title="$t('menu.university')"
                     to="/university"
@@ -53,7 +53,7 @@
                 />
                 <v-list-item
                     class="menu-item"
-                    v-if="hasPermission('faculties.view')"
+                    v-if="AuthRepository.permissions && AuthRepository.permissions.includes('faculties.view')"
                     prepend-icon="mdi-home-city-outline"
                     :title="$t('menu.faculties')"
                     to="/faculties"
@@ -65,7 +65,7 @@
                 <v-list-item
                     class="menu-item"
                     prepend-icon="mdi-office-building-outline"
-                    v-if="hasPermission('departments.view')"
+                    v-if="AuthRepository.permissions && AuthRepository.permissions.includes('departments.view')"
                     :title="$t('menu.departments')"
                     to="/departments"
                     value="departments"
@@ -76,7 +76,7 @@
                 <v-list-item
                     class="menu-item"
                     prepend-icon="mdi-office-building-outline"
-                    v-if="hasPermission('teachers.view')"
+                    v-if="AuthRepository.permissions && AuthRepository.permissions.includes('teachers.view')"
                     :title="$t('menu.teachers')"
                     to="/teachers"
                     value="teachers"
@@ -88,7 +88,7 @@
                     class="menu-item"
                     prepend-icon="mdi-account-group-outline"
                     :title="$t('menu.student_statistic')"
-                    v-if="hasPermission('student_statistic.view')"
+                    v-if="AuthRepository.permissions && AuthRepository.permissions.includes('student_statistic.view')"
                     to="/student-statistic"
                     value="system"
                     :class="{
@@ -103,7 +103,7 @@
                         <v-list-item
                             v-bind="props"
                             :title="$t('menu.currentStudents')"
-                            v-if="hasPermission('current_students.view')"
+                            v-if="useAuthRepository.permission && AuthRepository.permission.includes('current_students.view')"
                             prepend-icon="mdi-file-chart-outline"
                             class="menu-item"
                         />
@@ -122,14 +122,14 @@
                             'v-list-item--active': route.path === item.to,
                         }"
                     />
-
-                    <!-- Graduated Students -->
                 </v-list-group>
+
+                <!-- Graduated Students -->
                 <v-list-group>
                     <template #activator="{ props }">
                         <v-list-item
                             v-bind="props"
-                            v-if="hasPermission('graduated_students.view')"
+                            v-if="AuthRepository.permissions && AuthRepository.permissions.includes('graduated_students.view')"
                             :title="$t('menu.graduated_students')"
                             prepend-icon="mdi-file-chart-outline"
                             class="menu-item"
@@ -157,7 +157,7 @@
                         <v-list-item
                             v-bind="props"
                             :title="$t('menu.settings')"
-                            v-if="hasPermission('settings.view')"
+                            v-if="AuthRepository.permissions && AuthRepository.permissions.includes('settings.view')"
                             prepend-icon="mdi-cog-outline"
                             class="menu-item"
                         />
@@ -186,9 +186,10 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { useAuthRepository } from "../store/AuthRepository";
-const AuthRepository = useAuthRepository();
+import { useAuthRepository } from "@/store/AuthRepository";
 
+const AuthRepository = useAuthRepository();
+AuthRepository.loadFromSession();
 const { t } = useI18n();
 const route = useRoute();
 
@@ -198,14 +199,7 @@ const user = ref({
     photo: "",
 });
 
-const permissions = ref([]);
-
 onMounted(() => {
-    const storedPermissions = sessionStorage.getItem("permissions");
-    if (storedPermissions) {
-        permissions.value = JSON.parse(storedPermissions);
-    }
-
     const storedUser = sessionStorage.getItem("user");
     if (storedUser) {
         const parsed = JSON.parse(storedUser);
@@ -215,95 +209,30 @@ onMounted(() => {
     }
 });
 
-// Utility to check permission
-const hasPermission = (permission) => {
-    return permissions.value.includes(permission);
-};
-
 const settingItems = [
-    {
-        to: "/users",
-        translationKey: "users",
-        icon: "mdi-circle-medium",
-        value: "users",
-    },
-    {
-        to: "/role-permission",
-        translationKey: "role_permissions",
-        icon: "mdi-circle-medium",
-        value: "roles",
-    },
-    {
-        to: "/logs",
-        translationKey: "logs",
-        icon: "mdi-circle-medium",
-        value: "logs",
-    },
+    { to: "/users", translationKey: "users", icon: "mdi-circle-medium", value: "users" },
+    { to: "/role-permission", translationKey: "role_permissions", icon: "mdi-circle-medium", value: "roles" },
+    { to: "/logs", translationKey: "logs", icon: "mdi-circle-medium", value: "logs" },
 ];
 
 const currentStudents = [
-    {
-        to: "/university-base-report",
-        translationKey: "university_report",
-        icon: "mdi-circle-medium",
-        value: "university-base-report",
-    },
-    {
-        to: "/student-teacher-ratio",
-        translationKey: "student_teacher_ratio",
-        icon: "mdi-circle-medium",
-        value: "student-teacher-ratio",
-    },
-    {
-        to: "/university-classes",
-        translationKey: "university_classes",
-        icon: "mdi-circle-medium",
-        value: "university-classes",
-    },
-    {
-        to: "/faculty_base",
-        translationKey: "faculty_base",
-        icon: "mdi-circle-medium",
-        value: "Faculty Base Report",
-    },
-    {
-        to: "/deparment_base",
-        translationKey: "deparment_base",
-        icon: "mdi-circle-medium",
-        value: "fawad",
-    },
-    {
-        to: "/students-type", // OR better: to: { name: "students-type" }
-        translationKey: "student_type_report",
-        icon: "mdi-circle-medium",
-        value: "students-type", // must exactly match route.name
-    },
+    { to: "/university-base-report", translationKey: "university_report", icon: "mdi-circle-medium", value: "university-base-report" },
+    { to: "/student-teacher-ratio", translationKey: "student_teacher_ratio", icon: "mdi-circle-medium", value: "student-teacher-ratio" },
+    { to: "/university-classes", translationKey: "university_classes", icon: "mdi-circle-medium", value: "university-classes" },
+    { to: "/faculty_base", translationKey: "faculty_base", icon: "mdi-circle-medium", value: "Faculty Base Report" },
+    { to: "/deparment_base", translationKey: "deparment_base", icon: "mdi-circle-medium", value: "fawad" },
+    { to: "/students-type", translationKey: "student_type_report", icon: "mdi-circle-medium", value: "students-type" },
 ];
-const graduatedStudents = [
-    {
-        to: "/university-graduation-report",
-        translationKey: "university_graduation_report",
-        icon: "mdi-circle-medium",
-        value: "university-graduation-report",
-    },
 
-    {
-        to: "/faculty-graduation",
-        translationKey: "faculty_graduation",
-        icon: "mdi-circle-medium",
-        value: "faculty-graduation",
-    },
-    {
-        to: "/department-base-graduation",
-        translationKey: "department_base_graduation",
-        icon: "mdi-circle-medium",
-        value: "department-base-graduation",
-    },
+const graduatedStudents = [
+    { to: "/university-graduation-report", translationKey: "university_graduation_report", icon: "mdi-circle-medium", value: "university-graduation-report" },
+    { to: "/faculty-graduation", translationKey: "faculty_graduation", icon: "mdi-circle-medium", value: "faculty-graduation" },
+    { to: "/department-base-graduation", translationKey: "department_base_graduation", icon: "mdi-circle-medium", value: "department-base-graduation" },
 ];
 </script>
 
 <style scoped>
-/* Add RTL specific styles */
+/* Styles remain unchanged from your original */
 [dir="rtl"] .submenu-item {
     padding-right: 32px !important;
 }
@@ -326,7 +255,7 @@ const graduatedStudents = [
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    min-height: 0; /* Crucial for flex scrolling */
+    min-height: 0;
 }
 
 .scrollable-list {
@@ -375,16 +304,8 @@ const graduatedStudents = [
     display: none !important;
 }
 
-/* .submenu-item > :nth-child(1) > :nth-child(1){
-    margin: 0 !important;
-   
-    display: flex;
-    justify-content: flex-end;
-    background-color: red;
-} */
-
 .v-list-group__items .v-list-item--nav.v-list-item {
-    padding-left: 16px !important; /* or 8px */
+    padding-left: 16px !important;
     min-height: 32px !important;
 }
 
@@ -393,7 +314,7 @@ const graduatedStudents = [
 }
 
 .v-list-group__items .v-list-item__content {
-    margin-left: 4px; /* Adjust spacing between icon and text */
+    margin-left: 4px;
 }
 
 :deep(.v-list-group__items) {
@@ -401,16 +322,9 @@ const graduatedStudents = [
     padding-bottom: 0 !important;
 }
 
-/* Specifically target the bullet points in submenus */
 :deep(.v-list-group__items .v-list-item .v-list-item__prepend) {
     width: 0px !important;
     min-width: 20px !important;
     margin-inline-end: 4px !important;
 }
-
-/* .submenu-item > :nth-child(1){
-    background-color: red;
-    display: flex;
-    justify-content: flex-start;
-} */
 </style>

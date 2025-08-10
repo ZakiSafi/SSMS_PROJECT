@@ -14,7 +14,7 @@
                     :label="t('search')"
                     append-inner-icon="mdi-magnify"
                     hide-details
-                    v-model="UserRepository.search"
+                    v-model="AuthRepository.search"
                     class="search-field"
                 ></v-text-field>
             </div>
@@ -36,13 +36,13 @@
         <!-- Data Table Section -->
         <v-data-table-server
             :dir="dir"
-            v-model:items-per-page="UserRepository.itemsPerPage"
+            v-model:items-per-page="AuthRepository.itemsPerPage"
             :headers="headers"
-            :items-length="UserRepository.totalItems"
-            :items="UserRepository.roles"
-            :loading="UserRepository.loading"
-            :search="UserRepository.search"
-            @update:options="UserRepository.fetchRoles"
+            :items-length="AuthRepository.totalItems"
+            :items="AuthRepository.roles"
+            :loading="AuthRepository.loading"
+            :search="AuthRepository.search"
+            @update:options="AuthRepository.fetchRoles"
             class="w-100 mx-auto"
             hover
         >
@@ -52,7 +52,7 @@
                         $t("pagination.items_per_page")
                     }}</span>
                     <v-select
-                        v-model="UserRepository.itemsPerPage"
+                        v-model="AuthRepository.itemsPerPage"
                         :items="[
                             { value: 5, text: '5' },
                             { value: 10, text: '10' },
@@ -108,9 +108,8 @@
 
 <script setup>
 import AppBar from "@/components/AppBar.vue";
-import CreateRolePermission from "./CreateRolePermission.vue";
 import { computed } from "vue";
-import { useUserRepository } from "../../store/UserRepository";
+import { useAuthRepository } from "@/store/AuthRepository";
 import { useI18n } from "vue-i18n";
 import { RouterLink } from "vue-router";
 import { useRouter } from "vue-router";
@@ -124,20 +123,20 @@ const goToEdit = (id) => {
     router.push({ name: "update-role", params: { id } });
 };
 
-const UserRepository = useUserRepository();
+const AuthRepository = useAuthRepository();
 
 const CreateDialogShow = () => {
-    UserRepository.university = {};
-    UserRepository.isEditMode = false;
-    UserRepository.createDialog = true;
+    AuthRepository.university = {};
+    AuthRepository.isEditMode = false;
+    AuthRepository.createDialog = true;
 };
 
 const edit = (item) => {
-    UserRepository.isEditMode = true;
-    UserRepository.university = {};
-    UserRepository.FetchUniversity(item.id)
+    AuthRepository.isEditMode = true;
+    AuthRepository.university = {};
+    AuthRepository.FetchUniversity(item.id)
         .then(() => {
-            UserRepository.createDialog = true;
+            AuthRepository.createDialog = true;
         })
         .catch((error) => {
             console.error("Error fetching data:", error);
@@ -145,7 +144,7 @@ const edit = (item) => {
 };
 
 const deleteItem = async (item) => {
-    await UserRepository.deleteRole(item.id);
+    await AuthRepository.deleteRole(item.id);
 };
 
 const headers = computed(() => [
