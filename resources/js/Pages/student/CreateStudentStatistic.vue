@@ -66,9 +66,7 @@
                                 <!-- Row 2 -->
                                 <v-select
                                     v-model="formData.faculty_id"
-                                    :items="
-                                        StudentStatisticsRepository.faculties
-                                    "
+                                    :items="facultiesOption"
                                     item-title="name"
                                     item-value="id"
                                     :label="$t('Faculty')"
@@ -76,7 +74,7 @@
                                     density="compact"
                                     :rules="[rules.required]"
                                     :disabled="!formData.university_id"
-                                    @update:modelValue="handleFacultyChange"
+                                   
                                     clearable
                                 />
 
@@ -270,7 +268,8 @@ const formData = reactive({
 const handleUniversityChange = (universityId) => {
     formData.faculty_id = null;
     formData.department_id = null;
-    StudentStatisticsRepository.fetchFormFacultiesByUniversity(universityId);
+    console.log(universityId);
+    StudentStatisticsRepository.fetchFacultiesByUniversity(universityId);
 };
 
 // Handle faculty change
@@ -284,27 +283,7 @@ const resetForm = () => {
     StudentStatisticsRepository.resetFormDependencies();
 };
 
-// Initialize form when mounted
-onMounted(() => {
-    StudentStatisticsRepository.fetchUniversities();
 
-    // If editing, initialize the form with existing data
-    if (
-        StudentStatisticsRepository.isEditMode &&
-        StudentStatisticsRepository.statistic.id
-    ) {
-        // Load faculties if university is set
-        if (formData.university_id) {
-            handleUniversityChange(formData.university_id);
-        }
-        // Load departments if faculty is set (with slight delay to ensure faculties are loaded)
-        if (formData.faculty_id) {
-            setTimeout(() => {
-                handleFacultyChange(formData.faculty_id);
-            }, 100);
-        }
-    }
-});
 
 const classOptions = [
     { id: 1, name: t("class1"), semesters: [1, 2] },
@@ -320,6 +299,20 @@ watch(
         const selected = classOptions.find((c) => c.name === newVal);
         availableSemesters.value = selected ? selected.semesters : [];
     }
+);
+const facultiesOption = ref([]);
+watch(
+  () => formData.university_id,
+  (newVal) => {
+    if (!newVal) {
+      facultiesOption.value = [];
+      return;
+    }
+
+    facultiesOption.value = StudentStatisticsRepository.faculties.filter(
+      (faculty) => faculty.university.id === newVal
+    );
+  }
 );
 
 onMounted(() => {

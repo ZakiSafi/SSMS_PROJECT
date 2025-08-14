@@ -193,11 +193,10 @@ export const useAuthRepository = defineStore("authRepository", {
                 
 
                 this.createDialog = false;
-                this.fetchRoles({
-                    page: this.page,
-                    itemsPerPage: this.itemsPerPage,
-                });
-                this.refreshPermissions();
+                await Promise.all([
+      this.fetchRoles({ page: this.page, itemsPerPage: this.itemsPerPage }),
+      this.refreshPermissions(),
+    ]);
             } catch (err) {
                 console.error("Failed to update user:", err);
             }

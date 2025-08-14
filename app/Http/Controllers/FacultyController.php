@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FacultyRequest;
 use App\Http\Resources\FacultyResource;
 use App\Models\Faculty;
+use App\Models\University;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -34,10 +35,8 @@ class FacultyController extends Controller
             $request,
             $this->model,
             ['name'],
-            null,
-            function ($query) {
-                $query->whereNull('university_id');  // filter only general faculties
-            }
+            'university',
+            
         );
 
         return FacultyResource::collection($faculty);
