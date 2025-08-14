@@ -9,16 +9,18 @@ class FacultyResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request): array
     {
-        return  [
-            "id" => $this->id,
-            "name" => $this->name,
-            'university_id' => $this->whenLoaded('university', function () {
-                return $this->university ? $this->university->id : null;
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            // Include universities if needed
+            'universities' => $this->whenLoaded('universities', function () {
+                return $this->universities->map(fn($uni) => [
+                    'id' => $uni->id,
+                    'name' => $uni->name,
+                ]);
             }),
         ];
     }
