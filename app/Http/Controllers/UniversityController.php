@@ -43,35 +43,18 @@ class UniversityController extends Controller
      */
     public function store(UniversityRequest $request)
     {
-        // Step 1: Create the university
         $university = University::create($request->only(['name', 'type', 'province_id']));
 
-        // Step 2: Duplicate each selected general faculty and assign it to the university
         if ($request->filled('faculty_ids')) {
-            $generalFaculties = Faculty::whereIn('id', $request->faculty_ids)
-                ->whereNull('university_id') // Ensure only general ones are selected
-                ->get();
-
-
-            foreach ($generalFaculties as $generalFaculty) {
-                $exists = Faculty::where('name', $generalFaculty->name)
-                    ->where('university_id', $university->id)
-                    ->exists();
-
-                if (!$exists) {
-                    Faculty::create([
-                        'name' => $generalFaculty->name,
-                        'university_id' => $university->id,
-                    ]);
-                }
-            }
+            $university->faculties()->attach($request->faculty_ids);
         }
 
         return response()->json([
             'message' => 'University created successfully',
-            'university' => $university->load('faculties'),
+            'data' => $university->load('faculties')
         ]);
     }
+
 
     /**
      * Display the specified resource.
@@ -83,46 +66,16 @@ class UniversityController extends Controller
      */
     public function update(UniversityRequest $request, University $university)
     {
-        // Step 1: Update the university's own fields
+        // Step 1: Update university's own fields
         $university->update($request->only(['name', 'type', 'province_id']));
 
-        // Step 2: Handle faculties updates if faculty_ids is provided
+        // Step 2: Sync faculties if provided
         if ($request->filled('faculty_ids')) {
-            // Get general faculties selected (without university_id)
-            $generalFaculties = Faculty::whereIn('id', $request->faculty_ids)
-                ->whereNull('university_id')
-                ->get();
-
-            // Get current faculties assigned to this university
-            $currentFaculties = $university->faculties()->pluck('id')->toArray();
-
-            // Prepare array to hold new faculty IDs after duplication
-            $newFacultyIds = [];
-
-            foreach ($generalFaculties as $generalFaculty) {
-                // Check if this faculty is already assigned (by name)
-                $faculty = Faculty::where('name', $generalFaculty->name)
-                    ->where('university_id', $university->id)
-                    ->first();
-
-                if (!$faculty) {
-                    // Duplicate faculty for this university
-                    $faculty = Faculty::create([
-                        'name' => $generalFaculty->name,
-                        'university_id' => $university->id,
-                    ]);
-                }
-                $newFacultyIds[] = $faculty->id;
-            }
-
-            // Optionally, remove faculties no longer in the updated list
-            // You might want to delete or detach faculties that are no longer selected
-            $facultiesToRemove = array_diff($currentFaculties, $newFacultyIds);
-
-            if (!empty($facultiesToRemove)) {
-                Faculty::whereIn('id', $facultiesToRemove)->delete();
-                // Or detach if you have pivot table, here you delete since faculties belong to university
-            }
+            // Attach/detach using sync
+            $university->faculties()->sync($request->faculty_ids);
+        } else {
+            // If no faculty_ids provided, detach all
+            $university->faculties()->detach();
         }
 
         return response()->json([
