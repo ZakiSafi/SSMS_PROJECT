@@ -16,12 +16,11 @@ class FacultyResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             // Include universities if needed
-            'universities' => $this->whenLoaded('universities', function () {
-                return $this->universities->map(fn($uni) => [
-                    'id' => $uni->id,
-                    'name' => $uni->name,
-                ]);
-            }),
+           "universities" => $this->universities->map(fn($uni) => [
+    "id" => $uni->id,
+    "name" => $uni->name,
+]),
+
         ];
     }
 }

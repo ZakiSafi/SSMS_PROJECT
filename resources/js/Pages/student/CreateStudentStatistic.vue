@@ -56,9 +56,6 @@
                                         density="compact"
                                         :rules="[rules.required]"
                                         :return-object="false"
-                                        @update:modelValue="
-                                            handleUniversityChange
-                                        "
                                         clearable
                                     />
                                 </v-col>
@@ -82,7 +79,7 @@
                                     <v-select
                                         v-model="formData.department_id"
                                         :items="
-                                            StudentStatisticsRepository.departments
+                                            departmentsOption
                                         "
                                         item-title="name"
                                         item-value="id"
@@ -264,13 +261,7 @@ const formData = reactive({
     student_type: StudentStatisticsRepository.statistic.student_type || "new",
 });
 
-// Handle university change
-const handleUniversityChange = (universityId) => {
-    formData.faculty_id = null;
-    formData.department_id = null;
-    console.log(universityId);
-    StudentStatisticsRepository.fetchFacultiesByUniversity(universityId);
-};
+
 
 // Handle faculty change
 const handleFacultyChange = (facultyId) => {
@@ -309,11 +300,38 @@ watch(
       return;
     }
 
+    console.log(StudentStatisticsRepository.faculties);
+
     facultiesOption.value = StudentStatisticsRepository.faculties.filter(
-      (faculty) => faculty.university.id === newVal
+      (faculty) =>
+        faculty.universities.some((uni) => uni.id === newVal)
     );
+
+    console.log("Faculties updated:", facultiesOption.value);
   }
 );
+const departmentsOption = ref([]);
+watch(
+  () => formData.faculty_id,
+  (newVal) => {
+    if (!newVal) {
+      departmentsOption.value = [];
+      return;
+    }
+
+   
+
+    departmentsOption.value = StudentStatisticsRepository.departments.filter(
+  (department) =>
+    department.faculty.id === newVal
+);
+
+
+  }
+);
+
+
+
 
 onMounted(() => {
     StudentStatisticsRepository.fetchDepartments();

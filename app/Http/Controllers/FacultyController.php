@@ -35,7 +35,7 @@ class FacultyController extends Controller
             $request,
             $this->model,
             ['name'],
-            'university',
+            withTables: 'universities',
             
         );
 
