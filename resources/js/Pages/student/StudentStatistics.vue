@@ -46,7 +46,7 @@
                                     StudentStatisticRepository.filters
                                         .university
                                 "
-                                :items="filteredUniversities"
+                                :items="StudentStatisticRepository.universities"
                                 :label="t('university')"
                                 item-title="name"
                                 item-value="id"
@@ -333,33 +333,14 @@ const academicYears = computed(() => {
 });
 
 const studentTypes = computed(() => [
-    { text: t("Current"), value: "current" },
-    { text: t("Graduated"), value: "graduated" },
-    { text: t("New"), value: "new" },
+    { title: t("Current"), value: "current" },
+    { title: t("Graduated"), value: "graduated" },
+    { title: t("New"), value: "new" },
 ]);
 // Computed properties for filter options
 const provinces = computed(() => ProvinceRepository.provinces);
 const universityTypes = computed(() => UniversityRepository.universityTypes);
 
-const filteredUniversities = computed(() => {
-    // If no province or type filter, return all universities
-    if (
-        !StudentStatisticRepository.filters.province &&
-        !StudentStatisticRepository.filters.university_type
-    ) {
-        return UniversityRepository.universities;
-    }
-
-    return UniversityRepository.universities.filter((uni) => {
-        const provinceMatch =
-            !StudentStatisticRepository.filters.province ||
-            uni.province_id == StudentStatisticRepository.filters.province;
-        const typeMatch =
-            !StudentStatisticRepository.filters.university_type ||
-            uni.type === StudentStatisticRepository.filters.university_type;
-        return provinceMatch && typeMatch;
-    });
-});
 
 const filteredFaculties = computed(() => {
     if (!StudentStatisticRepository.filters.university) {

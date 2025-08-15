@@ -83,19 +83,18 @@ export const useStudentStatisticRepository = defineStore(
                 }
             },
 
-            async fetchUniversitiesByProvince(provinceId) {
-                try {
-                    const params = provinceId ? { province: provinceId } : {};
-                    const response = await axios.get("universities", {
-                        params,
-                    });
-                    this.universities = response.data.data;
-                } catch (error) {
-                    console.error("Error fetching universities:", error);
-                    throw error;
-                }
-            },
-
+           async fetchUniversitiesByProvince(provinceId) {
+    try {
+        
+       const response = await axios.get("universities");
+        this.universities = response.data.data.filter(uni => uni.province.id === provinceId);;
+        console.log(this.universities);
+        
+    } catch (error) {
+        console.error("Error fetching universities:", error);
+        throw error;
+    }
+},
             async fetchFacultiesByUniversity(universityId) {
                 try {
                     const params = universityId

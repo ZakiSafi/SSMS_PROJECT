@@ -75,3 +75,6 @@ class FacultyController extends Controller
         return $this->deleteRecord($faculty);
     }
 }
+
+
+
