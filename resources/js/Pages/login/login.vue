@@ -104,6 +104,7 @@
                         :rules="emailRules"
                         required
                         placeholder="Email"
+                        ref="emailField"
                     />
 
                     <v-text-field
@@ -123,6 +124,7 @@
                         :rules="passwordRules"
                         required
                         placeholder="enter your password"
+                        ref="passwordField"
                     />
                     <v-btn
                         type="submit"
@@ -143,7 +145,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, onMounted, computed, nextTick } from "vue";
 import { useAuthRepository } from "../../store/AuthRepository";
 import { useI18n } from "vue-i18n";
 
@@ -156,6 +158,8 @@ const formData = reactive({
 const visible = ref(false);
 const formRef = ref(null);
 const isRtl = ref(false);
+const emailField = ref(null);
+const passwordField = ref(null);
 
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 
@@ -191,7 +195,59 @@ const passwordRules = [
     (v) => (v && v.length >= 6) || t("validations.password_min"),
 ];
 
+const checkFormTampering = () => {
+    try {
+        // Check if the input elements are still in the DOM
+        if (
+            !document.contains(emailField.value?.$el) ||
+            !document.contains(passwordField.value?.$el)
+        ) {
+            return true;
+        }
+
+        // Check if the inputs have been disabled or hidden
+        const emailEl = emailField.value?.$el.querySelector("input");
+        const passwordEl = passwordField.value?.$el.querySelector("input");
+
+        if (!emailEl || !passwordEl) return true;
+
+        if (
+            emailEl.disabled ||
+            passwordEl.disabled ||
+            emailEl.readOnly ||
+            passwordEl.readOnly
+        ) {
+            return true;
+        }
+
+        const emailStyle = window.getComputedStyle(emailEl);
+        const passwordStyle = window.getComputedStyle(passwordEl);
+
+        if (
+            emailStyle.display === "none" ||
+            emailStyle.visibility === "hidden" ||
+            passwordStyle.display === "none" ||
+            passwordStyle.visibility === "hidden"
+        ) {
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        console.error("Error checking form tampering:", error);
+        return true;
+    }
+};
+
 const loginFunc = async () => {
+    // First check for form tampering
+    if (checkFormTampering()) {
+        alert(
+            "Security violation detected. Please refresh the page and try again."
+        );
+        return;
+    }
+
     // Reset any previous validation
     formRef.value?.resetValidation();
 

@@ -71,16 +71,13 @@
                                     density="compact"
                                     :rules="[rules.required]"
                                     :disabled="!formData.university_id"
-                                   
                                     clearable
                                 />
 
                                 <v-col cols="6">
                                     <v-select
                                         v-model="formData.department_id"
-                                        :items="
-                                            departmentsOption
-                                        "
+                                        :items="departmentsOption"
                                         item-title="name"
                                         item-value="id"
                                         :label="$t('Department')"
@@ -261,8 +258,6 @@ const formData = reactive({
     student_type: StudentStatisticsRepository.statistic.student_type || "new",
 });
 
-
-
 // Handle faculty change
 const handleFacultyChange = (facultyId) => {
     formData.department_id = null;
@@ -274,13 +269,14 @@ const resetForm = () => {
     StudentStatisticsRepository.resetFormDependencies();
 };
 
-
-
 const classOptions = [
     { id: 1, name: t("class1"), semesters: [1, 2] },
     { id: 2, name: t("class2"), semesters: [3, 4] },
     { id: 3, name: t("class3"), semesters: [5, 6] },
     { id: 4, name: t("class4"), semesters: [7, 8] },
+    { id: 5, name: t("class5"), semesters: [7, 8] },
+    { id: 6, name: t("class6"), semesters: [7, 8] },
+    { id: 7, name: t(""), semesters: [7, 8] },
 ];
 
 const availableSemesters = ref([]);
@@ -293,45 +289,37 @@ watch(
 );
 const facultiesOption = ref([]);
 watch(
-  () => formData.university_id,
-  (newVal) => {
-    if (!newVal) {
-      facultiesOption.value = [];
-      return;
+    () => formData.university_id,
+    (newVal) => {
+        if (!newVal) {
+            facultiesOption.value = [];
+            return;
+        }
+
+        console.log(StudentStatisticsRepository.faculties);
+
+        facultiesOption.value = StudentStatisticsRepository.faculties.filter(
+            (faculty) => faculty.universities.some((uni) => uni.id === newVal)
+        );
+
+        console.log("Faculties updated:", facultiesOption.value);
     }
-
-    console.log(StudentStatisticsRepository.faculties);
-
-    facultiesOption.value = StudentStatisticsRepository.faculties.filter(
-      (faculty) =>
-        faculty.universities.some((uni) => uni.id === newVal)
-    );
-
-    console.log("Faculties updated:", facultiesOption.value);
-  }
 );
 const departmentsOption = ref([]);
 watch(
-  () => formData.faculty_id,
-  (newVal) => {
-    if (!newVal) {
-      departmentsOption.value = [];
-      return;
+    () => formData.faculty_id,
+    (newVal) => {
+        if (!newVal) {
+            departmentsOption.value = [];
+            return;
+        }
+
+        departmentsOption.value =
+            StudentStatisticsRepository.departments.filter(
+                (department) => department.faculty.id === newVal
+            );
     }
-
-   
-
-    departmentsOption.value = StudentStatisticsRepository.departments.filter(
-  (department) =>
-    department.faculty.id === newVal
 );
-
-
-  }
-);
-
-
-
 
 onMounted(() => {
     StudentStatisticsRepository.fetchDepartments();

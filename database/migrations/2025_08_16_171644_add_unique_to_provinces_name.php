@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('provinces', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique()->change();
-            $table->timestamps();
+        Schema::table('provinces', function (Blueprint $table) {
+            $table->unique('name');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('provinces');
+        Schema::table('provinces', function (Blueprint $table) {
+            $table->dropUnique(['name']);
+        });
     }
 };

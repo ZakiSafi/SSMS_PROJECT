@@ -108,17 +108,21 @@ const rules = {
 
 onMounted(() => {
     UserRepository.fetchUniversities();
-    UserRepository.fetchRoles({ page: 1, itemsPerPage: 10 });
+    UserRepository.fetchRoles();
 });
 
 const save = async () => {
-    const isValid = await formRef.value.validate();
-    if (isValid) {
+    const { valid } = await formRef.value.validate();
+    if (!valid) return;
+
+    try {
         if (UserRepository.isEditMode) {
             await UserRepository.updateUser(formData.id, formData);
         } else {
             await UserRepository.createUser(formData);
         }
+    } catch (error) {
+        // Error is already handled by the repository
     }
 };
 </script>
