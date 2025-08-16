@@ -12,17 +12,37 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      */
     private $model = User::class;
+
     public function index(Request $request)
     {
-        $users = $this->listRecord($request, $this->model, ['name', 'email']);
-        return UserResource::collection($users);
-    }
+        try {
+            $users = $this->listRecord($request, $this->model, ['name', 'email']);
 
+            return $this->successResponse(
+                UserResource::collection($users),
+                'Users retrieved successfully',
+                200,
+                [
+                    'total' => $users->total(),
+                    'per_page' => $users->perPage(),
+                    'current_page' => $users->currentPage(),
+                    'last_page' => $users->lastPage(),
+                    'from' => $users->firstItem(),
+                    'to' => $users->lastItem()
+                ]
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed to retrieve users',
+                500,
+                $e->getMessage()
+            );
+        }
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -33,7 +53,6 @@ class UserController extends Controller
         try {
             $validated = $request->validated();
 
-            // Create user
             $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
@@ -41,7 +60,6 @@ class UserController extends Controller
                 'university_id' => $validated['university_id'] ?? null,
             ]);
 
-            // Assign role (using either role ID or name)
             if (isset($validated['role_id'])) {
                 $role = Role::findById($validated['role_id'], 'api');
                 $user->assignRole($role);
@@ -49,16 +67,18 @@ class UserController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'message' => 'User created successfully',
-                'user' => $user->load('roles')
-            ], 201);
+            return $this->successResponse(
+                new UserResource($user->load('roles')),
+                'User created successfully',
+                201
+            );
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'message' => 'User creation failed',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse(
+                'User creation failed',
+                500,
+                $e->getMessage()
+            );
         }
     }
 
@@ -67,7 +87,18 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return new UserResource($this->showRecord($user));
+        try {
+            return $this->successResponse(
+                new UserResource($this->showRecord($user)),
+                'User retrieved successfully'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed to retrieve user',
+                500,
+                $e->getMessage()
+            );
+        }
     }
 
     /**
@@ -75,10 +106,30 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        $user = $this->updateRecord($request, $user);
-        $validated = $request->validated();
-        $role = Role::findOrFail($validated['role_id'] ?? null);
-        $user->syncRoles([$role]);
+        DB::beginTransaction();
+        try {
+            $user = $this->updateRecord($request, $user);
+            $validated = $request->validated();
+
+            if (isset($validated['role_id'])) {
+                $role = Role::findOrFail($validated['role_id']);
+                $user->syncRoles([$role]);
+            }
+
+            DB::commit();
+
+            return $this->successResponse(
+                new UserResource($user->load('roles')),
+                'User updated successfully'
+            );
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse(
+                'User update failed',
+                500,
+                $e->getMessage()
+            );
+        }
     }
 
     /**
@@ -86,11 +137,34 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        return $this->deleteRecord($user);
+        try {
+            $this->deleteRecord($user);
+            return $this->successResponse(
+                null,
+                'User deleted successfully'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'User deletion failed',
+                500,
+                $e->getMessage()
+            );
+        }
     }
 
     public function me(Request $request)
     {
-        return new UserResource($request->user());
+        try {
+            return $this->successResponse(
+                new UserResource($request->user()),
+                'User profile retrieved successfully'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                'Failed to retrieve user profile',
+                500,
+                $e->getMessage()
+            );
+        }
     }
 }

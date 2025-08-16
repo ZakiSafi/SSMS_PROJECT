@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Log;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage; // Used to manage file storage (e.g., images)
 use Illuminate\Routing\Controller as BaseController; // Base controller class in Laravel
 use Illuminate\Support\Facades\Auth; // Facade to access the currently authenticated user
@@ -12,6 +13,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests; // Trait for validating 
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests; // Include traits for validation and authorization
+
 
     public function __construct()
     {
@@ -62,42 +64,54 @@ class Controller extends BaseController
      */
     public function storeRecord($request, $model)
     {
-        $validated = $request->validated();
-        $facultyIds = $validated['faculty_ids'] ?? [];
+        try {
+            $validated = $request->validated();
+            $facultyIds = $validated['faculty_ids'] ?? [];
 
-        unset($validated['faculty_ids']); // Don't include it in main record
+            unset($validated['faculty_ids']);
 
-        $validated['user_id'] = Auth::id();
-        $record = $model::create($validated); // Create university
+            $validated['user_id'] = Auth::id();
+            $record = $model::create($validated);
 
-        // 🔗 Assign selected faculties to this university
-        if (!empty($facultyIds)) {
-            \App\Models\Faculty::whereIn('id', $facultyIds)->update([
-                'university_id' => $record->id,
+            if (!empty($facultyIds)) {
+                \App\Models\Faculty::whereIn('id', $facultyIds)->update([
+                    'university_id' => $record->id,
+                ]);
+            }
+
+            $this->storeImage($request, $record);
+
+            // Logging
+            $excludedFields = ['password'];
+            $details = collect($validated)
+                ->except($excludedFields)
+                ->map(fn($value, $key) => "$key=$value")
+                ->implode(', ');
+
+            Log::create([
+                'user_id' => Auth::id(),
+                'university_id' => Auth::user()->university_id ?? null,
+                'action_type' => 'create',
+                'table_name' => $record->getTable(),
+                'record_id' => $record->id,
+                'action_description' => "Created " . class_basename($record) . ": $details",
+                'ip_address' => $request->ip(),
+                'agent' => $request->userAgent(),
             ]);
+
+            return $record;
+        } catch (QueryException $e) {
+            // Handle duplicate entry (error code 23000)
+            if ($e->errorInfo[1] == 23000) {
+                throw new \Exception('This record already exists');
+            }
+
+            // Handle other database errors
+            throw new \Exception('Database error occurred');
+        } catch (\Exception $e) {
+            // Handle all other exceptions
+            throw new \Exception('Failed to create record: ' . $e->getMessage());
         }
-
-        $this->storeImage($request, $record);
-
-        // Logging
-        $excludedFields = ['password'];
-        $details = collect($validated)
-            ->except($excludedFields)
-            ->map(fn($value, $key) => "$key=$value")
-            ->implode(', ');
-
-        Log::create([
-            'user_id' => Auth::id(),
-            'university_id' => Auth::user()->university_id ?? null,
-            'action_type' => 'create',
-            'table_name' => $record->getTable(),
-            'record_id' => $record->id,
-            'action_description' => "Created " . class_basename($record) . ": $details",
-            'ip_address' => $request->ip(),
-            'agent' => $request->userAgent(),
-        ]);
-
-        return $record;
     }
 
     /**
@@ -105,46 +119,61 @@ class Controller extends BaseController
      */
     public function updateRecord($request, $record)
     {
-        // Store original data before the update
-        $oldData = $record->getOriginal();
+        try {
 
-        // Validate and apply new data
-        $validated = $request->validated();
-        $record->update($validated);
+            // Store original data before the update
+            $oldData = $record->getOriginal();
 
-        // Get changed fields only
-        $changedFields = array_diff_assoc($validated, $oldData);
+            // Validate and apply new data
+            $validated = $request->validated();
+            $record->update($validated);
 
-        // If there are changes, build the log description
-        if (!empty($changedFields)) {
-            $logDetails = collect($changedFields)->map(function ($new, $field) use ($oldData) {
-                $old = $oldData[$field] ?? 'null';
+            // Get changed fields only
+            $changedFields = array_diff_assoc($validated, $oldData);
 
-                // Handle null and boolean formatting for clarity
-                $oldFormatted = is_null($old) ? 'null' : (is_bool($old) ? ($old ? 'true' : 'false') : $old);
-                $newFormatted = is_null($new) ? 'null' : (is_bool($new) ? ($new ? 'true' : 'false') : $new);
+            // If there are changes, build the log description
+            if (!empty($changedFields)) {
+                $logDetails = collect($changedFields)->map(function ($new, $field) use ($oldData) {
+                    $old = $oldData[$field] ?? 'null';
 
-                return "$field: '$oldFormatted' -> '$newFormatted'";
-            })->implode(', ');
+                    // Handle null and boolean formatting for clarity
+                    $oldFormatted = is_null($old) ? 'null' : (is_bool($old) ? ($old ? 'true' : 'false') : $old);
+                    $newFormatted = is_null($new) ? 'null' : (is_bool($new) ? ($new ? 'true' : 'false') : $new);
 
-            // Create the log entry
-            Log::create([
-                'user_id' => Auth::id(),
-                'university_id' => Auth::user()->university_id ?? null,
-                'action_type' => 'update',
-                'table_name' => $record->getTable(),
-                'record_id' => $record->id,
-                'action_description' => "Updated " . class_basename($record) . ": $logDetails",
-                'ip_address' => request()->ip(),
-                'agent' => request()->userAgent(),
-            ]);
+                    return "$field: '$oldFormatted' -> '$newFormatted'";
+                })->implode(', ');
+
+                // Create the log entry
+                Log::create([
+                    'user_id' => Auth::id(),
+                    'university_id' => Auth::user()->university_id ?? null,
+                    'action_type' => 'update',
+                    'table_name' => $record->getTable(),
+                    'record_id' => $record->id,
+                    'action_description' => "Updated " . class_basename($record) . ": $logDetails",
+                    'ip_address' => request()->ip(),
+                    'agent' => request()->userAgent(),
+                ]);
+            }
+
+            // Optional image handling
+            $this->storeImage($request, $record);
+
+            return $record;
+        } catch (QueryException $e) {
+            if ($e->errorInfo[1] == 23000) {
+                throw new \Exception('Update failed: record conflicts with existing data');
+            }
+            throw new \Exception('Database error during update');
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to update record: ' . $e->getMessage());
         }
-
-        // Optional image handling
-        $this->storeImage($request, $record);
-
-        return $record;
     }
+
+
+
+
+
 
 
 
@@ -230,5 +259,29 @@ class Controller extends BaseController
                 $model->update([$image => null]); // Set image field to null in database
             }
         }
+    }
+
+    // showing notfication for success or error
+    protected function successResponse($data = null, string $message = 'Operation successful', int $code = 200, $meta = null)
+    {
+        $response = [
+            'success' => true,
+            'message' => $message,
+            'data' => $data
+        ];
+
+        if ($meta) {
+            $response['meta'] = $meta;
+        }
+
+        return response()->json($response, $code);
+    }
+    protected function errorResponse(string $message = 'An error occurred', int $code = 400, $errors = null)
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'errors' => $errors
+        ], $code);
     }
 }

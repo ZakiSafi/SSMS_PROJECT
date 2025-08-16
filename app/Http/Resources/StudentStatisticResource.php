@@ -15,7 +15,7 @@ class StudentStatisticResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id"=> $this->id,
+            "id" => $this->id,
             "academic_year" => $this->academic_year,
             "university" => [
                 "university_id" => $this->university->id,
@@ -35,6 +35,7 @@ class StudentStatisticResource extends JsonResource
             'season' => $this->season,
             "male_total" => $this->male_total,
             "female_total" => $this->female_total,
+            'total_students' => $this->male_total + $this->female_total, // Add this line
             "student_type" => $this->student_type,
         ];
     }

@@ -9,7 +9,7 @@ use App\Http\Resources\ProvinceResource;
 
 class ProvinceController extends Controller
 {
-        public function __construct()
+    public function __construct()
     {
         $this->middleware('permission:provinces.view')->only(['index', 'show']);
         $this->middleware('permission:provinces.edit')->only(['edit', 'update']);
@@ -26,7 +26,7 @@ class ProvinceController extends Controller
     {
 
 
-        $provinces =  $this->listRecord($request, $this->model,['name']);
+        $provinces =  $this->listRecord($request, $this->model, ['name']);
         return ProvinceResource::collection($provinces);
     }
 
