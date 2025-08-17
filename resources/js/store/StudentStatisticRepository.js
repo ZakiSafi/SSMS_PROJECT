@@ -9,6 +9,7 @@ export const useStudentStatisticRepository = defineStore(
             isEditMode: ref(false),
             search: ref(""),
             statistics: reactive([]),
+            provinces: reactive([]),
             statistic: reactive({}),
             departments: reactive([]),
             universities: reactive([]),
@@ -83,6 +84,7 @@ export const useStudentStatisticRepository = defineStore(
                 }
             },
 
+<<<<<<< HEAD
             async fetchUniversitiesByProvince(provinceId) {
                 try {
                     const response = await axios.get("universities");
@@ -95,13 +97,27 @@ export const useStudentStatisticRepository = defineStore(
                     throw error;
                 }
             },
+=======
+           async fetchUniversitiesByProvince(provinceId) {
+    try {
+        
+       const response = await axios.get("universities");
+        this.universities = response.data.data.filter(uni => uni.province.id === provinceId);
+        console.log(this.universities);
+        
+    } catch (error) {
+        console.error("Error fetching universities:", error);
+        throw error;
+    }
+},
+>>>>>>> 192e8ec31a093b5cf0c38711c91ab7c8156625ff
             async fetchFacultiesByUniversity(universityId) {
                 try {
                     const params = universityId
                         ? { university_id: universityId }
                         : {};
                     const response = await axios.get("faculties", { params });
-                    this.faculties = response.data.data;
+                    this.faculties = response.data.data.filter( (faculty) => faculty.universities.some((uni) => uni.id === universityId) );;
                 } catch (error) {
                     console.error("Error fetching faculties:", error);
                     throw error;
@@ -112,7 +128,7 @@ export const useStudentStatisticRepository = defineStore(
                 try {
                     const params = facultyId ? { faculty_id: facultyId } : {};
                     const response = await axios.get("departments", { params });
-                    this.departments = response.data.data;
+                    this.departments = response.data.data.filter(dep => dep.faculty.id === facultyId);
                 } catch (error) {
                     console.error("Error fetching departments:", error);
                     throw error;
@@ -150,6 +166,17 @@ export const useStudentStatisticRepository = defineStore(
                     console.error("Failed to fetch departments:", error);
                     throw error;
                 }
+            },
+
+            async fetchProvinces(){
+                   try {
+                    const response = await axios.get("provinces");
+                    this.provinces = response.data.data;
+                } catch (error) {
+                    console.error("Failed to fetch departments:", error);
+                    throw error;
+                }
+
             },
 
             async fetchStatistic(id) {
