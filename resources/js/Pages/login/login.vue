@@ -11,7 +11,7 @@
 
         <!-- Right Login Form Section -->
         <div class="relative bg-white">
-            <!-- Language Switcher Button (added at top right) -->
+            <!-- Language Switcher Button -->
             <div class="absolute top-4 right-0">
                 <v-menu transition="scale-transition" offset-y>
                     <template #activator="{ props }">
@@ -62,6 +62,7 @@
                 </v-menu>
             </div>
 
+            <!-- Decorations -->
             <img
                 src="../../../../public/assets/Vector.png"
                 alt="Decoration"
@@ -72,6 +73,8 @@
                 alt="Decoration"
                 class="absolute bottom-0 right-0"
             />
+
+            <!-- Login Form -->
             <v-form
                 @submit.prevent="loginFunc"
                 ref="formRef"
@@ -90,10 +93,16 @@
                         {{ $t("login_with_email") }}
                     </p>
 
+                    <!-- Email Field -->
                     <v-text-field
                         v-model="formData.email"
                         :label="t('email_id')"
-                        prepend-inner-icon="mdi-email-outline"
+                        :prepend-inner-icon="
+                            dir === 'ltr' ? 'mdi-email-outline' : ''
+                        "
+                        :append-inner-icon="
+                            dir === 'rtl' ? 'mdi-email-outline' : ''
+                        "
                         variant="outlined"
                         color="#009EE2"
                         density="comfortable"
@@ -103,16 +112,27 @@
                         flat
                         :rules="emailRules"
                         required
-                        placeholder="Email"
+                        :placeholder="t('Email')"
                         ref="emailField"
+                        :dir="dir"
+                        :class="dir === 'rtl' ? 'input-rtl' : ''"
                     />
 
+                    <!-- Password Field -->
                     <v-text-field
                         v-model="formData.password"
                         :label="t('password')"
                         :type="visible ? 'text' : 'password'"
-                        prepend-inner-icon="mdi-lock-outline"
-                        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                        :prepend-inner-icon="
+                            dir === 'ltr' ? 'mdi-lock-outline' : ''
+                        "
+                        :append-inner-icon="
+                            dir === 'rtl'
+                                ? 'mdi-lock-outline'
+                                : visible
+                                ? 'mdi-eye-off'
+                                : 'mdi-eye'
+                        "
                         variant="outlined"
                         density="comfortable"
                         @click:append-inner="visible = !visible"
@@ -123,9 +143,13 @@
                         flat
                         :rules="passwordRules"
                         required
-                        placeholder="enter your password"
+                        :placeholder="t('enter your password')"
                         ref="passwordField"
+                        :dir="dir"
+                        :class="dir === 'rtl' ? 'input-rtl' : ''"
                     />
+
+                    <!-- Submit Button -->
                     <v-btn
                         type="submit"
                         color="secondary"
@@ -145,25 +169,23 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed, nextTick } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { useAuthRepository } from "../../store/AuthRepository";
 import { useI18n } from "vue-i18n";
 
 const { t, locale } = useI18n();
 const AuthRepository = useAuthRepository();
-const formData = reactive({
-    email: "",
-    password: "",
-});
+const formData = reactive({ email: "", password: "" });
 const visible = ref(false);
 const formRef = ref(null);
 const isRtl = ref(false);
 const emailField = ref(null);
 const passwordField = ref(null);
 
+// Change direction based on language
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
 
-// Initialize language from localStorage
+// Initialize language
 onMounted(() => {
     const savedLang = localStorage.getItem("locale");
     if (savedLang) {
@@ -172,7 +194,7 @@ onMounted(() => {
     }
 });
 
-// Language switcher items
+// Language switcher
 const languageItems = ref([
     { title: "english", lang: "en", icon: "/assets/english.png" },
     { title: "dari", lang: "fa", icon: "/assets/dari.png" },
@@ -185,6 +207,7 @@ const changeLanguage = (lang) => {
     isRtl.value = lang !== "en";
 };
 
+// Validation rules
 const emailRules = [
     (v) => !!v || t("validations.email_required"),
     (v) => /.+@.+\..+/.test(v) || t("validations.email_invalid"),
@@ -195,9 +218,9 @@ const passwordRules = [
     (v) => (v && v.length >= 6) || t("validations.password_min"),
 ];
 
+// Check tampering
 const checkFormTampering = () => {
     try {
-        // Check if the input elements are still in the DOM
         if (
             !document.contains(emailField.value?.$el) ||
             !document.contains(passwordField.value?.$el)
@@ -205,7 +228,6 @@ const checkFormTampering = () => {
             return true;
         }
 
-        // Check if the inputs have been disabled or hidden
         const emailEl = emailField.value?.$el.querySelector("input");
         const passwordEl = passwordField.value?.$el.querySelector("input");
 
@@ -239,8 +261,8 @@ const checkFormTampering = () => {
     }
 };
 
+// Login
 const loginFunc = async () => {
-    // First check for form tampering
     if (checkFormTampering()) {
         alert(
             "Security violation detected. Please refresh the page and try again."
@@ -248,15 +270,9 @@ const loginFunc = async () => {
         return;
     }
 
-    // Reset any previous validation
     formRef.value?.resetValidation();
-
-    // Validate form
     const { valid } = await formRef.value?.validate();
-
-    if (!valid) {
-        return; // Stop if validation fails
-    }
+    if (!valid) return;
 
     try {
         await AuthRepository.login(formData);
@@ -265,3 +281,16 @@ const loginFunc = async () => {
     }
 };
 </script>
+
+<style>
+/* Align input text to the right for RTL */
+.input-rtl input {
+    text-align: right !important;
+}
+/* Align label text in RTL mode */
+.input-rtl .v-label {
+    right: 16px !important;
+    left: auto !important;
+    text-align: right !important;
+}
+</style>

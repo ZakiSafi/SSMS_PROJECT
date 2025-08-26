@@ -57,6 +57,7 @@
                                         :rules="[rules.required]"
                                         :return-object="false"
                                         clearable
+                                        :no-data-text="t('no_data_available')"
                                     />
                                 </v-col>
 
@@ -72,6 +73,7 @@
                                     :rules="[rules.required]"
                                     :disabled="!formData.university_id"
                                     clearable
+                                    :no-data-text="t('no_data_available')"
                                 />
 
                                 <v-col cols="6">
@@ -86,6 +88,7 @@
                                         :rules="[rules.required]"
                                         :disabled="!formData.faculty_id"
                                         clearable
+                                        :no-data-text="t('no_data_available')"
                                     />
                                 </v-col>
 
@@ -99,6 +102,7 @@
                                         :label="$t('Class')"
                                         variant="outlined"
                                         density="compact"
+                                        :no-data-text="t('no_data_available')"
                                     />
                                 </v-col>
 
@@ -111,6 +115,7 @@
                                         density="compact"
                                         :rules="[rules.required]"
                                         :disabled="!formData.classroom"
+                                        :no-data-text="t('no_data_available')"
                                     />
                                 </v-col>
 
@@ -120,19 +125,15 @@
                                         :items="[
                                             {
                                                 value: 'new',
-                                                title: $t('student_type.new'),
+                                                title: $t('New'),
                                             },
                                             {
                                                 value: 'current',
-                                                title: $t(
-                                                    'student_type.current'
-                                                ),
+                                                title: $t('Current'),
                                             },
                                             {
                                                 value: 'graduated',
-                                                title: $t(
-                                                    'student_type.graduated'
-                                                ),
+                                                title: $t('Graduated'),
                                             },
                                         ]"
                                         item-title="title"
@@ -141,6 +142,7 @@
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
+                                        :no-data-text="t('no_data_available')"
                                     />
                                 </v-col>
 
@@ -160,6 +162,7 @@
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
+                                        :no-data-text="t('no_data_available')"
                                     />
                                 </v-col>
 
@@ -172,6 +175,7 @@
                                         variant="outlined"
                                         density="compact"
                                         :rules="[rules.required]"
+                                        :no-data-text="t('no_data_available')"
                                     />
                                 </v-col>
 

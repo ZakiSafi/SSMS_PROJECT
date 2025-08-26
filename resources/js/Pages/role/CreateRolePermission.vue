@@ -1,7 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import AppBar from "@/components/AppBar.vue";
 import { useAuthRepository } from "@/store/AuthRepository";
+import { useI18n } from "vue-i18n"; // <--- import i18n
+
+const { t, locale } = useI18n();
+const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
+
 const AuthRepository = useAuthRepository();
 
 const roleName = ref("");
@@ -9,49 +14,49 @@ const roleDescription = ref("");
 
 // Define pages and actions
 const pages = [
-    { label: "Dashboard", key: "dashboard", actions: ["view"] },
+    { label: "dashboard", key: "dashboard", actions: ["view"] },
     {
-        label: "Provinces",
+        label: "provinces",
         key: "provinces",
         actions: ["view", "create", "edit", "delete"],
     },
     {
-        label: "Universities",
+        label: "universities",
         key: "university",
         actions: ["view", "create", "edit", "delete"],
     },
     {
-        label: "Faculties",
+        label: "faculties",
         key: "faculties",
         actions: ["view", "create", "edit", "delete"],
     },
     {
-        label: "Departments",
+        label: "departments",
         key: "departments",
         actions: ["view", "create", "edit", "delete"],
     },
     {
-        label: "Teachers",
+        label: "teachers",
         key: "teachers",
         actions: ["view", "create", "edit", "delete"],
     },
     {
-        label: "Student Statistics",
+        label: "student_statistics",
         key: "student_statistic",
         actions: ["view", "create", "edit", "delete"],
     },
     {
-        label: "Current Students",
+        label: "current_students",
         key: "current_students",
         actions: ["view", "create", "edit", "delete"],
     },
     {
-        label: "Graduated Students",
+        label: "graduated_students",
         key: "graduated_students",
         actions: ["view", "create", "edit", "delete"],
     },
     {
-        label: "Settings",
+        label: "settings",
         key: "settings",
         actions: ["view", "create", "edit", "delete"],
     },
@@ -105,8 +110,8 @@ const submitPermissions = async () => {
 </script>
 
 <template>
-    <v-container fluid>
-        <AppBar pageTitle="Role Permissions" />
+    <v-container fluid :dir="dir">
+        <AppBar :pageTitle="t('role_permissions')" />
         <v-divider :thickness="1" class="border-opacity-100" />
 
         <v-row class="pt-6">
@@ -116,7 +121,7 @@ const submitPermissions = async () => {
                     <v-col cols="12" md="6">
                         <v-text-field
                             v-model="roleName"
-                            label="Role Name"
+                            :label="t('role_name')"
                             variant="outlined"
                             density="compact"
                             required
@@ -125,7 +130,7 @@ const submitPermissions = async () => {
                     <v-col cols="12" md="6">
                         <v-text-field
                             v-model="roleDescription"
-                            label="Role Description"
+                            :label="t('role_description')"
                             variant="outlined"
                             density="compact"
                         />
@@ -145,7 +150,7 @@ const submitPermissions = async () => {
                             <v-card-title
                                 class="px-2 py-1 text-grey-darken-3 font-weight-bold text-subtitle-1"
                             >
-                                {{ page.label }}
+                                {{ t(page.label) }}
                             </v-card-title>
                             <v-divider class="mb-3" />
                             <v-card-text class="px-2 pt-0 min-card-text">
@@ -159,10 +164,7 @@ const submitPermissions = async () => {
                                             v-model="
                                                 permissions[page.key][action]
                                             "
-                                            :label="
-                                                action.charAt(0).toUpperCase() +
-                                                action.slice(1)
-                                            "
+                                            :label="t(action)"
                                             hide-details
                                             dense
                                         />
@@ -187,7 +189,7 @@ const submitPermissions = async () => {
                             size="large"
                             @click="submitPermissions"
                         >
-                            Submit
+                            {{ t("submit") }}
                         </v-btn>
                     </v-col>
                 </v-row>

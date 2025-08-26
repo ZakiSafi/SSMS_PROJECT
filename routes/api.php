@@ -28,6 +28,14 @@ use App\Http\Controllers\reports\UniversityBasedGraduationReportController;
 use App\Http\Controllers\RoleController;
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/summary', [DashboardController::class, 'summary']);
+        Route::get('/trends', [DashboardController::class, 'trends']);
+        Route::get('/gender-distribution', [DashboardController::class, 'genderDistribution']);
+        Route::get('/faculty-breakdown', [DashboardController::class, 'facultyBreakdown']);
+        Route::get('/university-comparison', [DashboardController::class, 'universityComparison']);
+        Route::get('/recent-activity', [DashboardController::class, 'recentActivity']);
+    });
     Route::apiResource('provinces', ProvinceController::class);
     Route::apiResource('faculties', FacultyController::class);
     Route::apiResource('departments', DepartmentController::class);
@@ -54,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('departmentBasedGraduation', [DepartmentBasedGraduationReportController::class, '__invoke']);
         Route::get('universityBaseGraduation', [UniversityBasedGraduationReportController::class, '__invoke']);
     });
+    Route::apiResource('logs', LogController::class);
 
 
     // Define the login route (with optional name)
@@ -68,12 +77,3 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('login', [AuthController::class, 'login'])->name('login');
 // reports
 // Dashboard routes
-Route::prefix('dashboard')->group(function () {
-    Route::get('/summary', [DashboardController::class, 'summary']);
-    Route::get('/trends', [DashboardController::class, 'trends']);
-    Route::get('/gender-distribution', [DashboardController::class, 'genderDistribution']);
-    Route::get('/faculty-breakdown', [DashboardController::class, 'facultyBreakdown']);
-    Route::get('/university-comparison', [DashboardController::class, 'universityComparison']);
-    Route::get('/recent-activity', [DashboardController::class, 'recentActivity']);
-});
-Route::apiResource('logs', LogController::class);

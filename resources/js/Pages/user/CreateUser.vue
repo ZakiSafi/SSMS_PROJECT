@@ -88,6 +88,8 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 import { useUserRepository } from "@/store/UserRepository";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 const UserRepository = useUserRepository();
 const formRef = ref(null);
@@ -102,8 +104,8 @@ const formData = reactive({
 });
 
 const rules = {
-    required: (value) => !!value || "This field is required.",
-    email: (value) => /.+@.+\..+/.test(value) || "Email must be valid",
+    required: (value) => !!value || t("validation.required"),
+    email: (value) => /.+@.+\..+/.test(value) || t("validation.email_invalid"),
 };
 
 onMounted(() => {

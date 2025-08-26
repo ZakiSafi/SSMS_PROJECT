@@ -178,5 +178,25 @@ export const useUserRepository = defineStore("userRepository", {
                 // handle error if needed
             }
         },
+
+        async fetchLogs({ page, itemsPerPage }) {
+            try {
+                this.loading = true;
+                const response = await axios.get(
+                    `logs?page=${page}&perPage=${itemsPerPage}&name=${this.search}`
+                );
+                this.logs = response.data.data;
+                this.totalItems = response.data.meta.total;
+            } catch (err) {
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    "Failed to fetch users: " +
+                        (err.response?.data?.message || err.message),
+                    "error"
+                );
+            } finally {
+                this.loading = false;
+            }
+        },
     },
 });
