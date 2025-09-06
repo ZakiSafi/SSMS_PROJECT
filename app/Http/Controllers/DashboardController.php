@@ -26,7 +26,7 @@ class DashboardController extends Controller
     {
         $validated = $request->validate([
             'year' => 'nullable|integer',
-            'season' => 'nullable|in:spring,autumn',
+            'season' => 'nullable|in:spring,autumn,all',
             'university_type' => 'nullable|in:public,private,all',
             'province_id' => 'nullable|exists:provinces,id',
             'university_id' => 'nullable|exists:universities,id',

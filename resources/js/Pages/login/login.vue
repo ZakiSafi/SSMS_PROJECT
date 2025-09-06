@@ -20,7 +20,7 @@
                             variant="text"
                             size="small"
                             v-bind="props"
-                            :title="$t('language_switcher')"
+                            :title="t('language_switcher')"
                             class="language-btn"
                         >
                             <span class="mr-1">{{

@@ -1,5 +1,6 @@
 {
     "menu": {
+        "logs": "لګونه",
         "dashboard": "ډشبورډ",
         "provinces": "ولایتونه",
         "university": "پوهنتون",
@@ -197,5 +198,34 @@
     "reset": "بیا تنظیمول",
     "apply_filters": "فلټرونه پلي کول",
     "department": "څانګه",
-    "no_data_available": "هیڅ معلومات شتون نلري"
+    "no_data_available": "هیڅ معلومات شتون نلري",
+    "global_filters": "عمومي فلټرونه",
+    "year": "کال",
+
+    "all_years": "ټول کلونه",
+    "all_provinces": "ټول ولایتونه",
+    "all_universities": "ټول پوهنتونونه",
+    "summary": "لنډیز",
+    "students_per": "محصلین پر",
+
+    "gender_distribution": "جنسیتي وېش",
+    "student_trends": "د محصلینو تمایل",
+    "recent_activities": "وروستي فعالیتونه",
+    "shows_total_students_hint": "ټول محصلین (نارینه + ښځینه) د ټاکلو فلټرونو پر اساس.",
+    "gender_distribution_hint": "د ټاکل شوي مودې لپاره د نارینه او ښځینه وېش.",
+    "trend_hint": "د وخت په تېرېدو کې د ټول، نارینه او ښځینه تمایل.",
+    "group": "ګروپ",
+    "new_students": "نوي شاملی محصلین",
+    "not_available": "شتون نه لري",
+    "Dashboard": "ډشبورډ",
+    "mdi-web": "ویب",
+    "language_switcher": "ژبه بدلول",
+    "mdi-logout": "وتل",
+    "logout_button": "وتل",
+    "University Type": "د پوهنتون ډول",
+    "Province": "ولایت",
+    "language_icon": "د ژبې آیکون",
+    "user_avatar": "د کارونکي آواتار",
+    "close_dialog": "دیالوگ بند کړئ",
+    "mdi-close": "بند کړئ"
 }

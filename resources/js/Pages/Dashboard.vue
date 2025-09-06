@@ -1,48 +1,71 @@
 <template>
-    <AppBar pageTitle="Dashboard" />
+    <AppBar :pageTitle="$t('dashboard')" />
     <v-divider :thickness="1" class="border-opacity-100 mb-4"></v-divider>
 
     <v-container fluid>
-        <!-- Filter Section -->
-        <v-row dense>
-            <v-col cols="12" md="4">
-                <v-select
-                    v-model="filters.year"
-                    :items="[
-                        '1400',
-                        '1401',
-                        '1402',
-                        '1403',
-                        '1404',
-                        '1405',
-                        '1406',
-                    ]"
-                    label="Year"
-                    dense
-                    @update:modelValue="fetchData"
-                />
-            </v-col>
-            <v-col cols="12" md="4">
-                <v-select
-                    v-model="filters.season"
-                    :items="['spring', 'autumn']"
-                    label="Season"
-                    dense
-                    @update:modelValue="fetchData"
-                />
-            </v-col>
-            <v-col cols="12" md="4">
-                <v-select
-                    v-model="filters.university"
-                    :items="DashboardRepo.universities"
-                    item-title="name"
-                    item-value="id"
-                    label="University"
-                    dense
-                    @update:modelValue="fetchData"
-                />
-            </v-col>
-        </v-row>
+        <!-- Global Context Filters -->
+        <v-card class="mb-4 elevation-1">
+            <v-toolbar density="comfortable" flat>
+                <v-toolbar-title>
+                    <v-icon class="mr-2">mdi-tune-variant</v-icon>
+                    {{ $t("global_filters") }}
+                </v-toolbar-title>
+            </v-toolbar>
+            <v-divider></v-divider>
+            <v-row dense class="pa-4">
+                <v-col cols="12" md="3">
+                    <v-select
+                        v-model="filters.year"
+                        :items="yearsWithAll"
+                        item-title="label"
+                        item-value="value"
+                        :label="$t('year')"
+                        density="comfortable"
+                        @update:modelValue="handleTopFiltersChange"
+                    />
+                </v-col>
+                <v-col cols="12" md="3">
+                    <v-select
+                        v-model="filters.university_type"
+                        :items="['all', 'public', 'private']"
+                        :label="$t('University Type')"
+                        density="comfortable"
+                        @update:modelValue="handleTopFiltersChange"
+                    />
+                </v-col>
+                <v-col cols="12" md="3">
+                    <v-select
+                        v-model="filters.province_id"
+                        :items="provincesWithAll"
+                        item-title="name"
+                        item-value="id"
+                        :label="$t('Province')"
+                        density="comfortable"
+                        @update:modelValue="handleTopFiltersChange"
+                    />
+                </v-col>
+                <v-col cols="12" md="3">
+                    <v-select
+                        v-model="filters.university_id"
+                        :items="universitiesWithAll"
+                        item-title="name"
+                        item-value="id"
+                        :label="$t('University')"
+                        density="comfortable"
+                        @update:modelValue="handleTopFiltersChange"
+                    />
+                </v-col>
+                <v-col cols="12" md="3">
+                    <v-select
+                        v-model="filters.shift"
+                        :items="['day', 'night']"
+                        :label="$t('Shift')"
+                        density="comfortable"
+                        @update:modelValue="handleTopFiltersChange"
+                    />
+                </v-col>
+            </v-row>
+        </v-card>
 
         <!-- Summary Cards -->
         <v-row class="mt-4">
@@ -60,66 +83,168 @@
                 </v-card>
             </v-col>
         </v-row>
-        <!-- Trend Chart Filters -->
-        <v-row dense class="mt-4">
-            <v-col cols="12" md="3">
-                <v-select
-                    v-model="trendFilters.university_type"
-                    :items="['public', 'private']"
-                    label="University Type"
-                    dense
-                    @update:modelValue="fetchTrends"
-                />
-            </v-col>
-
-            <v-col cols="12" md="3">
-                <v-select
-                    v-model="trendFilters.province_id"
-                    :items="provinces"
-                    label="Province"
-                    dense
-                    item-title="name"
-                    item-value="id"
-                    @update:modelValue="fetchTrends"
-                />
-            </v-col>
-
-            <v-col cols="12" md="3">
-                <v-select
-                    v-model="trendFilters.time_range"
-                    :items="['5years', '10years']"
-                    label="Time Range"
-                    dense
-                    @update:modelValue="fetchTrends"
-                />
-            </v-col>
-
-            <v-col cols="12" md="3">
-                <v-select
-                    v-model="trendFilters.group_by"
-                    :items="['year', 'season']"
-                    label="Group By"
-                    dense
-                    @update:modelValue="fetchTrends"
-                />
-            </v-col>
-        </v-row>
 
         <!-- Charts Section -->
         <v-row class="mt-6">
             <v-col cols="12" md="6">
-                <v-card class="pa-4 elevation-1">
-                    <div class="text-subtitle-1 mb-2">
-                        Students per Department
+                <v-card class="elevation-1">
+                    <v-toolbar density="comfortable" flat>
+                        <v-toolbar-title>
+                            <v-icon class="mr-2">mdi-chart-bar</v-icon>
+                            {{ $t("students_per") }}
+                            {{
+                                breakdownFilters.breakdown_level ===
+                                "department"
+                                    ? $t("department")
+                                    : $t("faculty")
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <div class="d-flex" style="gap: 8px">
+                            <v-select
+                                v-model="breakdownFilters.breakdown_level"
+                                :items="['faculty', 'department']"
+                                density="compact"
+                                hide-details
+                                style="max-width: 160px"
+                                :label="
+                                    $t('faculty') + ' / ' + $t('department')
+                                "
+                                @update:modelValue="fetchBarChart"
+                            />
+                            <v-select
+                                v-model="breakdownFilters.year"
+                                :items="yearsWithAll"
+                                item-title="label"
+                                item-value="value"
+                                density="compact"
+                                hide-details
+                                style="max-width: 160px"
+                                :label="$t('year')"
+                                @update:modelValue="fetchBarChart"
+                            />
+                            <v-select
+                                v-model="breakdownFilters.season"
+                                :items="seasonsWithAll"
+                                density="compact"
+                                hide-details
+                                style="max-width: 160px"
+                                :label="$t('season')"
+                                @update:modelValue="fetchBarChart"
+                            />
+                        </div>
+                    </v-toolbar>
+                    <v-divider></v-divider>
+                    <div class="pa-4">
+                        <div class="text-caption text-medium-emphasis mb-2">
+                            {{ $t("shows_total_students_hint") }}
+                        </div>
+                        <canvas ref="barChartCanvas"></canvas>
                     </div>
-                    <canvas ref="barChartCanvas"></canvas>
                 </v-card>
             </v-col>
 
             <v-col cols="12" md="6">
-                <v-card class="pa-4 elevation-1">
-                    <div class="text-subtitle-1 mb-2">Student Trends</div>
-                    <canvas ref="lineChartCanvas"></canvas>
+                <v-card class="elevation-1">
+                    <v-toolbar density="comfortable" flat>
+                        <v-toolbar-title>
+                            <v-icon class="mr-2">mdi-chart-donut</v-icon>
+                            {{ $t("gender_distribution") }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <div class="d-flex" style="gap: 8px">
+                            <v-select
+                                v-model="genderFilters.year"
+                                :items="yearsWithAll"
+                                item-title="label"
+                                item-value="value"
+                                density="compact"
+                                hide-details
+                                style="max-width: 160px"
+                                :label="$t('year')"
+                                @update:modelValue="fetchGenderChart"
+                            />
+                            <v-select
+                                v-model="genderFilters.season"
+                                :items="seasonsWithAll"
+                                density="compact"
+                                hide-details
+                                style="max-width: 160px"
+                                :label="$t('season')"
+                                @update:modelValue="fetchGenderChart"
+                            />
+                        </div>
+                    </v-toolbar>
+                    <v-divider></v-divider>
+                    <div class="pa-4">
+                        <div class="text-caption text-medium-emphasis mb-2">
+                            {{ $t("gender_distribution_hint") }}
+                        </div>
+                        <canvas ref="genderChartCanvas"></canvas>
+                    </div>
+                </v-card>
+            </v-col>
+        </v-row>
+
+        <v-row class="mt-6">
+            <v-col cols="12" md="12">
+                <v-card class="elevation-1">
+                    <v-toolbar density="comfortable" flat>
+                        <v-toolbar-title>
+                            <v-icon class="mr-2"
+                                >mdi-chart-timeline-variant</v-icon
+                            >
+                            {{ $t("student_trends") }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <div class="d-flex" style="gap: 8px">
+                            <v-select
+                                v-model="trendFilters.university_type"
+                                :items="['public', 'private']"
+                                density="compact"
+                                hide-details
+                                style="max-width: 160px"
+                                :label="$t('university_type')"
+                                @update:modelValue="fetchTrends"
+                            />
+                            <v-select
+                                v-model="trendFilters.province_id"
+                                :items="DashboardRepo.provinces"
+                                item-title="name"
+                                item-value="id"
+                                density="compact"
+                                hide-details
+                                style="max-width: 160px"
+                                :label="$t('Province')"
+                                @update:modelValue="fetchTrends"
+                            />
+                            <v-select
+                                v-model="trendFilters.time_range"
+                                :items="['5years', '10years', 'all']"
+                                density="compact"
+                                hide-details
+                                style="max-width: 160px"
+                                label="Range"
+                                @update:modelValue="fetchTrends"
+                            />
+                            <v-select
+                                v-model="trendFilters.group_by"
+                                :items="['year', 'season']"
+                                density="compact"
+                                hide-details
+                                style="max-width: 140px"
+                                :label="$t('group')"
+                                @update:modelValue="fetchTrends"
+                            />
+                        </div>
+                    </v-toolbar>
+                    <v-divider></v-divider>
+                    <div class="pa-4">
+                        <div class="text-caption text-medium-emphasis mb-2">
+                            {{ $t("trend_hint") }}
+                        </div>
+                        <canvas ref="lineChartCanvas"></canvas>
+                    </div>
                 </v-card>
             </v-col>
         </v-row>
@@ -127,7 +252,7 @@
         <!-- Recent Activity Section -->
         <v-card class="mt-6">
             <div class="d-flex justify-space-between align-center mb-4 pa-4">
-                <div class="text-subtitle-1">Recent Activities</div>
+                <div class="text-subtitle-1">{{ $t("recent_activities") }}</div>
                 <v-btn
                     icon
                     @click="fetchRecentActivity"
@@ -198,14 +323,18 @@
                         <div class="d-flex justify-space-between align-center">
                             <div class="text-caption text-medium-emphasis">
                                 <v-icon small>mdi-clock-outline</v-icon>
-                                {{ log.created_at
-                                    ? formatDate(log.created_at)
-                                    : "N/A" }}
+                                {{
+                                    log.created_at
+                                        ? formatDate(log.created_at)
+                                        : "N/A"
+                                }}
                             </div>
                             <div class="text-caption text-medium-emphasis">
-                                {{log.created_at
-                                    ? formatTimeAgo(log.created_at)
-                                    : "N/A"}}
+                                {{
+                                    log.created_at
+                                        ? formatTimeAgo(log.created_at)
+                                        : "N/A"
+                                }}
                             </div>
                         </div>
                     </v-card-text>
@@ -220,7 +349,7 @@
                     >mdi-information-outline</v-icon
                 >
                 <div class="text-subtitle-1 mt-2">
-                    No recent activities found
+                    {{ $t("no_data_available") }}
                 </div>
             </div>
         </v-card>
@@ -253,29 +382,59 @@ async function fetchRecentActivity() {
 // Refs
 const barChartCanvas = ref(null);
 const lineChartCanvas = ref(null);
+const genderChartCanvas = ref(null);
 const loadingActivity = ref(false);
 const recentActivities = ref([]);
 
 // Filters
+const years = [1400, 1401, 1402, 1403, 1404, 1405, 1406];
+const yearsWithAll = computed(() => [
+    { label: "All Years", value: null },
+    ...years.map((y) => ({ label: String(y), value: y })),
+]);
+const seasonsWithAll = ["all", "spring", "autumn"];
+
+const provincesWithAll = computed(() => [
+    { id: null, name: "All Provinces" },
+    ...(DashboardRepo.provinces || []),
+]);
+const universitiesWithAll = computed(() => [
+    { id: null, name: "All Universities" },
+    ...(DashboardRepo.universities || []),
+]);
+
 const filters = ref({
+    year: null,
+    season: "all",
+    university_type: "all",
+    province_id: null,
+    university_id: null,
+    shift: "day",
+    breakdown_level: "faculty",
+});
+
+// summary uses global filters now
+
+const breakdownFilters = ref({
     year: 1402,
     season: "spring",
-    university: "All",
+    breakdown_level: "faculty",
+});
+
+const genderFilters = ref({
+    year: 1402,
+    season: "spring",
 });
 
 const trendFilters = ref({
-    university_type: "public",
-    province_id: 15,
+    university_type: "all",
+    province_id: null,
     time_range: "10years",
     group_by: "year",
     season: filters.value.season,
 });
 
-const provinces = [
-    { id: 15, name: "Kabul" },
-    { id: 16, name: "Herat" },
-    { id: 17, name: "Balkh" },
-];
+// Provinces now loaded from repository (DashboardRepo.provinces)
 
 // Summary Stats
 const summaryStats = computed(() => [
@@ -299,23 +458,48 @@ const summaryStats = computed(() => [
         value: DashboardRepo.summaryData.universities_count.total,
         icon: "mdi-office-building",
     },
+    {
+        title: "Student/Teacher Ratio",
+        value: DashboardRepo.summaryData.student_teacher_ratio,
+        icon: "mdi-account-group-outline",
+    },
 ]);
 
 // Fetch functions
-async function fetchData() {
-    await DashboardRepo.fetchSummaryData({
+function buildTopFilterParams() {
+    return {
         year: filters.value.year,
         season: filters.value.season,
-        university:
-            filters.value.university !== "All"
-                ? filters.value.university
-                : null,
-    });
+        university_type: filters.value.university_type,
+        province_id: filters.value.province_id,
+        university_id: filters.value.university_id,
+        shift: filters.value.shift,
+    };
+}
+
+async function fetchData() {
+    // Fetch summary with global filters so cards reflect selected context
+    await DashboardRepo.fetchSummaryData(buildTopFilterParams());
     await fetchRecentActivity();
 }
 
+async function handleTopFiltersChange() {
+    // Province/university changes should inform charts as well
+    await fetchData();
+    await fetchBarChart();
+    await fetchGenderChart();
+}
+
 async function fetchBarChart() {
-    await DashboardRepo.fetchFacultyBreakdown();
+    await DashboardRepo.fetchFacultyBreakdown({
+        year: breakdownFilters.value.year,
+        season: breakdownFilters.value.season,
+        breakdown_level: breakdownFilters.value.breakdown_level,
+        province_id: filters.value.province_id,
+        university_id: filters.value.university_id,
+        university_type: filters.value.university_type,
+        shift: filters.value.shift,
+    });
     const labels = DashboardRepo.facultyBreakdown.map((f) => f.name);
     const data = DashboardRepo.facultyBreakdown.map((f) => f.total_students);
 
@@ -402,12 +586,55 @@ async function fetchTrends() {
     lineChartCanvas.value._chartInstance = chart;
 }
 
+async function fetchGenderChart() {
+    await DashboardRepo.fetchGenderDistribution({
+        year: genderFilters.value.year,
+        season: genderFilters.value.season,
+        province_id: filters.value.province_id,
+        university_id: filters.value.university_id,
+        university_type: filters.value.university_type,
+        shift: filters.value.shift,
+    });
+
+    const labels = (DashboardRepo.genderDistribution.data || []).map(
+        (d) => d.gender
+    );
+    const data = (DashboardRepo.genderDistribution.data || []).map((d) =>
+        parseInt(d.count)
+    );
+
+    if (genderChartCanvas.value._chartInstance) {
+        genderChartCanvas.value._chartInstance.destroy();
+    }
+
+    const chart = new Chart(genderChartCanvas.value, {
+        type: "doughnut",
+        data: {
+            labels,
+            datasets: [
+                {
+                    data,
+                    backgroundColor: ["#29B6F6", "#EC407A"],
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        },
+    });
+
+    genderChartCanvas.value._chartInstance = chart;
+}
+
 // Load everything
 onMounted(async () => {
     await fetchData();
     await fetchBarChart();
+    await fetchGenderChart();
     await fetchTrends();
     DashboardRepo.fetchUniversities();
+    DashboardRepo.fetchProvinces();
 });
 
 // Helpers

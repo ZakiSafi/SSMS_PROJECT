@@ -8,8 +8,8 @@ import { useRouter } from "vue-router";
 
 export const useAuthRepository = defineStore("authRepository", {
     state: () => ({
-        user: {},            // reactive object
-        permissions: reactive([]),    // reactive array
+        user: {}, // reactive object
+        permissions: reactive([]), // reactive array
         loading: false,
         error: null,
         isAuthenticated: false,
@@ -112,7 +112,7 @@ export const useAuthRepository = defineStore("authRepository", {
             if (storedRole) this.role = JSON.parse(storedRole);
         },
 
-       async fetchRoless() {
+        async fetchRoless() {
             try {
                 const response = await axios.get("role");
                 this.roles = response.data.data;
@@ -190,13 +190,15 @@ export const useAuthRepository = defineStore("authRepository", {
                     data: formData,
                 };
                 await axios(config);
-                
 
                 this.createDialog = false;
                 await Promise.all([
-      this.fetchRoles({ page: this.page, itemsPerPage: this.itemsPerPage }),
-      this.refreshPermissions(),
-    ]);
+                    this.fetchRoles({
+                        page: this.page,
+                        itemsPerPage: this.itemsPerPage,
+                    }),
+                    this.refreshPermissions(),
+                ]);
             } catch (err) {
                 console.error("Failed to update user:", err);
             }
@@ -218,8 +220,6 @@ export const useAuthRepository = defineStore("authRepository", {
             sessionStorage.setItem("user", JSON.stringify(this.user));
         },
 
-
-
         loadFromSession() {
             const storedUser = sessionStorage.getItem("user");
             const storedPermissions = sessionStorage.getItem("permissions");
@@ -227,9 +227,13 @@ export const useAuthRepository = defineStore("authRepository", {
 
             if (storedUser) Object.assign(this.user, JSON.parse(storedUser));
             if (storedPermissions) {
-                this.permissions.splice(0, this.permissions.length, ...JSON.parse(storedPermissions));
+                this.permissions.splice(
+                    0,
+                    this.permissions.length,
+                    ...JSON.parse(storedPermissions)
+                );
             }
             if (storedRole) this.role = JSON.parse(storedRole);
-        }
+        },
     },
 });
