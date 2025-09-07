@@ -17,7 +17,7 @@
             </v-card-title>
             <v-card-text class="pa-6 pt-0">
                 <v-row>
-                    <v-col cols="12" sm="6" md="2.4">
+                    <v-col cols="12" sm="6" md="2.4" lg="2.4" xl="2.4">
                         <v-select
                             v-model="filters.year"
                             :items="yearOptions"
@@ -28,7 +28,7 @@
                             @update:modelValue="fetchData"
                         />
                     </v-col>
-                    <v-col cols="12" sm="6" md="2.4">
+                    <v-col cols="12" sm="6" md="2.4" lg="2.4" xl="2.4">
                         <v-select
                             v-model="filters.season"
                             :items="seasonOptions"
@@ -39,7 +39,7 @@
                             @update:modelValue="fetchData"
                         />
                     </v-col>
-                    <v-col cols="12" sm="6" md="2.4">
+                    <v-col cols="12" sm="6" md="2.4" lg="2.4" xl="2.4">
                         <v-select
                             v-model="filters.university"
                             :items="universityOptions"
@@ -52,7 +52,7 @@
                             @update:modelValue="fetchData"
                         />
                     </v-col>
-                    <v-col cols="12" sm="6" md="2.4">
+                    <v-col cols="12" sm="6" md="2.4" lg="2.4" xl="2.4">
                         <v-select
                             v-model="filters.university_type"
                             :items="universityTypeOptions"
@@ -63,7 +63,7 @@
                             @update:modelValue="fetchData"
                         />
                     </v-col>
-                    <v-col cols="12" sm="6" md="2.4">
+                    <v-col cols="12" sm="6" md="2.4" lg="2.4" xl="2.4">
                         <v-select
                             v-model="filters.province"
                             :items="provinceOptions"
@@ -86,6 +86,8 @@
                 cols="12"
                 sm="6"
                 md="2.4"
+                lg="2.4"
+                xl="2.4"
                 v-for="(stat, index) in summaryStats"
                 :key="index"
             >
@@ -165,7 +167,7 @@
                             <v-col cols="12" sm="6" md="3">
                                 <v-select
                                     v-model="trendFilters.province_id"
-                                    :items="provinceOptions"
+                                    :items="trendProvinceOptions"
                                     :label="$t('Province')"
                                     variant="outlined"
                                     density="compact"
@@ -369,14 +371,14 @@ const yearOptions = [
 ];
 
 const seasonOptions = [
-    { value: 'spring', text: t('spring') },
-    { value: 'autumn', text: t('autumn') },
+    { value: 'spring', text: t('Spring') },
+    { value: 'autumn', text: t('Autumn') },
 ];
 
 const universityTypeOptions = [
-    { value: 'all', text: t('all') },
-    { value: 'public', text: t('public') },
-    { value: 'private', text: t('private') },
+    { value: 'all', text: t('All') },
+    { value: 'public', text: t('Public') },
+    { value: 'private', text: t('Private') },
 ];
 
 const timeRangeOptions = [
@@ -393,6 +395,8 @@ const chartTypeOptions = [
     { value: 'line', text: t('Line Chart') },
     { value: 'bar', text: t('Bar Chart') },
     { value: 'area', text: t('Area Chart') },
+    { value: 'doughnut', text: t('Doughnut Chart') },
+    { value: 'polar', text: t('Polar Chart') },
 ];
 
 const provinces = [
@@ -403,12 +407,17 @@ const provinces = [
 
 // Computed options
 const universityOptions = computed(() => [
-    { id: "All", name: t('all') },
+    { id: "All", name: t('All') },
     ...DashboardRepo.universities
 ]);
 
 const provinceOptions = computed(() => [
-    { id: "all", name: t('all') },
+    { id: "all", name: t('All') },
+    ...provinces
+]);
+
+const trendProvinceOptions = computed(() => [
+    { id: "all", name: t('All Provinces') },
     ...provinces
 ]);
 
@@ -595,10 +604,77 @@ async function fetchTrends() {
 
     const chartType = trendFilters.value.chart_type || 'line';
     const isArea = chartType === 'area';
+    const isDoughnut = chartType === 'doughnut';
+    const isPolar = chartType === 'polar';
 
-    const chart = new Chart(lineChartCanvas.value, {
-        type: isArea ? 'line' : chartType,
-        data: {
+    // For doughnut and polar charts, we'll show a different data structure
+    let chartData, chartOptions;
+
+    if (isDoughnut || isPolar) {
+        // For doughnut/polar charts, show gender distribution for the latest year
+        const latestYear = trendLabels[trendLabels.length - 1];
+        const latestTotal = total[total.length - 1];
+        const latestMale = male[male.length - 1];
+        const latestFemale = female[female.length - 1];
+
+        chartData = {
+            labels: [t('Male'), t('Female')],
+            datasets: [{
+                data: [latestMale, latestFemale],
+                backgroundColor: [
+                    'rgba(56, 142, 60, 0.8)',
+                    'rgba(211, 47, 47, 0.8)'
+                ],
+                borderColor: [
+                    '#388E3C',
+                    '#D32F2F'
+                ],
+                borderWidth: 2,
+                hoverBackgroundColor: [
+                    'rgba(56, 142, 60, 1)',
+                    'rgba(211, 47, 47, 1)'
+                ]
+            }]
+        };
+
+        chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        font: {
+                            size: 12,
+                            weight: '500'
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: '#1976D2',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    displayColors: true,
+                    callbacks: {
+                        title: function(context) {
+                            return `${t('Year')}: ${latestYear}`;
+                        },
+                        label: function(context) {
+                            const percentage = ((context.parsed / latestTotal) * 100).toFixed(1);
+                            return `${context.label}: ${context.parsed.toLocaleString()} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        };
+    } else {
+        // For line, bar, and area charts
+        chartData = {
             labels: trendLabels,
             datasets: [
                 {
@@ -641,8 +717,9 @@ async function fetchTrends() {
                     pointHoverRadius: 8,
                 },
             ],
-        },
-        options: {
+        };
+
+        chartOptions = {
             responsive: true,
             maintainAspectRatio: false,
             interaction: {
@@ -721,7 +798,13 @@ async function fetchTrends() {
                     hoverBackgroundColor: '#ffffff',
                 }
             }
-        },
+        };
+    }
+
+    const chart = new Chart(lineChartCanvas.value, {
+        type: isArea ? 'line' : chartType,
+        data: chartData,
+        options: chartOptions,
     });
 
     lineChartCanvas.value._chartInstance = chart;
@@ -916,6 +999,10 @@ canvas {
     .activity-grid {
         grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     }
+    
+    .summary-card {
+        margin-bottom: 16px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -939,6 +1026,10 @@ canvas {
     
     .chart-container {
         height: 250px;
+    }
+    
+    .summary-card {
+        margin-bottom: 16px;
     }
 }
 
