@@ -230,5 +230,9 @@
     "language_icon": "آیکون زبان",
     "user_avatar": "آواتار کاربر",
     "close_dialog": "بستن دیالوگ",
-    "mdi-close": "بستن"
+    "mdi-close": "بستن",
+    "validation.email_invalid": "ایمیل باید معتبر باشد",
+    "male": "زکور",
+    "female": "اناث",
+    "student_teacher_ratio": "نسبت محصل بر استاد"
 }

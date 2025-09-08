@@ -225,5 +225,7 @@
     "language_icon": "Language Icon",
     "user_avatar": "User Avatar",
     "close_dialog": "Close Dialog",
-    "mdi-close": "Close"
+    "mdi-close": "Close",
+    "validation.email_invalid": "Email must be valid",
+    "student_teacher_ratio": "Student Teacher Ratio"
 }

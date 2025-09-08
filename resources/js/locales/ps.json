@@ -227,5 +227,9 @@
     "language_icon": "د ژبې آیکون",
     "user_avatar": "د کارونکي آواتار",
     "close_dialog": "دیالوگ بند کړئ",
-    "mdi-close": "بند کړئ"
+    "mdi-close": "بند کړئ",
+    "validation.email_invalid": "بریښنالیک باید معتبر وي",
+    "student_teacher_ratio": "د محصل او استاد تناسب",
+    "male": "نارینه",
+    "female": "ښځینه"
 }

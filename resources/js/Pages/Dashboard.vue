@@ -12,8 +12,10 @@
                 </v-toolbar-title>
             </v-toolbar>
             <v-divider></v-divider>
+
+            <!-- 5 filters in a single row (wrap on small screens) -->
             <v-row dense class="pa-4">
-                <v-col cols="12" md="3">
+                <v-col class="col-1-5" cols="12" sm="6">
                     <v-select
                         v-model="filters.year"
                         :items="yearsWithAll"
@@ -24,16 +26,20 @@
                         @update:modelValue="handleTopFiltersChange"
                     />
                 </v-col>
-                <v-col cols="12" md="3">
+
+                <v-col class="col-1-5" cols="12" sm="6">
                     <v-select
                         v-model="filters.university_type"
-                        :items="['all', 'public', 'private']"
-                        :label="$t('University Type')"
+                        :items="universityTypeOptions"
+                        item-title="label"
+                        item-value="value"
+                        :label="$t('university_type')"
                         density="comfortable"
                         @update:modelValue="handleTopFiltersChange"
                     />
                 </v-col>
-                <v-col cols="12" md="3">
+
+                <v-col class="col-1-5" cols="12" sm="6">
                     <v-select
                         v-model="filters.province_id"
                         :items="provincesWithAll"
@@ -44,7 +50,8 @@
                         @update:modelValue="handleTopFiltersChange"
                     />
                 </v-col>
-                <v-col cols="12" md="3">
+
+                <v-col class="col-1-5" cols="12" sm="6">
                     <v-select
                         v-model="filters.university_id"
                         :items="universitiesWithAll"
@@ -55,10 +62,13 @@
                         @update:modelValue="handleTopFiltersChange"
                     />
                 </v-col>
-                <v-col cols="12" md="3">
+
+                <v-col class="col-1-5" cols="12" sm="6">
                     <v-select
                         v-model="filters.shift"
-                        :items="['day', 'night']"
+                        :items="shiftOptions"
+                        item-title="label"
+                        item-value="value"
                         :label="$t('Shift')"
                         density="comfortable"
                         @update:modelValue="handleTopFiltersChange"
@@ -67,14 +77,14 @@
             </v-row>
         </v-card>
 
-        <!-- Summary Cards -->
+        <!-- Summary Cards (5 in one row) -->
         <v-row class="mt-4">
             <v-col
-                cols="12"
-                sm="6"
-                md="3"
                 v-for="(stat, index) in summaryStats"
                 :key="index"
+                class="col-1-5"
+                cols="12"
+                sm="6"
             >
                 <v-card class="pa-4 text-center elevation-1">
                     <v-icon size="32" color="primary">{{ stat.icon }}</v-icon>
@@ -86,6 +96,7 @@
 
         <!-- Charts Section -->
         <v-row class="mt-6">
+            <!-- Students per Faculty/Department -->
             <v-col cols="12" md="6">
                 <v-card class="elevation-1">
                     <v-toolbar density="comfortable" flat>
@@ -103,7 +114,9 @@
                         <div class="d-flex" style="gap: 8px">
                             <v-select
                                 v-model="breakdownFilters.breakdown_level"
-                                :items="['faculty', 'department']"
+                                :items="breakdownLevelOptions"
+                                item-title="label"
+                                item-value="value"
                                 density="compact"
                                 hide-details
                                 style="max-width: 160px"
@@ -125,7 +138,9 @@
                             />
                             <v-select
                                 v-model="breakdownFilters.season"
-                                :items="seasonsWithAll"
+                                :items="seasonOptions"
+                                item-title="label"
+                                item-value="value"
                                 density="compact"
                                 hide-details
                                 style="max-width: 160px"
@@ -144,6 +159,7 @@
                 </v-card>
             </v-col>
 
+            <!-- Gender Distribution -->
             <v-col cols="12" md="6">
                 <v-card class="elevation-1">
                     <v-toolbar density="comfortable" flat>
@@ -166,7 +182,9 @@
                             />
                             <v-select
                                 v-model="genderFilters.season"
-                                :items="seasonsWithAll"
+                                :items="seasonOptions"
+                                item-title="label"
+                                item-value="value"
                                 density="compact"
                                 hide-details
                                 style="max-width: 160px"
@@ -186,21 +204,22 @@
             </v-col>
         </v-row>
 
+        <!-- Student Trends (modern area-spline with gradients) -->
         <v-row class="mt-6">
-            <v-col cols="12" md="12">
+            <v-col cols="12">
                 <v-card class="elevation-1">
                     <v-toolbar density="comfortable" flat>
                         <v-toolbar-title>
-                            <v-icon class="mr-2"
-                                >mdi-chart-timeline-variant</v-icon
-                            >
+                            <v-icon class="mr-2">mdi-chart-areaspline</v-icon>
                             {{ $t("student_trends") }}
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <div class="d-flex" style="gap: 8px">
                             <v-select
                                 v-model="trendFilters.university_type"
-                                :items="['public', 'private']"
+                                :items="universityTypeOptions"
+                                item-title="label"
+                                item-value="value"
                                 density="compact"
                                 hide-details
                                 style="max-width: 160px"
@@ -209,7 +228,7 @@
                             />
                             <v-select
                                 v-model="trendFilters.province_id"
-                                :items="DashboardRepo.provinces"
+                                :items="provincesWithAll"
                                 item-title="name"
                                 item-value="id"
                                 density="compact"
@@ -220,16 +239,20 @@
                             />
                             <v-select
                                 v-model="trendFilters.time_range"
-                                :items="['5years', '10years', 'all']"
+                                :items="timeRangeOptions"
+                                item-title="label"
+                                item-value="value"
                                 density="compact"
                                 hide-details
                                 style="max-width: 160px"
-                                label="Range"
+                                :label="$t('range')"
                                 @update:modelValue="fetchTrends"
                             />
                             <v-select
                                 v-model="trendFilters.group_by"
-                                :items="['year', 'season']"
+                                :items="groupByOptions"
+                                item-title="label"
+                                item-value="value"
                                 density="compact"
                                 hide-details
                                 style="max-width: 140px"
@@ -357,27 +380,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch, nextTick } from "vue";
+import { useI18n } from "vue-i18n";
 import { Chart, registerables } from "chart.js";
-import axios from "axios";
 import AppBar from "@/components/AppBar.vue";
 import { useDashboardRepository } from "../store/DashboardRepository";
 
 Chart.register(...registerables);
 
+const { t, locale } = useI18n();
 const DashboardRepo = useDashboardRepository();
-
-async function fetchRecentActivity() {
-    loadingActivity.value = true;
-    try {
-        await DashboardRepo.fetchRecentActivity();
-        recentActivities.value = DashboardRepo.recentActivity;
-    } catch (err) {
-        console.error("Error fetching activity:", err);
-    } finally {
-        loadingActivity.value = false;
-    }
-}
 
 // Refs
 const barChartCanvas = ref(null);
@@ -386,23 +398,87 @@ const genderChartCanvas = ref(null);
 const loadingActivity = ref(false);
 const recentActivities = ref([]);
 
-// Filters
+// Years array (static)
 const years = [1400, 1401, 1402, 1403, 1404, 1405, 1406];
-const yearsWithAll = computed(() => [
-    { label: "All Years", value: null },
-    ...years.map((y) => ({ label: String(y), value: y })),
-]);
-const seasonsWithAll = ["all", "spring", "autumn"];
 
-const provincesWithAll = computed(() => [
-    { id: null, name: "All Provinces" },
-    ...(DashboardRepo.provinces || []),
-]);
-const universitiesWithAll = computed(() => [
-    { id: null, name: "All Universities" },
-    ...(DashboardRepo.universities || []),
-]);
+// Computed option lists — make them depend on locale so they re-evaluate on language change
+const yearsWithAll = computed(() => {
+    // make dependency on locale explicit
+    void locale.value;
+    return [
+        { label: t("all_years"), value: null },
+        ...years.map((y) => ({ label: String(y), value: y })),
+    ];
+});
 
+const seasonOptions = computed(() => {
+    void locale.value;
+    return [
+        { label: t("all"), value: "all" },
+        { label: t("spring"), value: "spring" },
+        { label: t("autumn"), value: "autumn" },
+    ];
+});
+
+const universityTypeOptions = computed(() => {
+    void locale.value;
+    return [
+        { label: t("all"), value: "all" },
+        { label: t("public"), value: "public" },
+        { label: t("private"), value: "private" },
+    ];
+});
+
+const shiftOptions = computed(() => {
+    void locale.value;
+    return [
+        { label: t("day"), value: "day" },
+        { label: t("night"), value: "night" },
+    ];
+});
+
+const breakdownLevelOptions = computed(() => {
+    void locale.value;
+    return [
+        { label: t("faculty"), value: "faculty" },
+        { label: t("department"), value: "department" },
+    ];
+});
+
+const timeRangeOptions = computed(() => {
+    void locale.value;
+    return [
+        { label: `5 ${t("years")}`, value: "5years" },
+        { label: `10 ${t("years")}`, value: "10years" },
+        { label: t("all"), value: "all" },
+    ];
+});
+
+const groupByOptions = computed(() => {
+    void locale.value;
+    return [
+        { label: t("year"), value: "year" },
+        { label: t("season"), value: "season" },
+    ];
+});
+
+// Provinces and universities computed lists (depend on DashboardRepo data and locale)
+const provincesWithAll = computed(() => {
+    void locale.value;
+    return [
+        { id: null, name: t("all_provinces") },
+        ...(DashboardRepo.provinces || []),
+    ];
+});
+const universitiesWithAll = computed(() => {
+    void locale.value;
+    return [
+        { id: null, name: t("all_universities") },
+        ...(DashboardRepo.universities || []),
+    ];
+});
+
+// Global filters
 const filters = ref({
     year: null,
     season: "all",
@@ -413,8 +489,7 @@ const filters = ref({
     breakdown_level: "faculty",
 });
 
-// summary uses global filters now
-
+// Chart-specific filters
 const breakdownFilters = ref({
     year: 1402,
     season: "spring",
@@ -428,44 +503,57 @@ const genderFilters = ref({
 
 const trendFilters = ref({
     university_type: "all",
-    province_id: null,
+    province_id: null, // includes "All provinces"
     time_range: "10years",
     group_by: "year",
     season: filters.value.season,
 });
 
-// Provinces now loaded from repository (DashboardRepo.provinces)
-
-// Summary Stats
-const summaryStats = computed(() => [
-    {
-        title: "Total Students",
-        value: DashboardRepo.summaryData.total_students,
-        icon: "mdi-school",
-    },
-    {
-        title: "New Students",
-        value: DashboardRepo.summaryData.new_students,
-        icon: "mdi-account-plus",
-    },
-    {
-        title: "Graduated Students",
-        value: DashboardRepo.summaryData.graduated_students,
-        icon: "mdi-school-outline",
-    },
-    {
-        title: "Universities",
-        value: DashboardRepo.summaryData.universities_count.total,
-        icon: "mdi-office-building",
-    },
-    {
-        title: "Student/Teacher Ratio",
-        value: DashboardRepo.summaryData.student_teacher_ratio,
-        icon: "mdi-account-group-outline",
-    },
-]);
+// Summary Cards (computed to depend on locale via t inside)
+const summaryStats = computed(() => {
+    void locale.value;
+    return [
+        {
+            title: t("total_students"),
+            value: DashboardRepo.summaryData.total_students,
+            icon: "mdi-school",
+        },
+        {
+            title: t("new_students"),
+            value: DashboardRepo.summaryData.new_students,
+            icon: "mdi-account-plus",
+        },
+        {
+            title: t("graduated_students"),
+            value: DashboardRepo.summaryData.graduated_students,
+            icon: "mdi-school-outline",
+        },
+        {
+            title: t("universities"),
+            value: DashboardRepo.summaryData.universities_count?.total,
+            icon: "mdi-office-building",
+        },
+        {
+            title: t("student_teacher_ratio"),
+            value: DashboardRepo.summaryData.student_teacher_ratio,
+            icon: "mdi-account-group-outline",
+        },
+    ];
+});
 
 // Fetch functions
+async function fetchRecentActivity() {
+    loadingActivity.value = true;
+    try {
+        await DashboardRepo.fetchRecentActivity();
+        recentActivities.value = DashboardRepo.recentActivity;
+    } catch (err) {
+        console.error("Error fetching activity:", err);
+    } finally {
+        loadingActivity.value = false;
+    }
+}
+
 function buildTopFilterParams() {
     return {
         year: filters.value.year,
@@ -478,16 +566,16 @@ function buildTopFilterParams() {
 }
 
 async function fetchData() {
-    // Fetch summary with global filters so cards reflect selected context
+    // summary uses global filters now
     await DashboardRepo.fetchSummaryData(buildTopFilterParams());
     await fetchRecentActivity();
 }
 
 async function handleTopFiltersChange() {
-    // Province/university changes should inform charts as well
     await fetchData();
     await fetchBarChart();
     await fetchGenderChart();
+    await fetchTrends();
 }
 
 async function fetchBarChart() {
@@ -500,12 +588,16 @@ async function fetchBarChart() {
         university_type: filters.value.university_type,
         shift: filters.value.shift,
     });
+
     const labels = DashboardRepo.facultyBreakdown.map((f) => f.name);
     const data = DashboardRepo.facultyBreakdown.map((f) => f.total_students);
 
-    if (barChartCanvas.value._chartInstance) {
+    if (barChartCanvas.value?._chartInstance) {
         barChartCanvas.value._chartInstance.destroy();
     }
+
+    // make sure canvas exists
+    await nextTick();
 
     const chart = new Chart(barChartCanvas.value, {
         type: "bar",
@@ -513,9 +605,12 @@ async function fetchBarChart() {
             labels,
             datasets: [
                 {
-                    label: "Total Students",
+                    label: t("total_students"),
                     data,
                     backgroundColor: "#42A5F5",
+                    borderRadius: 6,
+                    barPercentage: 0.8,
+                    categoryPercentage: 0.8,
                 },
             ],
         },
@@ -523,7 +618,12 @@ async function fetchBarChart() {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
+                x: { ticks: { autoSkip: true, maxRotation: 0 } },
                 y: { beginAtZero: true },
+            },
+            plugins: {
+                legend: { display: true },
+                tooltip: { mode: "index", intersect: false },
             },
         },
     });
@@ -534,50 +634,85 @@ async function fetchBarChart() {
 async function fetchTrends() {
     await DashboardRepo.fetchFacultyTrends(trendFilters.value);
 
-    const trendLabels = DashboardRepo.trends.map((item) => item.year);
-    const total = DashboardRepo.trends.map((item) => parseInt(item.total));
-    const male = DashboardRepo.trends.map((item) => parseInt(item.male));
-    const female = DashboardRepo.trends.map((item) => parseInt(item.female));
+    const labels = DashboardRepo.trends.map((item) => item.year);
+    const total = DashboardRepo.trends.map((item) => Number(item.total || 0));
+    const male = DashboardRepo.trends.map((item) => Number(item.male || 0));
+    const female = DashboardRepo.trends.map((item) => Number(item.female || 0));
 
-    if (lineChartCanvas.value._chartInstance) {
+    if (lineChartCanvas.value?._chartInstance) {
         lineChartCanvas.value._chartInstance.destroy();
     }
+
+    // ensure DOM ready
+    await nextTick();
+
+    const ctx = lineChartCanvas.value.getContext("2d");
+    const gradBlue = ctx.createLinearGradient(0, 0, 0, 300);
+    gradBlue.addColorStop(0, "rgba(66,165,245,0.35)");
+    gradBlue.addColorStop(1, "rgba(66,165,245,0.02)");
+
+    const gradCyan = ctx.createLinearGradient(0, 0, 0, 300);
+    gradCyan.addColorStop(0, "rgba(41,182,246,0.35)");
+    gradCyan.addColorStop(1, "rgba(41,182,246,0.02)");
+
+    const gradPink = ctx.createLinearGradient(0, 0, 0, 300);
+    gradPink.addColorStop(0, "rgba(236,64,122,0.35)");
+    gradPink.addColorStop(1, "rgba(236,64,122,0.02)");
 
     const chart = new Chart(lineChartCanvas.value, {
         type: "line",
         data: {
-            labels: trendLabels,
+            labels,
             datasets: [
                 {
-                    label: "Total Students",
+                    label: t("total_students"),
                     data: total,
                     borderColor: "#42A5F5",
-                    backgroundColor: "rgba(66, 165, 245, 0.1)",
+                    backgroundColor: gradBlue,
                     fill: true,
-                    tension: 0.3,
+                    tension: 0.4,
+                    pointRadius: 2,
+                    pointHoverRadius: 4,
                 },
                 {
-                    label: "Male",
+                    label: t("male"),
                     data: male,
                     borderColor: "#29B6F6",
-                    backgroundColor: "rgba(41, 182, 246, 0.1)",
+                    backgroundColor: gradCyan,
                     fill: true,
-                    tension: 0.3,
+                    tension: 0.4,
+                    pointRadius: 2,
+                    pointHoverRadius: 4,
                 },
                 {
-                    label: "Female",
+                    label: t("female"),
                     data: female,
                     borderColor: "#EC407A",
-                    backgroundColor: "rgba(236, 64, 122, 0.1)",
+                    backgroundColor: gradPink,
                     fill: true,
-                    tension: 0.3,
+                    tension: 0.4,
+                    pointRadius: 2,
+                    pointHoverRadius: 4,
                 },
             ],
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: { mode: "index", intersect: false },
+            stacked: false,
+            plugins: {
+                legend: { position: "top" },
+                tooltip: {
+                    usePointStyle: true,
+                    callbacks: {
+                        label: (ctx) =>
+                            `${ctx.dataset.label}: ${ctx.formattedValue}`,
+                    },
+                },
+            },
             scales: {
+                x: { ticks: { autoSkip: true, maxRotation: 0 } },
                 y: { beginAtZero: true },
             },
         },
@@ -596,16 +731,19 @@ async function fetchGenderChart() {
         shift: filters.value.shift,
     });
 
-    const labels = (DashboardRepo.genderDistribution.data || []).map(
-        (d) => d.gender
-    );
-    const data = (DashboardRepo.genderDistribution.data || []).map((d) =>
-        parseInt(d.count)
-    );
+    const labels =
+        (DashboardRepo.genderDistribution.data || []).map((d) => d.gender) ||
+        [];
+    const data =
+        (DashboardRepo.genderDistribution.data || []).map((d) =>
+            Number(d.count || 0)
+        ) || [];
 
-    if (genderChartCanvas.value._chartInstance) {
+    if (genderChartCanvas.value?._chartInstance) {
         genderChartCanvas.value._chartInstance.destroy();
     }
+
+    await nextTick();
 
     const chart = new Chart(genderChartCanvas.value, {
         type: "doughnut",
@@ -615,17 +753,31 @@ async function fetchGenderChart() {
                 {
                     data,
                     backgroundColor: ["#29B6F6", "#EC407A"],
+                    hoverOffset: 6,
                 },
             ],
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: { position: "bottom" },
+            },
         },
     });
 
     genderChartCanvas.value._chartInstance = chart;
 }
+
+// When locale changes, re-render computed labels and recreate charts so labels/legends update
+watch(locale, async () => {
+    // small tick to allow computed updates to propagate
+    await nextTick();
+    // re-render charts and summary (summaryStats is computed so UI updates automatically)
+    await fetchBarChart();
+    await fetchGenderChart();
+    await fetchTrends();
+});
 
 // Load everything
 onMounted(async () => {
@@ -633,6 +785,7 @@ onMounted(async () => {
     await fetchBarChart();
     await fetchGenderChart();
     await fetchTrends();
+    // also populate select lists
     DashboardRepo.fetchUniversities();
     DashboardRepo.fetchProvinces();
 });
@@ -653,10 +806,12 @@ function formatTimeAgo(dateString) {
     const date = new Date(dateString);
     const diff = Math.floor((now - date) / 1000);
 
-    if (diff < 60) return "Just now";
-    if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
-    return `${Math.floor(diff / 86400)} days ago`;
+    if (diff < 60) return t("just_now") || "Just now";
+    if (diff < 3600)
+        return `${Math.floor(diff / 60)} ${t("minutes_ago") || "minutes ago"}`;
+    if (diff < 86400)
+        return `${Math.floor(diff / 3600)} ${t("hours_ago") || "hours ago"}`;
+    return `${Math.floor(diff / 86400)} ${t("days_ago") || "days ago"}`;
 }
 
 function getUserInitials(name) {
@@ -683,6 +838,18 @@ function getActionColor(type) {
 </script>
 
 <style scoped>
+/* 5-items-per-row helper: on large screens force 20% width columns */
+.col-1-5 {
+    flex: 1 1 100%;
+    max-width: 100%;
+}
+@media (min-width: 1280px) {
+    .col-1-5 {
+        flex: 0 0 20%;
+        max-width: 20%;
+    }
+}
+
 .activity-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
