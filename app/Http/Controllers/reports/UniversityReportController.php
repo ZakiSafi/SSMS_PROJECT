@@ -16,6 +16,7 @@ class UniversityReportController extends Controller
         $shift = $request->query('shift');
         $type  = $request->query('type');
         $perPage = $request->query('perPage', 10);
+        $university = $request->query('university');
 
         $query = StudentStatistic::join('universities', 'student_statistics.university_id', '=', 'universities.id')
             ->select(
@@ -32,7 +33,7 @@ class UniversityReportController extends Controller
 
             );
 
-        if ($shift) {
+        if ($shift && $shift !== 'all') {
             $query->where('student_statistics.shift', $shift);
         }
 
@@ -41,8 +42,12 @@ class UniversityReportController extends Controller
             $query->where('student_statistics.academic_year', $year);
         }
 
-        if ($type !== 'all') {
+        if ($type && $type !== 'all') {
             $query->where('universities.type', $type);
+        }
+
+        if ($university && $university !== 'all') {
+            $query->where('student_statistics.university_id', $university);
         }
 
         $query->groupBy('student_statistics.academic_year', 'universities.name', 'universities.type', 'student_statistics.shift');

@@ -7,13 +7,13 @@
         <div class="w-full d-flex flex-wrap align-center pt-6 pb-6">
             <!-- Year -->
             <div class="w-[200px] mx-4">
-                <v-combobox
+                <DatePicker
                     v-model="ReportRepository.date"
-                    :items="yearRange"
-                    :label="$t('Select or Type Year')"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
+                    format="jYYYY"
+                    type="year"
+                    :placeholder="$t('Select or Type Year')"
+                    rounded
+                    :auto-submit="true"
                     @update:modelValue="onDateChange"
                 />
             </div>
@@ -114,6 +114,7 @@ import { useReportRepository } from "@/store/ReportRepository";
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import persianDate from "persian-date";
+import DatePicker from "vue3-persian-datetime-picker";
 
 const { t, locale } = useI18n();
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));

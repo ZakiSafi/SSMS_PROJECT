@@ -228,5 +228,6 @@
     "mdi-close": "Close",
     "validation.email_invalid": "Email must be valid",
     "student_teacher_ratio": "Student Teacher Ratio",
-    "range": "Range"
+    "range": "Range",
+    "university_classes": "University Classes"
 }

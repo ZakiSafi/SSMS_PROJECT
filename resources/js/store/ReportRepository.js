@@ -28,12 +28,18 @@ export const useReportRepository = defineStore("reportRepository", {
         };
     },
     actions: {
-        async fetchUniversity({ page, itemsPerPage }, date = this.date) {
+        async fetchUniversity(
+            { page, itemsPerPage },
+            date = this.date,
+            type = this.type,
+            shift = this.shift,
+            university = this.university
+        ) {
             this.loading = true;
 
             try {
                 const response = await axios.get(
-                    `report/university?year=${date}&type=${this.type}&shift=${this.shift}&page=${page}&perPage=${itemsPerPage}`
+                    `report/university?year=${date}&type=${type}&shift=${shift}&university=${university}&page=${page}&perPage=${itemsPerPage}`
                 );
                 this.universities = response.data.data;
                 this.totalItems = response.data.total;
@@ -89,16 +95,18 @@ export const useReportRepository = defineStore("reportRepository", {
         async fetchUniversityClasses(
             { page, itemsPerPage },
             date = this.date,
-            shift = this.shift
+            shift = this.shift,
+            type = this.type,
+            university = this.university
         ) {
             this.loading = true;
             try {
                 const response = await axios.get(
-                    `report/universitiesClasses?year=${date}&shift=${shift}&page=${page}&perPage=${itemsPerPage}`
+                    `report/universitiesClasses?year=${date}&shift=${shift}&type=${type}&university=${university}&page=${page}&perPage=${itemsPerPage}`
                 );
                 this.universityClasses = response.data.data;
                 this.totalItems = response.data.total;
-            } catch {
+            } catch (error) {
                 console.error("Error fetching data:", error);
                 this.universityClasses = [];
             } finally {

@@ -4,22 +4,19 @@
         <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
         <!-- Filter & Print Section -->
-        <div class="w-full d-flex flex-wrap align-center pt-6 pb-6">
-            <!-- Year -->
-            <div class="w-[200px] mx-4">
-                <v-combobox
+        <v-row class="pt-6 pb-4" align="center" dense>
+            <v-col cols="12" sm="6" md="3">
+                <DatePicker
                     v-model="ReportRepository.date"
-                    :items="yearRange"
-                    :label="$t('Select or Type Year')"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
+                    format="jYYYY"
+                    type="year"
+                    :placeholder="$t('Select or Type Year')"
+                    rounded
+                    :auto-submit="true"
                     @update:modelValue="onDateChange"
                 />
-            </div>
-
-            <!-- Season -->
-            <div class="w-[200px] mx-4">
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
                 <v-select
                     v-model="ReportRepository.season"
                     :items="[
@@ -34,10 +31,8 @@
                     hide-details
                     @update:modelValue="onDateChange"
                 />
-            </div>
-
-            <!-- Shift -->
-            <div class="w-[200px] mx-4">
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
                 <v-combobox
                     v-model="ReportRepository.shift"
                     :items="[
@@ -52,15 +47,13 @@
                     hide-details
                     @update:modelValue="onDateChange"
                 />
-            </div>
-
-            <!-- Print -->
-            <div class="shrink-0 mx-4">
-                <v-btn color="primary" @click="printTable">
+            </v-col>
+            <v-col cols="12" sm="6" md="3" class="text-sm-right">
+                <v-btn color="primary" @click="printTable" class="mt-2 mt-sm-0">
                     {{ $t("print_report") }}
                 </v-btn>
-            </div>
-        </div>
+            </v-col>
+        </v-row>
 
         <!-- Table Section -->
         <v-data-table-server
@@ -117,6 +110,7 @@ import { ref, computed, onMounted } from "vue";
 import { useReportRepository } from "../../store/ReportRepository";
 import { useI18n } from "vue-i18n";
 import persianDate from "persian-date";
+import DatePicker from "vue3-persian-datetime-picker";
 
 const { t, locale } = useI18n();
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
@@ -129,9 +123,8 @@ ReportRepository.itemsPerPage = ReportRepository.itemsPerPage || 10;
 const currentYear = ref(new persianDate().year());
 const yearRange = computed(() => {
     const range = [];
-    for (let i = currentYear.value - 10; i <= currentYear.value + 10; i++) {
+    for (let i = currentYear.value - 10; i <= currentYear.value + 10; i++)
         range.push(i);
-    }
     return range;
 });
 
@@ -145,26 +138,22 @@ const pageSizeOptions = [
 ];
 
 // Computed properties
-const totalPages = computed(() => {
-    return Math.ceil(
-        ReportRepository.totalItems / ReportRepository.itemsPerPage
-    );
-});
-
-const showPagination = computed(() => {
-    return ReportRepository.totalItems > ReportRepository.itemsPerPage;
-});
+const totalPages = computed(() =>
+    Math.ceil(ReportRepository.totalItems / ReportRepository.itemsPerPage)
+);
+const showPagination = computed(
+    () => ReportRepository.totalItems > ReportRepository.itemsPerPage
+);
 
 const flatFacultyData = computed(() => {
     if (!ReportRepository.facultyBaseGraduation.length) return [];
-
     const flatData = [];
-    ReportRepository.facultyBaseGraduation.forEach((institution, iIndex) => {
+    ReportRepository.facultyBaseGraduation.forEach((institution) => {
         institution.faculties.forEach((faculty, fIndex) => {
             flatData.push({
                 ...faculty,
                 university: institution.university,
-                showUniversity: fIndex === 0, // Only show university for first faculty
+                showUniversity: fIndex === 0,
             });
         });
     });
@@ -177,17 +166,14 @@ const onOptionsUpdate = (options) => {
     ReportRepository.itemsPerPage = options.itemsPerPage;
     fetchData();
 };
-
 const onPageChange = (newPage) => {
     ReportRepository.page = newPage;
     fetchData();
 };
-
 const onItemsPerPageChange = () => {
     ReportRepository.page = 1;
     fetchData();
 };
-
 const onDateChange = () => {
     ReportRepository.page = 1;
     fetchData();
@@ -212,27 +198,10 @@ const headers = computed(() => [
         align: "start",
         sortable: false,
     },
-    {
-        title: t("Faculty"),
-        key: "faculty",
-        align: "start",
-        sortable: false,
-    },
-    {
-        title: t("Male"),
-        key: "Total_Males",
-        align: "center",
-    },
-    {
-        title: t("Female"),
-        key: "Total_Females",
-        align: "center",
-    },
-    {
-        title: t("Total"),
-        key: "Total_Students",
-        align: "center",
-    },
+    { title: t("Faculty"), key: "faculty", align: "start", sortable: false },
+    { title: t("Male"), key: "Total_Males", align: "center" },
+    { title: t("Female"), key: "Total_Females", align: "center" },
+    { title: t("Total"), key: "Total_Students", align: "center" },
 ]);
 
 const printTable = () => {
@@ -240,23 +209,21 @@ const printTable = () => {
     if (!data.length) return;
 
     const rows = data
-        .map((institution) => {
-            return institution.faculties
+        .map((institution) =>
+            institution.faculties
                 .map((faculty, index) => {
                     const universityCell =
                         index === 0
                             ? `<td rowspan="${institution.faculties.length}">${institution.university}</td>`
                             : "";
-                    return `<tr>
-            ${universityCell}
-            <td>${faculty.faculty}</td>
-            <td>${faculty.Total_Males || 0}</td>
-            <td>${faculty.Total_Females || 0}</td>
-            <td>${faculty.Total_Students || 0}</td>
-          </tr>`;
+                    return `<tr>${universityCell}<td>${
+                        faculty.faculty
+                    }</td><td>${faculty.Total_Males || 0}</td><td>${
+                        faculty.Total_Females || 0
+                    }</td><td>${faculty.Total_Students || 0}</td></tr>`;
                 })
-                .join("");
-        })
+                .join("")
+        )
         .join("");
 
     const html = `
@@ -264,29 +231,13 @@ const printTable = () => {
       <head>
         <title>${t("Faculty Base Graduation")}</title>
         <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            direction: ${dir.value};
-          }
-          .title {
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 16px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-          }
-          th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-          }
-          th {
-            background-color: #e7f2f5;
-          }
+          body { font-family: Arial, sans-serif; padding: 20px; direction: ${
+              dir.value
+          }; }
+          .title { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 16px; }
+          table { width: 100%; border-collapse: collapse; text-align: center; }
+          th, td { border: 1px solid #ccc; padding: 8px; }
+          th { background-color: #e7f2f5; }
         </style>
       </head>
       <body>
@@ -295,13 +246,9 @@ const printTable = () => {
     } (${t(ReportRepository.season)}, ${t(ReportRepository.shift)})</div>
         <table>
           <thead>
-            <tr>
-              <th>${t("University")}</th>
-              <th>${t("Faculty")}</th>
-              <th>${t("Male")}</th>
-              <th>${t("Female")}</th>
-              <th>${t("Total")}</th>
-            </tr>
+            <tr><th>${t("University")}</th><th>${t("Faculty")}</th><th>${t(
+        "Male"
+    )}</th><th>${t("Female")}</th><th>${t("Total")}</th></tr>
           </thead>
           <tbody>${rows}</tbody>
         </table>
@@ -327,8 +274,6 @@ onMounted(() => {
     padding: 16px 0;
     border-top: 1px solid #eee;
 }
-
-/* Ensure proper spacing for university cells */
 :deep(td) {
     vertical-align: middle;
 }

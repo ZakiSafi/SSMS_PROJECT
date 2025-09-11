@@ -647,17 +647,17 @@ async function fetchTrends() {
     await nextTick();
 
     const ctx = lineChartCanvas.value.getContext("2d");
-    const gradBlue = ctx.createLinearGradient(0, 0, 0, 300);
-    gradBlue.addColorStop(0, "rgba(66,165,245,0.35)");
-    gradBlue.addColorStop(1, "rgba(66,165,245,0.02)");
+    const gradBlue = ctx.createLinearGradient(0, 0, 0, 320);
+    gradBlue.addColorStop(0, "rgba(66,165,245,0.45)");
+    gradBlue.addColorStop(1, "rgba(66,165,245,0.03)");
 
-    const gradCyan = ctx.createLinearGradient(0, 0, 0, 300);
-    gradCyan.addColorStop(0, "rgba(41,182,246,0.35)");
-    gradCyan.addColorStop(1, "rgba(41,182,246,0.02)");
+    const gradCyan = ctx.createLinearGradient(0, 0, 0, 320);
+    gradCyan.addColorStop(0, "rgba(41,182,246,0.45)");
+    gradCyan.addColorStop(1, "rgba(41,182,246,0.03)");
 
-    const gradPink = ctx.createLinearGradient(0, 0, 0, 300);
-    gradPink.addColorStop(0, "rgba(236,64,122,0.35)");
-    gradPink.addColorStop(1, "rgba(236,64,122,0.02)");
+    const gradPink = ctx.createLinearGradient(0, 0, 0, 320);
+    gradPink.addColorStop(0, "rgba(236,64,122,0.45)");
+    gradPink.addColorStop(1, "rgba(236,64,122,0.03)");
 
     const chart = new Chart(lineChartCanvas.value, {
         type: "line",
@@ -670,9 +670,13 @@ async function fetchTrends() {
                     borderColor: "#42A5F5",
                     backgroundColor: gradBlue,
                     fill: true,
-                    tension: 0.4,
-                    pointRadius: 2,
-                    pointHoverRadius: 4,
+                    tension: 0.45,
+                    borderWidth: 3,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: "#42A5F5",
+                    pointBorderWidth: 0,
+                    clip: 10,
                 },
                 {
                     label: t("male"),
@@ -680,9 +684,13 @@ async function fetchTrends() {
                     borderColor: "#29B6F6",
                     backgroundColor: gradCyan,
                     fill: true,
-                    tension: 0.4,
-                    pointRadius: 2,
-                    pointHoverRadius: 4,
+                    tension: 0.45,
+                    borderWidth: 3,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: "#29B6F6",
+                    pointBorderWidth: 0,
+                    clip: 10,
                 },
                 {
                     label: t("female"),
@@ -690,30 +698,56 @@ async function fetchTrends() {
                     borderColor: "#EC407A",
                     backgroundColor: gradPink,
                     fill: true,
-                    tension: 0.4,
-                    pointRadius: 2,
-                    pointHoverRadius: 4,
+                    tension: 0.45,
+                    borderWidth: 3,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: "#EC407A",
+                    pointBorderWidth: 0,
+                    clip: 10,
                 },
             ],
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: { mode: "index", intersect: false },
+            interaction: { mode: "nearest", intersect: false },
             stacked: false,
             plugins: {
-                legend: { position: "top" },
+                legend: {
+                    position: "top",
+                    labels: { usePointStyle: true, pointStyle: "circle" },
+                },
                 tooltip: {
+                    backgroundColor: "rgba(33,33,33,0.9)",
+                    titleColor: "#fff",
+                    bodyColor: "#fff",
+                    cornerRadius: 8,
                     usePointStyle: true,
                     callbacks: {
                         label: (ctx) =>
-                            `${ctx.dataset.label}: ${ctx.formattedValue}`,
+                            `${
+                                ctx.dataset.label
+                            }: ${new Intl.NumberFormat().format(ctx.parsed.y)}`,
                     },
                 },
             },
             scales: {
-                x: { ticks: { autoSkip: true, maxRotation: 0 } },
-                y: { beginAtZero: true },
+                x: {
+                    grid: { display: false },
+                    ticks: { autoSkip: true, maxRotation: 0 },
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: "rgba(0,0,0,0.05)" },
+                    ticks: {
+                        callback: (val) => new Intl.NumberFormat().format(val),
+                    },
+                },
+            },
+            animations: {
+                tension: { duration: 800, easing: "easeOutCubic" },
+                colors: { duration: 400 },
             },
         },
     });
