@@ -309,13 +309,14 @@
                                     class="mr-2"
                                 >
                                     <span class="text-white">{{
-                                        getUserInitials(log.user_name)
+                                        getUserInitials(log.user?.name)
                                     }}</span>
                                 </v-avatar>
                                 <div>
-                                    <strong>{{ log.user_name }}</strong>
+                                    <strong>{{ log.user?.name }}</strong>
                                     <div class="text-caption">
-                                        {{ log.user_email }}
+                                        {{ $t("table_name") }}:
+                                        {{ log.table_name }}
                                     </div>
                                 </div>
                             </div>
@@ -324,21 +325,23 @@
                                 :color="getActionColor(log.action_type)"
                                 text-color="white"
                             >
-                                {{ log.action_type.toUpperCase() }}
+                                {{ (log.action_type || "").toUpperCase() }}
                             </v-chip>
                         </div>
 
                         <div class="mb-2">
-                            <v-icon small class="mr-1">mdi-school</v-icon>
+                            <v-icon small class="mr-1">mdi-pound</v-icon>
                             <span
-                                >{{ log.university_name }} ({{
-                                    log.university_type
-                                }})</span
+                                >{{ $t("record_id") }}:
+                                {{ log.record_id || "—" }}</span
                             >
                         </div>
 
                         <div class="activity-description">
-                            {{ log.action_description }}
+                            {{
+                                log.action_description ||
+                                $t("no_data_available")
+                            }}
                         </div>
 
                         <v-divider class="my-2"></v-divider>
@@ -353,11 +356,8 @@
                                 }}
                             </div>
                             <div class="text-caption text-medium-emphasis">
-                                {{
-                                    log.created_at
-                                        ? formatTimeAgo(log.created_at)
-                                        : "N/A"
-                                }}
+                                <v-icon small class="mr-1">mdi-earth</v-icon>
+                                {{ log.ip_address || "—" }}
                             </div>
                         </div>
                     </v-card-text>
@@ -791,20 +791,40 @@ onMounted(async () => {
 });
 
 // Helpers
+function parseServerUtc(dateString) {
+    // Expect format like "YYYY-MM-DD HH:mm:ss" (no timezone). Treat as UTC.
+    // Fallback to native Date if parsing fails.
+    try {
+        const [datePart, timePart] = String(dateString).split(" ");
+        const [y, m, d] = datePart.split("-").map(Number);
+        const [hh = 0, mm = 0, ss = 0] = (timePart || "0:0:0")
+            .split(":")
+            .map(Number);
+        const utcMs = Date.UTC(y, (m || 1) - 1, d || 1, hh, mm, ss);
+        return new Date(utcMs);
+    } catch (e) {
+        return new Date(dateString);
+    }
+}
+
 function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    const dateUtc = parseServerUtc(dateString);
+    // Render in Asia/Kabul timezone
+    return new Intl.DateTimeFormat("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
-    });
+        hour12: false,
+        timeZone: "Asia/Kabul",
+    }).format(dateUtc);
 }
 
 function formatTimeAgo(dateString) {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diff = Math.floor((now - date) / 1000);
+    const dateUtc = parseServerUtc(dateString);
+    const nowMs = Date.now(); // current time in ms UTC
+    const diff = Math.floor((nowMs - dateUtc.getTime()) / 1000);
 
     if (diff < 60) return t("just_now") || "Just now";
     if (diff < 3600)

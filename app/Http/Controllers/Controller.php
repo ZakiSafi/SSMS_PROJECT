@@ -96,7 +96,7 @@ class Controller extends BaseController
                 'record_id' => $record->id,
                 'action_description' => "Created " . class_basename($record) . ": $details",
                 'ip_address' => $request->ip(),
-                'agent' => $request->userAgent(),
+                'user_agent' => $request->userAgent(),
             ]);
 
             return $record;
@@ -128,33 +128,31 @@ class Controller extends BaseController
             $validated = $request->validated();
             $record->update($validated);
 
-            // Get changed fields only
-            $changedFields = array_diff_assoc($validated, $oldData);
+            // Determine changed fields using Eloquent change tracking
+            $changedFields = $record->getChanges();
 
-            // If there are changes, build the log description
+            // Build log description (or note no changes)
+            $logDetails = 'No fields changed';
             if (!empty($changedFields)) {
                 $logDetails = collect($changedFields)->map(function ($new, $field) use ($oldData) {
                     $old = $oldData[$field] ?? 'null';
-
-                    // Handle null and boolean formatting for clarity
                     $oldFormatted = is_null($old) ? 'null' : (is_bool($old) ? ($old ? 'true' : 'false') : $old);
                     $newFormatted = is_null($new) ? 'null' : (is_bool($new) ? ($new ? 'true' : 'false') : $new);
-
                     return "$field: '$oldFormatted' -> '$newFormatted'";
                 })->implode(', ');
-
-                // Create the log entry
-                Log::create([
-                    'user_id' => Auth::id(),
-                    'university_id' => Auth::user()->university_id ?? null,
-                    'action_type' => 'update',
-                    'table_name' => $record->getTable(),
-                    'record_id' => $record->id,
-                    'action_description' => "Updated " . class_basename($record) . ": $logDetails",
-                    'ip_address' => request()->ip(),
-                    'agent' => request()->userAgent(),
-                ]);
             }
+
+            // Create the log entry (always log an update attempt)
+            Log::create([
+                'user_id' => Auth::id(),
+                'university_id' => Auth::user()->university_id ?? null,
+                'action_type' => 'update',
+                'table_name' => $record->getTable(),
+                'record_id' => $record->id,
+                'action_description' => "Updated " . class_basename($record) . ": $logDetails",
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
 
             // Optional image handling
             $this->storeImage($request, $record);
@@ -224,7 +222,7 @@ class Controller extends BaseController
             'record_id' => $record->id,
             'action_description' => "Deleted " . class_basename($record) . ": $details",
             'ip_address' => request()->ip(), // Fixed: Use `request()` helper instead of undefined `$request`
-            'agent' => request()->userAgent(),
+            'user_agent' => request()->userAgent(),
         ]);
 
         $this->deleteImage($record); // Remove associated images
