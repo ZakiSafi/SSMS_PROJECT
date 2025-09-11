@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { axios } from "../axios";
+import { useNotificationStore } from "./notification";
 
 export const useUniversityRepository = defineStore(
     "universityRepository",
@@ -56,12 +57,32 @@ export const useUniversityRepository = defineStore(
             try {
                 await axios.post("universities", formData);
                 createDialog.value = false;
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    "University created successfully",
+                    "success"
+                );
                 await FetchUniversities({
                     page: 1,
                     itemsPerPage: itemsPerPage.value,
                 });
             } catch (error) {
-                console.error("Error creating university:", error);
+                const serverMessage = error.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    error.response?.data?.errors
+                )
+                    ? error.response.data.errors[0]
+                    : error.response?.data?.errors &&
+                      typeof error.response.data.errors === "object"
+                    ? Object.values(error.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || error.message;
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    `Failed to create university: ${message}`,
+                    "error"
+                );
                 throw error;
             } finally {
                 loading.value = false;
@@ -73,12 +94,32 @@ export const useUniversityRepository = defineStore(
             try {
                 await axios.put(`universities/${id}`, data);
                 createDialog.value = false;
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    "University updated successfully",
+                    "success"
+                );
                 await FetchUniversities({
                     page: 1,
                     itemsPerPage: itemsPerPage.value,
                 });
             } catch (error) {
-                console.error("Error updating university:", error);
+                const serverMessage = error.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    error.response?.data?.errors
+                )
+                    ? error.response.data.errors[0]
+                    : error.response?.data?.errors &&
+                      typeof error.response.data.errors === "object"
+                    ? Object.values(error.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || error.message;
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    `Failed to update university: ${message}`,
+                    "error"
+                );
                 throw error;
             } finally {
                 loading.value = false;
@@ -89,12 +130,22 @@ export const useUniversityRepository = defineStore(
             loading.value = true;
             try {
                 await axios.delete(`universities/${id}`);
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    "University deleted successfully",
+                    "success"
+                );
                 await FetchUniversities({
                     page: 1,
                     itemsPerPage: itemsPerPage.value,
                 });
             } catch (error) {
-                console.error("Error deleting university:", error);
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    "Failed to delete university: " +
+                        (error.response?.data?.message || error.message),
+                    "error"
+                );
                 throw error;
             } finally {
                 loading.value = false;

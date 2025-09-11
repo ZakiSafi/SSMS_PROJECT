@@ -4,6 +4,7 @@ import { ref, reactive } from "vue";
 import { axios } from "../axios";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import { useNotificationStore } from "@/store/notification";
 import { useRouter } from "vue-router";
 
 export const useAuthRepository = defineStore("authRepository", {
@@ -62,14 +63,22 @@ export const useAuthRepository = defineStore("authRepository", {
                     this.router.push("/dashboard");
                 }, 500); //
             } catch (error) {
-                toast.error("Login failed! Please check your credentials.", {
-                    position: "top-right",
-                    autoClose: 500,
-                });
+                const serverMessage = error.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    error.response?.data?.errors
+                )
+                    ? error.response.data.errors[0]
+                    : error.response?.data?.errors &&
+                      typeof error.response.data.errors === "object"
+                    ? Object.values(error.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError ||
+                    serverMessage ||
+                    "Login failed! Please check your credentials.";
+                toast.error(message, { position: "top-right", autoClose: 500 });
 
-                this.error = error.response
-                    ? error.response.data.message
-                    : "An error occurred!";
+                this.error = serverMessage || "An error occurred!";
             } finally {
                 this.loading = false;
             }
@@ -98,14 +107,22 @@ export const useAuthRepository = defineStore("authRepository", {
                     this.router.push("/");
                 }, 500); // Redirect to login after 1 second
             } catch (error) {
-                toast.error("Logout failed! Please try again.", {
-                    position: "top-right",
-                    autoClose: 500,
-                });
+                const serverMessage = error.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    error.response?.data?.errors
+                )
+                    ? error.response.data.errors[0]
+                    : error.response?.data?.errors &&
+                      typeof error.response.data.errors === "object"
+                    ? Object.values(error.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError ||
+                    serverMessage ||
+                    "Logout failed! Please try again.";
+                toast.error(message, { position: "top-right", autoClose: 500 });
 
-                this.error = error.response
-                    ? error.response.data.message
-                    : "An error occurred!";
+                this.error = serverMessage || "An error occurred!";
             } finally {
                 this.loading = false;
             }
@@ -161,7 +178,20 @@ export const useAuthRepository = defineStore("authRepository", {
                 this.router.push("/role-permission");
                 // Refresh the list
             } catch (err) {
-                console.error("Failed to create role:", err);
+                const serverMessage = err.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    err.response?.data?.errors
+                )
+                    ? err.response.data.errors[0]
+                    : err.response?.data?.errors &&
+                      typeof err.response.data.errors === "object"
+                    ? Object.values(err.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError ||
+                    serverMessage ||
+                    "Failed to create role";
+                toast.error(message, { position: "top-right", autoClose: 800 });
             } finally {
                 this.loading = false;
             }
@@ -179,7 +209,20 @@ export const useAuthRepository = defineStore("authRepository", {
                     itemsPerPage: this.itemsPerPage,
                 });
             } catch (err) {
-                console.error("Failed to delete role:", err);
+                const serverMessage = err.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    err.response?.data?.errors
+                )
+                    ? err.response.data.errors[0]
+                    : err.response?.data?.errors &&
+                      typeof err.response.data.errors === "object"
+                    ? Object.values(err.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError ||
+                    serverMessage ||
+                    "Failed to delete role";
+                toast.error(message, { position: "top-right", autoClose: 800 });
             }
         },
         async updateRole(id, formData) {
@@ -200,7 +243,20 @@ export const useAuthRepository = defineStore("authRepository", {
                     this.refreshPermissions(),
                 ]);
             } catch (err) {
-                console.error("Failed to update user:", err);
+                const serverMessage = err.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    err.response?.data?.errors
+                )
+                    ? err.response.data.errors[0]
+                    : err.response?.data?.errors &&
+                      typeof err.response.data.errors === "object"
+                    ? Object.values(err.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError ||
+                    serverMessage ||
+                    "Failed to update role";
+                toast.error(message, { position: "top-right", autoClose: 800 });
             }
         },
 

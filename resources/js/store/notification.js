@@ -5,15 +5,15 @@ export const useNotificationStore = defineStore("notification", {
     state: () => ({
         notification: {
             message: "",
-            type: "success",
+            type: "primary",
         },
     }),
     actions: {
-        showNotification(message, type = "success") {
+        showNotification(message, type = "primary") {
             this.notification = { message, type };
         },
         clearNotification() {
-            this.notification = { message: "", type: "success" };
+            this.notification = { message: "", type: "primary" };
         },
     },
 });

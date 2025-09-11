@@ -25,7 +25,11 @@
                     <v-divider class="border-opacity-100 mx-6"></v-divider>
 
                     <v-card-text>
-                        <v-form ref="formRef" class="pt-4">
+                        <v-form
+                            ref="formRef"
+                            class="pt-4"
+                            @submit.prevent="save"
+                        >
                             <v-text-field
                                 v-model="formData.name"
                                 :label="$t('name')"
@@ -71,7 +75,12 @@
                     </v-card-text>
 
                     <div class="d-flex flex-row-reverse mb-6 mx-6">
-                        <v-btn color="primary" class="px-4" @click="save">
+                        <v-btn
+                            type="submit"
+                            color="primary"
+                            class="px-4"
+                            @click="save"
+                        >
                             {{
                                 UserRepository.isEditMode
                                     ? $t("form.update")

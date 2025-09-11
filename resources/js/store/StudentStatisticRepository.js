@@ -188,7 +188,18 @@ export const useStudentStatisticRepository = defineStore(
                         itemsPerPage: this.itemsPerPage,
                     });
                 } catch (error) {
-                    console.error("Failed to create statistic:", error);
+                    const serverMessage = error.response?.data?.message;
+                    const firstValidationError = Array.isArray(
+                        error.response?.data?.errors
+                    )
+                        ? error.response.data.errors[0]
+                        : error.response?.data?.errors &&
+                          typeof error.response.data.errors === "object"
+                        ? Object.values(error.response.data.errors).flat()[0]
+                        : null;
+                    const message =
+                        firstValidationError || serverMessage || error.message;
+                    console.error("Failed to create statistic:", message);
                     throw error;
                 }
             },
@@ -202,7 +213,18 @@ export const useStudentStatisticRepository = defineStore(
                         itemsPerPage: this.itemsPerPage,
                     });
                 } catch (error) {
-                    console.error("Failed to update statistic:", error);
+                    const serverMessage = error.response?.data?.message;
+                    const firstValidationError = Array.isArray(
+                        error.response?.data?.errors
+                    )
+                        ? error.response.data.errors[0]
+                        : error.response?.data?.errors &&
+                          typeof error.response.data.errors === "object"
+                        ? Object.values(error.response.data.errors).flat()[0]
+                        : null;
+                    const message =
+                        firstValidationError || serverMessage || error.message;
+                    console.error("Failed to update statistic:", message);
                     throw error;
                 }
             },

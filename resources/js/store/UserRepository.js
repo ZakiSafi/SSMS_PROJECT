@@ -84,10 +84,20 @@ export const useUserRepository = defineStore("userRepository", {
                 });
                 return response.data;
             } catch (err) {
+                const serverMessage = err.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    err.response?.data?.errors
+                )
+                    ? err.response.data.errors[0]
+                    : err.response?.data?.errors &&
+                      typeof err.response.data.errors === "object"
+                    ? Object.values(err.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || err.message;
                 const notificationStore = useNotificationStore();
                 notificationStore.showNotification(
-                    "Failed to create user: " +
-                        (err.response?.data?.message || err.message),
+                    `Failed to create user: ${message}`,
                     "error"
                 );
                 throw err; // Re-throw to handle in component if needed
@@ -119,10 +129,20 @@ export const useUserRepository = defineStore("userRepository", {
                 });
                 return response.data;
             } catch (err) {
+                const serverMessage = err.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    err.response?.data?.errors
+                )
+                    ? err.response.data.errors[0]
+                    : err.response?.data?.errors &&
+                      typeof err.response.data.errors === "object"
+                    ? Object.values(err.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || err.message;
                 const notificationStore = useNotificationStore();
                 notificationStore.showNotification(
-                    "Failed to update user: " +
-                        (err.response?.data?.message || err.message),
+                    `Failed to update user: ${message}`,
                     "error"
                 );
                 throw err;
@@ -151,10 +171,20 @@ export const useUserRepository = defineStore("userRepository", {
                     itemsPerPage: this.itemsPerPage,
                 });
             } catch (err) {
+                const serverMessage = err.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    err.response?.data?.errors
+                )
+                    ? err.response.data.errors[0]
+                    : err.response?.data?.errors &&
+                      typeof err.response.data.errors === "object"
+                    ? Object.values(err.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || err.message;
                 const notificationStore = useNotificationStore();
                 notificationStore.showNotification(
-                    "Failed to delete user: " +
-                        (err.response?.data?.message || err.message),
+                    `Failed to delete user: ${message}`,
                     "error"
                 );
             } finally {

@@ -103,14 +103,14 @@ class Controller extends BaseController
         } catch (QueryException $e) {
             // Handle duplicate entry (error code 23000)
             if ($e->errorInfo[1] == 23000) {
-                throw new \Exception('This record already exists');
+                return $this->errorResponse('This record already exists', 422);
             }
 
             // Handle other database errors
-            throw new \Exception('Database error occurred');
+            return $this->errorResponse('Database error occurred', 500);
         } catch (\Exception $e) {
             // Handle all other exceptions
-            throw new \Exception('Failed to create record: ' . $e->getMessage());
+            return $this->errorResponse('Failed to create record: ' . $e->getMessage(), 422);
         }
     }
 

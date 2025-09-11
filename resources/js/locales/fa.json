@@ -234,5 +234,6 @@
     "validation.email_invalid": "ایمیل باید معتبر باشد",
     "male": "زکور",
     "female": "اناث",
-    "student_teacher_ratio": "نسبت محصل بر استاد"
+    "student_teacher_ratio": "نسبت محصل بر استاد",
+    "range": "محدوده"
 }

@@ -231,5 +231,6 @@
     "validation.email_invalid": "بریښنالیک باید معتبر وي",
     "student_teacher_ratio": "د محصل او استاد تناسب",
     "male": "نارینه",
-    "female": "ښځینه"
+    "female": "ښځینه",
+    "range": "محدوده"
 }
