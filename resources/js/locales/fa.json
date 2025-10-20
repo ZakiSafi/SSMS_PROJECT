@@ -236,5 +236,9 @@
     "female": "اناث",
     "student_teacher_ratio": "نسبت محصل بر استاد",
     "range": "محدوده",
-    "university_classes": "صنف‌های پوهنتون"
+    "university_classes": "صنف‌های پوهنتون",
+    "just_now": "همین الان",
+    "minutes_ago": "دقیقه پیش",
+    "hours_ago": "ساعت پیش",
+    "days_ago": "روز پیش"
 }

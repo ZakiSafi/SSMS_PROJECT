@@ -12,7 +12,7 @@ class UniversityClassReportController extends Controller
     public function __invoke(Request $request)
     {
         $user = Auth::user();
-        $isAdmin = false; // Adjust if you have a proper role check helper
+        $isAdmin = $user->hasRole('admin'); // Adjust if you have a proper role check helper
         $year = $request->query('year');
         $shift = $request->query('shift');
         $perPage = $request->query('perPage', 10);
@@ -20,7 +20,7 @@ class UniversityClassReportController extends Controller
         $university = $request->query('university');
 
         // Debug: Log the incoming request
-        \Log::info('UniversityClassReport Request:', [
+        \Illuminate\Support\Facades\Log::info('UniversityClassReport Request:', [
             'year' => $year,
             'shift' => $shift,
             'type' => $type,
@@ -30,8 +30,8 @@ class UniversityClassReportController extends Controller
         ]);
 
         // Validate inputs
-        if (!$year || (!$shift || $shift === '')) {
-            \Log::error('UniversityClassReport Validation Failed:', [
+        if (empty($year) || empty($shift)) {
+            \Illuminate\Support\Facades\Log::error('UniversityClassReport Validation Failed:', [
                 'year' => $year,
                 'shift' => $shift
             ]);
@@ -47,11 +47,12 @@ class UniversityClassReportController extends Controller
                 ->select('student_statistics.university_id', 'universities.name as university_name')
                 ->where('student_statistics.academic_year', $year)
                 ->when($shift && $shift !== 'all', function ($query) use ($shift) {
-                    return $query->where('student_statistics.shift', $shift);
+                    return $query->whereRaw('LOWER(student_statistics.shift) = ?', [strtolower($shift)]);
                 })
                 ->when($type && $type !== 'all', function ($query) use ($type) {
-                    return $query->where('universities.type', $type);
+                    return $query->whereRaw('LOWER(universities.type) = ?', [strtolower($type)]);
                 })
+
                 ->when($university && $university !== 'all', function ($query) use ($university) {
                     return $query->where('student_statistics.university_id', $university);
                 })
@@ -67,12 +68,13 @@ class UniversityClassReportController extends Controller
             $universityIds = $universityPaginator->pluck('university_id')->toArray();
 
             if (empty($universityIds)) {
-                \Log::info('No university IDs found', [
+                \Illuminate\Support\Facades\Log::info('No university IDs found', [
                     'year' => $year,
                     'shift' => $shift,
                     'type' => $type,
                     'university' => $university
                 ]);
+
                 return response()->json([
                     'data' => [],
                     'current_page' => 1,
@@ -113,11 +115,19 @@ class UniversityClassReportController extends Controller
                 )
                 ->get();
 
-            // STEP 3: Get all unique classrooms from this result set
+            // STEP 3: Get all unique classrooms from this result set and normalize them
             $allClasses = $classResults
                 ->pluck('classroom')
                 ->filter(fn($classroom) => trim($classroom) !== '')
                 ->unique()
+                ->map(function ($classroom) {
+                    // Normalize classroom key to lowercase format expected by frontend
+                    $classroomKey = strtolower($classroom);
+                    if (is_numeric($classroomKey)) {
+                        $classroomKey = 'class' . $classroomKey;
+                    }
+                    return $classroomKey;
+                })
                 ->sort()
                 ->values();
 
@@ -139,7 +149,13 @@ class UniversityClassReportController extends Controller
 
             foreach ($classResults as $row) {
                 if (isset($grouped[$row->university_id])) {
-                    $grouped[$row->university_id]['classes'][$row->classroom] = [
+                    // Normalize classroom key to lowercase format expected by frontend
+                    $classroomKey = strtolower($row->classroom);
+                    if (is_numeric($classroomKey)) {
+                        $classroomKey = 'class' . $classroomKey;
+                    }
+
+                    $grouped[$row->university_id]['classes'][$classroomKey] = [
                         'Total_males' => (string) $row->Total_males,
                         'Total_Females' => (string) $row->Total_Females,
                         'Total_Students' => (string) $row->Total_Students,

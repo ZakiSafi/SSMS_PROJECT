@@ -99,11 +99,19 @@ class FacultyClassBasedReportController extends Controller
             )
             ->get();
 
-        // STEP 4: Get all unique classrooms
+        // STEP 4: Get all unique classrooms and normalize them
         $allClasses = $classResults
             ->pluck('classroom')
             ->filter(fn($classroom) => trim($classroom) !== '')
             ->unique()
+            ->map(function ($classroom) {
+                // Normalize classroom key to lowercase format expected by frontend
+                $classroomKey = strtolower($classroom);
+                if (is_numeric($classroomKey)) {
+                    $classroomKey = 'class' . $classroomKey;
+                }
+                return $classroomKey;
+            })
             ->sort()
             ->values();
 
@@ -130,7 +138,13 @@ class FacultyClassBasedReportController extends Controller
 
             foreach ($faculties as &$faculty) {
                 if ($faculty['faculty_id'] == $row->faculty_id) {
-                    $faculty['classes'][$row->classroom] = [
+                    // Normalize classroom key to lowercase format expected by frontend
+                    $classroomKey = strtolower($row->classroom);
+                    if (is_numeric($classroomKey)) {
+                        $classroomKey = 'class' . $classroomKey;
+                    }
+
+                    $faculty['classes'][$classroomKey] = [
                         'shift' => $row->shift,
                         'Total_Male' => (string) $row->Total_Males,
                         'Total_Female' => (string) $row->Total_Females,

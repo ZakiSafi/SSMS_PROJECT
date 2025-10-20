@@ -229,5 +229,11 @@
     "validation.email_invalid": "Email must be valid",
     "student_teacher_ratio": "Student Teacher Ratio",
     "range": "Range",
-    "university_classes": "University Classes"
+    "university_classes": "University Classes",
+    "male": "Male",
+    "female": "Female",
+    "just_now": "Just now",
+    "minutes_ago": "minutes ago",
+    "hours_ago": "hours ago",
+    "days_ago": "days ago"
 }

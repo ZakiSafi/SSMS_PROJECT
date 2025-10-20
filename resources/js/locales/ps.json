@@ -233,5 +233,9 @@
     "male": "نارینه",
     "female": "ښځینه",
     "range": "محدوده",
-    "university_classes": "د پوهنتون ټولګي"
+    "university_classes": "د پوهنتون ټولګي",
+    "just_now": "همدا اوس",
+    "minutes_ago": "دقیقې دمخه",
+    "hours_ago": "ساعتونه دمخه",
+    "days_ago": "ورځې دمخه"
 }

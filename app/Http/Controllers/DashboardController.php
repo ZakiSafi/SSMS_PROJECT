@@ -34,8 +34,9 @@ class DashboardController extends Controller
             'shift' => 'nullable|in:day,night',
         ]);
 
+        // Only filter out null values, keep 'all' values for the service to handle
         $filters = array_filter($validated, function ($value) {
-            return $value !== null && $value !== 'all';
+            return $value !== null;
         });
 
         return response()->json([

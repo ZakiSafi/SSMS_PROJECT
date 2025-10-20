@@ -166,21 +166,33 @@
                                             {{
                                                 department.classes?.[
                                                     "class" + classIndex
-                                                ]?.Total_males || 0
+                                                ]?.Total_males ||
+                                                department.classes?.[
+                                                    "Class" + classIndex
+                                                ]?.Total_males ||
+                                                0
                                             }}
                                         </td>
                                         <td>
                                             {{
                                                 department.classes?.[
                                                     "class" + classIndex
-                                                ]?.Total_Females || 0
+                                                ]?.Total_Females ||
+                                                department.classes?.[
+                                                    "Class" + classIndex
+                                                ]?.Total_Females ||
+                                                0
                                             }}
                                         </td>
                                         <td>
                                             {{
                                                 department.classes?.[
                                                     "class" + classIndex
-                                                ]?.Total_Students || 0
+                                                ]?.Total_Students ||
+                                                department.classes?.[
+                                                    "Class" + classIndex
+                                                ]?.Total_Students ||
+                                                0
                                             }}
                                         </td>
                                     </template>

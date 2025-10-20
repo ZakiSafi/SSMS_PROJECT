@@ -555,7 +555,7 @@ async function fetchRecentActivity() {
 }
 
 function buildTopFilterParams() {
-    return {
+    const params = {
         year: filters.value.year,
         season: filters.value.season,
         university_type: filters.value.university_type,
@@ -563,6 +563,19 @@ function buildTopFilterParams() {
         university_id: filters.value.university_id,
         shift: filters.value.shift,
     };
+
+    // Remove null/undefined values and "all" values for proper filtering
+    Object.keys(params).forEach((key) => {
+        if (
+            params[key] === null ||
+            params[key] === undefined ||
+            params[key] === "all"
+        ) {
+            delete params[key];
+        }
+    });
+
+    return params;
 }
 
 async function fetchData() {

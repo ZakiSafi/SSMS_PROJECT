@@ -147,19 +147,28 @@
                             <td>
                                 {{
                                     institution.classes?.[`class${classNum}`]
-                                        ?.Total_males || 0
+                                        ?.Total_males ||
+                                    institution.classes?.[`Class${classNum}`]
+                                        ?.Total_males ||
+                                    0
                                 }}
                             </td>
                             <td>
                                 {{
                                     institution.classes?.[`class${classNum}`]
-                                        ?.Total_Females || 0
+                                        ?.Total_Females ||
+                                    institution.classes?.[`Class${classNum}`]
+                                        ?.Total_Females ||
+                                    0
                                 }}
                             </td>
                             <td>
                                 {{
                                     institution.classes?.[`class${classNum}`]
-                                        ?.Total_Students || 0
+                                        ?.Total_Students ||
+                                    institution.classes?.[`Class${classNum}`]
+                                        ?.Total_Students ||
+                                    0
                                 }}
                             </td>
                         </template>

@@ -76,21 +76,15 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
     actions: {
         _sanitizeFilters(raw) {
             const params = { ...raw };
-            // Normalize 'all' or empty-like values to undefined so backend treats as no filter
+            // Only remove 'all' for season as it's not accepted by most endpoints
             if (
                 params.season &&
                 String(params.season).toLowerCase() === "all"
             ) {
                 delete params.season;
             }
-            if (
-                params.university_type &&
-                String(params.university_type).toLowerCase() === "all"
-            ) {
-                // keep 'all' for endpoints that accept it; summary does accept 'all'.
-                // We will only delete for endpoints that do NOT accept it.
-            }
-            // Remove explicit nulls to avoid exists validations
+            // Keep university_type='all' as it's accepted by summary endpoint
+            // Remove explicit nulls and empty strings to avoid exists validations
             Object.keys(params).forEach((k) => {
                 if (
                     params[k] === null ||
