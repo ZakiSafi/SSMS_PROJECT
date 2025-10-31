@@ -31,28 +31,24 @@
                             v-model="formIsValid"
                             @submit.prevent="save"
                         >
-                            <v-text-field
+                            <RTLInput
                                 v-model="formData.name"
-                                variant="outlined"
-                                :label="$t('form.name')"
-                                class="pb-4"
-                                density="compact"
-                                :rules="[rules.required, rules.name]"
+                                :placeholder="$t('form.name')"
+                                input-class="compact"
+                                :required="true"
                             />
 
-                            <v-select
+                            <RTLSelect
                                 v-model="formData.province_id"
                                 :items="UniversityRepository.provinces"
                                 item-value="id"
                                 item-title="name"
-                                variant="outlined"
-                                :label="$t('Province')"
-                                density="compact"
-                                class="pb-4"
-                                :rules="[rules.required]"
+                                :placeholder="$t('Province')"
+                                select-class="compact"
+                                :required="true"
                             />
 
-                            <v-select
+                            <RTLSelect
                                 v-model="formData.type"
                                 :items="[
                                     { label: $t('public'), value: 'public' },
@@ -60,11 +56,9 @@
                                 ]"
                                 item-title="label"
                                 item-value="value"
-                                :label="$t('university type')"
-                                variant="outlined"
-                                density="compact"
-                                class="pb-4"
-                                :rules="[rules.required]"
+                                :placeholder="$t('university type')"
+                                select-class="compact"
+                                :required="true"
                             />
 
                             <v-select
@@ -125,9 +119,11 @@
 import { ref, reactive, watch, onMounted, computed } from "vue";
 import { useUniversityRepository } from "@/store/UniversityRepository";
 import { useI18n } from "vue-i18n";
+import RTLInput from "@/components/RTLInput.vue";
+import RTLSelect from "@/components/RTLSelect.vue";
 
 const { t, locale } = useI18n();
-const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
+const dir = computed(() => (locale.value === "fa" || locale.value === "pa" ? "rtl" : "ltr"));
 
 const UniversityRepository = useUniversityRepository();
 const formRef = ref(null);
@@ -208,8 +204,10 @@ const removeFaculty = (facultyId) => {
 
 // Save function
 const save = async () => {
-    const { valid } = await formRef.value.validate();
-    if (!valid) return;
+    // Manual validation since we're using custom components
+    if (!formData.name || !formData.province_id || !formData.type) {
+        return;
+    }
 
     isSaving.value = true;
     try {

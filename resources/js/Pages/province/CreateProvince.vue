@@ -30,14 +30,12 @@
                             class="pt-4"
                             @submit.prevent="save"
                         >
-                            <v-text-field
+                            <RTLInput
                                 v-model="formData.name"
-                                variant="outlined"
-                                :label="$t('form.name')"
-                                class="pb-4"
-                                density="compact"
-                                :rules="[rules.required]"
-                            ></v-text-field>
+                                :placeholder="$t('form.name')"
+                                input-class="compact"
+                                :required="true"
+                            />
                         </v-form>
                     </v-card-text>
 
@@ -66,9 +64,10 @@ import { ref, reactive } from "vue";
 import { useProvinceRepository } from "@/store/ProvinceRepository";
 import { useI18n } from "vue-i18n";
 import { computed } from "vue";
+import RTLInput from "@/components/RTLInput.vue";
 
 const { t, locale } = useI18n();
-const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
+const dir = computed(() => (locale.value === "fa" || locale.value === "pa" ? "rtl" : "ltr"));
 const ProvinceRepository = useProvinceRepository();
 const formRef = ref(null);
 
@@ -84,8 +83,10 @@ const rules = {
 };
 
 const save = async () => {
-    const { valid } = await formRef.value.validate();
-    if (!valid) return;
+    // Manual validation
+    if (!formData.name) {
+        return;
+    }
 
     try {
         if (ProvinceRepository.isEditMode) {

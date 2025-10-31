@@ -116,11 +116,241 @@ div.v-data-table-footer {
 
 /* Make Vuetify input labels + text align to right in RTL */
 [dir="rtl"] .v-field__input,
-[dir="rtl"] .v-field__label {
+[dir="rtl"] .v-field__label,
+[dir="rtl"] .v-field {
     text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Force RTL on all Vuetify field wrappers */
+[dir="rtl"] .v-field,
+[dir="rtl"] .v-field__field,
+[dir="rtl"] .v-text-field .v-field,
+[dir="rtl"] .v-select .v-field {
     direction: rtl !important;
 }
 
 [dir="rtl"] .v-list-item-title {
     text-align: right !important;
+}
+
+/* RTL styling for input fields - placeholder and text alignment */
+[dir="rtl"] .v-text-field .v-field__input,
+[dir="rtl"] .v-select .v-field__input,
+[dir="rtl"] .v-autocomplete .v-field__input,
+[dir="rtl"] .v-combobox .v-field__input {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* RTL placeholder alignment - More specific selectors */
+[dir="rtl"] .v-text-field input::placeholder,
+[dir="rtl"] .v-select input::placeholder,
+[dir="rtl"] .v-autocomplete input::placeholder,
+[dir="rtl"] .v-combobox input::placeholder,
+[dir="rtl"] input::placeholder,
+[dir="rtl"] textarea::placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* RTL placeholder alignment for Vuetify fields - Very specific */
+[dir="rtl"] .v-field__input input::placeholder,
+[dir="rtl"] .v-field__input input::-webkit-input-placeholder,
+[dir="rtl"] .v-field__input input::-moz-placeholder,
+[dir="rtl"] .v-field__input input:-ms-input-placeholder,
+[dir="rtl"] .v-field__input input:-moz-placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* RTL select dropdown value alignment */
+[dir="rtl"] .v-select .v-field__input > input,
+[dir="rtl"] .v-select .v-select__selection {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* RTL text field value alignment */
+[dir="rtl"] .v-text-field input,
+[dir="rtl"] .v-text-field textarea,
+[dir="rtl"] .v-field__input input,
+[dir="rtl"] .v-field__input textarea,
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="number"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="password"] {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* RTL date picker input alignment - Ultra aggressive */
+[dir="rtl"] .vue3-datepicker input,
+[dir="rtl"] .vdp-datepicker input,
+[dir="rtl"] .vue3-datepicker input::placeholder,
+[dir="rtl"] .vdp-datepicker input::placeholder,
+[dir="rtl"] .vdp-datepicker input::-webkit-input-placeholder,
+[dir="rtl"] .vdp-datepicker input::-moz-placeholder,
+[dir="rtl"] [class*="datepicker"] input,
+[dir="rtl"] [class*="DatePicker"] input,
+[dir="rtl"] [class*="datepicker"] input::placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* RTL for DatePicker component wrapper */
+[dir="rtl"] .vue3-datepicker,
+[dir="rtl"] .vdp-datepicker,
+[dir="rtl"] [class*="datepicker"],
+[dir="rtl"] [class*="DatePicker"] {
+    direction: rtl !important;
+}
+
+[dir="rtl"] .vue3-datepicker input,
+[dir="rtl"] .vdp-datepicker input,
+[dir="rtl"] [class*="datepicker"] input,
+[dir="rtl"] [class*="DatePicker"] input {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Force DatePicker input container to RTL */
+[dir="rtl"] .vdp-datepicker-wrapper,
+[dir="rtl"] .vdp-datepicker-wrapper input,
+[dir="rtl"] .vdp-datepicker__input-group input,
+[dir="rtl"] .vdp-datepicker__input input {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Target all possible DatePicker input variations */
+[dir="rtl"] .vdp-datepicker__input input,
+[dir="rtl"] .vdp-datepicker__input input::placeholder,
+[dir="rtl"] .vdp-datepicker__input input::-webkit-input-placeholder,
+[dir="rtl"] .vdp-datepicker__input input::-moz-placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* RTL field input wrapper - Most specific selectors */
+[dir="rtl"] .v-field__input > input,
+[dir="rtl"] .v-field__input > textarea,
+[dir="rtl"] .v-field input,
+[dir="rtl"] .v-field textarea,
+[dir="rtl"] .v-field__input input,
+[dir="rtl"] .v-field__input textarea {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Additional RTL for all inputs within RTL containers */
+[dir="rtl"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="submit"]):not([type="button"]),
+[dir="rtl"] textarea {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Ensure select menu items are also RTL aligned */
+[dir="rtl"] .v-list-item__content,
+[dir="rtl"] .v-list-item-title,
+[dir="rtl"] .v-menu .v-list-item {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* RTL for prepend-inner and append-inner icons */
+[dir="rtl"] .v-field__prepend-inner {
+    order: 2;
+}
+
+[dir="rtl"] .v-field__append-inner {
+    order: 1;
+}
+
+/* RTL for select selection text */
+[dir="rtl"] .v-select__selection {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Global RTL input and placeholder alignment - Most aggressive rule */
+[dir="rtl"] input,
+[dir="rtl"] input::placeholder,
+[dir="rtl"] input::-webkit-input-placeholder,
+[dir="rtl"] input::-moz-placeholder,
+[dir="rtl"] input:-ms-input-placeholder,
+[dir="rtl"] input:-moz-placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Ensure all form inputs are RTL */
+[dir="rtl"] form input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="hidden"]),
+[dir="rtl"] form textarea,
+[dir="rtl"] form select {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* ULTRA SPECIFIC - Target all possible input scenarios with maximum specificity */
+[dir="rtl"] .v-card input,
+[dir="rtl"] .v-card input::placeholder,
+[dir="rtl"] .v-dialog input,
+[dir="rtl"] .v-dialog input::placeholder,
+[dir="rtl"] .v-form input,
+[dir="rtl"] .v-form input::placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Force override for Vuetify v-field components - Maximum specificity */
+[dir="rtl"] .v-field input,
+[dir="rtl"] .v-field input::placeholder,
+[dir="rtl"] .v-field .v-field__input input,
+[dir="rtl"] .v-field .v-field__input input::placeholder,
+[dir="rtl"] .v-text-field .v-field input,
+[dir="rtl"] .v-text-field .v-field input::placeholder,
+[dir="rtl"] .v-select .v-field input,
+[dir="rtl"] .v-select .v-field input::placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Override DatePicker component directly - Most aggressive */
+[dir="rtl"] .vue3-datepicker * input,
+[dir="rtl"] .vue3-datepicker * input::placeholder,
+[dir="rtl"] .vdp-datepicker * input,
+[dir="rtl"] .vdp-datepicker * input::placeholder,
+[dir="rtl"] [class*="datepicker"] input,
+[dir="rtl"] [class*="datepicker"] input::placeholder,
+[dir="rtl"] [class*="DatePicker"] input,
+[dir="rtl"] [class*="DatePicker"] input::placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Force RTL on any input with rtl-forced class */
+.rtl-forced,
+.rtl-forced::placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Inject this at the end of all styles to override everything */
+[dir="rtl"] input.rtl-forced,
+[dir="rtl"] input.rtl-forced::placeholder,
+[dir="rtl"] .rtl-forced,
+[dir="rtl"] .rtl-forced::placeholder {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Ultimate DatePicker RTL fix - Target by container class */
+.rtl-datepicker-container .vdp-datepicker input,
+.rtl-datepicker-container .vue3-datepicker input,
+[dir="rtl"] .rtl-datepicker-container .vdp-datepicker input,
+[dir="rtl"] .rtl-datepicker-container .vue3-datepicker input,
+[dir="rtl"] .rtl-datepicker-container input[type="text"] {
+    text-align: right !important;
+    direction: rtl !important;
 }

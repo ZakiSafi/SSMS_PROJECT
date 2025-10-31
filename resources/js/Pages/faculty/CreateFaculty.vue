@@ -1,5 +1,5 @@
 <template>
-    <div dir="rtl">
+    <div :dir="dir">
         <v-dialog
             transition="dialog-top-transition"
             width="50rem"
@@ -29,14 +29,12 @@
                             class="pt-4"
                             @submit.prevent="save"
                         >
-                            <v-text-field
+                            <RTLInput
                                 v-model="formData.name"
-                                variant="outlined"
-                                :label="$t('Name')"
-                                class="pb-4"
-                                density="compact"
-                                :rules="[rules.required]"
-                            ></v-text-field>
+                                :placeholder="$t('Name')"
+                                input-class="compact"
+                                :required="true"
+                            />
                         </v-form>
                     </v-card-text>
 
@@ -61,9 +59,14 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import { onMounted } from "vue";
 import { useFacultyRepository } from "@/store/FacultyRepository";
+import { useI18n } from "vue-i18n";
+import RTLInput from "@/components/RTLInput.vue";
+
+const { locale } = useI18n();
+const dir = computed(() => (locale.value === "fa" || locale.value === "pa" ? "rtl" : "ltr"));
 
 const FacultyRepository = useFacultyRepository();
 
@@ -87,13 +90,15 @@ const rules = {
 };
 
 const save = async () => {
-    const isValid = await formRef.value.validate();
-    if (isValid) {
-        if (FacultyRepository.isEditMode) {
-            await FacultyRepository.UpdateFaculty(formData, formData.id);
-        } else {
-            await FacultyRepository.CreateFaculty(formData);
-        }
+    // Manual validation
+    if (!formData.name) {
+        return;
+    }
+    
+    if (FacultyRepository.isEditMode) {
+        await FacultyRepository.UpdateFaculty(formData, formData.id);
+    } else {
+        await FacultyRepository.CreateFaculty(formData);
     }
 };
 </script>
