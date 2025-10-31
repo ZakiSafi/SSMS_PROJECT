@@ -4,11 +4,8 @@
             v-model="drawer"
             :rail="rail"
             permanent
-
             floating
-
             :location="dir"
-
             class="sidebar"
 
         >

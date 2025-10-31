@@ -30,47 +30,48 @@
                             class="pt-4"
                             @submit.prevent="save"
                         >
-                            <v-text-field
+                            <RTLInput
                                 v-model="formData.name"
-                                :label="$t('name')"
-                                variant="outlined"
-                                :rules="[rules.required]"
-                            ></v-text-field>
+                                :placeholder="$t('name')"
+                                input-class="compact"
+                                :required="true"
+                            />
 
-                            <v-text-field
+                            <RTLInput
                                 v-model="formData.email"
-                                :label="$t('email')"
-                                variant="outlined"
-                                :rules="[rules.required, rules.email]"
-                            ></v-text-field>
+                                :placeholder="$t('email')"
+                                type="email"
+                                input-class="compact"
+                                :required="true"
+                            />
 
-                            <v-text-field
+                            <RTLInput
                                 v-model="formData.password"
-                                :label="$t('form.password')"
+                                :placeholder="$t('form.password')"
                                 type="password"
-                                variant="outlined"
-                                :rules="[rules.required]"
-                            ></v-text-field>
+                                input-class="compact"
+                                :required="true"
+                            />
 
-                            <v-select
+                            <RTLSelect
                                 v-model="formData.university_id"
                                 :items="UserRepository.universities"
-                                :label="$t('university')"
                                 item-title="name"
                                 item-value="id"
-                                variant="outlined"
-                                :rules="[rules.required]"
-                            ></v-select>
+                                :placeholder="$t('university')"
+                                select-class="compact"
+                                :required="true"
+                            />
 
-                            <v-select
+                            <RTLSelect
                                 v-model="formData.role_id"
                                 :items="UserRepository.roles"
-                                :label="$t('role')"
                                 item-title="name"
                                 item-value="id"
-                                variant="outlined"
-                                :rules="[rules.required]"
-                            ></v-select>
+                                :placeholder="$t('role')"
+                                select-class="compact"
+                                :required="true"
+                            />
                         </v-form>
                     </v-card-text>
 
@@ -95,10 +96,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { useUserRepository } from "@/store/UserRepository";
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+import RTLInput from "@/components/RTLInput.vue";
+import RTLSelect from "@/components/RTLSelect.vue";
+const { t, locale } = useI18n();
+const dir = computed(() => (locale.value === "fa" || locale.value === "pa" ? "rtl" : "ltr"));
 
 const UserRepository = useUserRepository();
 const formRef = ref(null);
@@ -123,8 +127,13 @@ onMounted(() => {
 });
 
 const save = async () => {
-    const { valid } = await formRef.value.validate();
-    if (!valid) return;
+    // Manual validation since we're using custom components
+    if (!formData.name || !formData.email || !formData.password || !formData.university_id || !formData.role_id) {
+        return;
+    }
+    if (!/.+@.+\..+/.test(formData.email)) {
+        return;
+    }
 
     try {
         if (UserRepository.isEditMode) {

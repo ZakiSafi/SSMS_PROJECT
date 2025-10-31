@@ -1,5 +1,5 @@
 <template>
-    <div dir="rtl">
+    <div :dir="dir">
         <v-dialog
             transition="dialog-top-transition"
             width="50rem"
@@ -29,25 +29,21 @@
                             class="pt-4"
                             @submit.prevent="save"
                         >
-                            <v-text-field
+                            <RTLInput
                                 v-model="formData.name"
-                                variant="outlined"
-                                :label="$t('Name')"
-                                class="pb-4"
-                                density="compact"
-                                :rules="[rules.required]"
-                            ></v-text-field>
-                            <v-select
+                                :placeholder="$t('Name')"
+                                input-class="compact"
+                                :required="true"
+                            />
+                            <RTLSelect
                                 v-model="formData.faculty_id"
                                 :items="DepartmentRepository.faculties"
                                 item-value="id"
                                 item-title="name"
-                                variant="outlined"
-                                :label="$t('Faculty')"
-                                density="compact"
-                                class="pb-4"
-                                :rules="[rules.required]"
-                            ></v-select>
+                                :placeholder="$t('Faculty')"
+                                select-class="compact"
+                                :required="true"
+                            />
                         </v-form>
                     </v-card-text>
 
@@ -72,9 +68,15 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import { onMounted } from "vue";
 import { useDepartmentRepository } from "@/store/DepartmentRepository";
+import { useI18n } from "vue-i18n";
+import RTLInput from "@/components/RTLInput.vue";
+import RTLSelect from "@/components/RTLSelect.vue";
+
+const { locale } = useI18n();
+const dir = computed(() => (locale.value === "fa" || locale.value === "pa" ? "rtl" : "ltr"));
 
 const DepartmentRepository = useDepartmentRepository();
 onMounted(() => {
@@ -96,13 +98,15 @@ const rules = {
 };
 
 const save = async () => {
-    const isValid = await formRef.value.validate();
-    if (isValid) {
-        if (DepartmentRepository.isEditMode) {
-            await DepartmentRepository.UpdateDepartment(formData.id, formData);
-        } else {
-            await DepartmentRepository.CreateDepartment(formData);
-        }
+    // Manual validation
+    if (!formData.name || !formData.faculty_id) {
+        return;
+    }
+    
+    if (DepartmentRepository.isEditMode) {
+        await DepartmentRepository.UpdateDepartment(formData.id, formData);
+    } else {
+        await DepartmentRepository.CreateDepartment(formData);
     }
 };
 </script>

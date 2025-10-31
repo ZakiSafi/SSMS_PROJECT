@@ -1,5 +1,5 @@
 <template>
-    <div :dir="dir">
+    <div :dir="dir" class="rtl-datepicker-container">
         <v-dialog
             transition="dialog-top-transition"
             width="45rem"
@@ -45,83 +45,71 @@
                                 </v-col>
 
                                 <v-col cols="6">
-                                    <v-select
+                                    <RTLSelect
                                         v-model="formData.university_id"
-                                        :items="
-                                            StudentStatisticsRepository.universities
-                                        "
+                                        :items="StudentStatisticsRepository.universities"
                                         item-title="name"
                                         item-value="id"
-                                        :label="$t('University')"
-                                        variant="outlined"
-                                        density="compact"
-                                        :rules="[rules.required]"
-                                        :return-object="false"
-                                        clearable
-                                        :no-data-text="t('no_data_available')"
+                                        :placeholder="$t('University')"
+                                        select-class="compact"
+                                        :required="true"
                                     />
                                 </v-col>
 
                                 <!-- Row 2 -->
-                                <v-select
-                                    v-model="formData.faculty_id"
-                                    :items="facultiesOption"
-                                    item-title="name"
-                                    item-value="id"
-                                    :label="$t('Faculty')"
-                                    variant="outlined"
-                                    density="compact"
-                                    :rules="[rules.required]"
-                                    :disabled="!formData.university_id"
-                                    clearable
-                                    :no-data-text="t('no_data_available')"
-                                />
+                                <v-col cols="6">
+                                    <RTLSelect
+                                        v-model="formData.faculty_id"
+                                        :items="facultiesOption"
+                                        item-title="name"
+                                        item-value="id"
+                                        :placeholder="$t('Faculty')"
+                                        select-class="compact"
+                                        :required="true"
+                                        :disabled="!formData.university_id"
+                                    />
+                                </v-col>
 
                                 <v-col cols="6">
-                                    <v-select
+                                    <RTLSelect
                                         v-model="formData.department_id"
                                         :items="departmentsOption"
                                         item-title="name"
                                         item-value="id"
-                                        :label="$t('Department')"
-                                        variant="outlined"
-                                        density="compact"
-                                        :rules="[rules.required]"
+                                        :placeholder="$t('Department')"
+                                        select-class="compact"
+                                        :required="true"
                                         :disabled="!formData.faculty_id"
-                                        clearable
-                                        :no-data-text="t('no_data_available')"
                                     />
                                 </v-col>
 
                                 <!-- Row 3 -->
                                 <v-col cols="6">
-                                    <v-select
+                                    <RTLSelect
                                         v-model="formData.classroom"
                                         :items="classOptions"
                                         item-title="name"
                                         item-value="name"
-                                        :label="$t('Class')"
-                                        variant="outlined"
-                                        density="compact"
-                                        :no-data-text="t('no_data_available')"
+                                        :placeholder="$t('Class')"
+                                        select-class="compact"
                                     />
                                 </v-col>
 
                                 <v-col cols="6">
-                                    <v-select
+                                    <RTLSelect
                                         v-model="formData.semester_number"
-                                        :items="availableSemesters"
-                                        :label="$t('Semester')"
-                                        variant="outlined"
-                                        density="compact"
-                                        :rules="[rules.required]"
+                                        :items="availableSemesters.map(sem => ({ value: sem, title: sem.toString() }))"
+                                        item-title="title"
+                                        item-value="value"
+                                        :placeholder="$t('Semester')"
+                                        select-class="compact"
+                                        :required="true"
                                         :disabled="!formData.classroom"
-                                        :no-data-text="t('no_data_available')"
                                     />
                                 </v-col>
 
                                 <v-col cols="6">
-                                    <v-select
+                                    <RTLSelect
                                         v-model="formData.student_type"
                                         :items="[
                                             {
@@ -139,16 +127,14 @@
                                         ]"
                                         item-title="title"
                                         item-value="value"
-                                        :label="$t('Student Type')"
-                                        variant="outlined"
-                                        density="compact"
-                                        :rules="[rules.required]"
-                                        :no-data-text="t('no_data_available')"
+                                        :placeholder="$t('Student Type')"
+                                        select-class="compact"
+                                        :required="true"
                                     />
                                 </v-col>
 
                                 <v-col cols="3">
-                                    <v-select
+                                    <RTLSelect
                                         v-model="formData.shift"
                                         :items="[
                                             { value: 'day', title: $t('day') },
@@ -157,55 +143,44 @@
                                                 title: $t('night'),
                                             },
                                         ]"
-                                        :item-title="title"
-                                        :item-value="value"
-                                        :label="$t('Shift')"
-                                        variant="outlined"
-                                        density="compact"
-                                        :rules="[rules.required]"
-                                        :no-data-text="t('no_data_available')"
+                                        item-title="title"
+                                        item-value="value"
+                                        :placeholder="$t('Shift')"
+                                        select-class="compact"
+                                        :required="true"
                                     />
                                 </v-col>
 
                                 <v-col cols="3">
-                                    <v-select
+                                    <RTLSelect
                                         v-model="formData.season"
-                                        :items="['spring', 'autumn']"
-                                        :item-title="(item) => $t(`${item}`)"
-                                        :label="$t('Season')"
-                                        variant="outlined"
-                                        density="compact"
-                                        :rules="[rules.required]"
-                                        :no-data-text="t('no_data_available')"
+                                        :items="['spring', 'autumn'].map(item => ({ value: item, title: $t(item) }))"
+                                        item-title="title"
+                                        item-value="value"
+                                        :placeholder="$t('Season')"
+                                        select-class="compact"
+                                        :required="true"
                                     />
                                 </v-col>
 
                                 <!-- Row 4: Total students -->
                                 <v-col cols="6">
-                                    <v-text-field
+                                    <RTLInput
                                         v-model="formData.male_total"
-                                        :label="$t('Total Male Students')"
+                                        :placeholder="$t('Total Male Students')"
                                         type="number"
-                                        variant="outlined"
-                                        density="compact"
-                                        :rules="[
-                                            rules.required,
-                                            rules.positiveNumber,
-                                        ]"
+                                        input-class="compact"
+                                        :required="true"
                                     />
                                 </v-col>
 
                                 <v-col cols="6">
-                                    <v-text-field
+                                    <RTLInput
                                         v-model="formData.female_total"
-                                        :label="$t('Total Female Students')"
+                                        :placeholder="$t('Total Female Students')"
                                         type="number"
-                                        variant="outlined"
-                                        density="compact"
-                                        :rules="[
-                                            rules.required,
-                                            rules.positiveNumber,
-                                        ]"
+                                        input-class="compact"
+                                        :required="true"
                                     />
                                 </v-col>
                             </v-row>
@@ -233,15 +208,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from "vue";
+import { ref, reactive, onMounted, watch, nextTick } from "vue";
 import { useStudentStatisticRepository } from "@/store/StudentStatisticRepository";
 import persianDate from "persian-date";
 import DatePicker from "vue3-persian-datetime-picker";
 import { useI18n } from "vue-i18n";
 import { computed } from "vue";
+import RTLInput from "@/components/RTLInput.vue";
+import RTLSelect from "@/components/RTLSelect.vue";
 
 const { t, locale } = useI18n();
-const dir = computed(() => (locale.value === "fa" ? "rtl" : "ltr"));
+const dir = computed(() => (locale.value === "fa" || locale.value === "pa" ? "rtl" : "ltr"));
 
 const StudentStatisticsRepository = useStudentStatisticRepository();
 const currentYear = ref(new persianDate().year().toString());
@@ -331,10 +308,48 @@ watch(
     }
 );
 
+// Force DatePicker RTL alignment
+const applyDatePickerRTL = () => {
+    if (locale.value === "fa" || locale.value === "pa") {
+        nextTick(() => {
+            const datePickerInputs = document.querySelectorAll('[dir="rtl"] .vdp-datepicker input, [dir="rtl"] .vue3-datepicker input, [dir="rtl"] [class*="datepicker"] input');
+            datePickerInputs.forEach((input) => {
+                input.style.setProperty('text-align', 'right', 'important');
+                input.style.setProperty('direction', 'rtl', 'important');
+            });
+            
+            // Also target by type attribute
+            const allInputs = document.querySelectorAll('[dir="rtl"] input[type="text"]');
+            allInputs.forEach((input) => {
+                if (input.closest('.vdp-datepicker') || input.closest('.vue3-datepicker')) {
+                    input.style.setProperty('text-align', 'right', 'important');
+                    input.style.setProperty('direction', 'rtl', 'important');
+                }
+            });
+        });
+    }
+};
+
 onMounted(() => {
     StudentStatisticsRepository.fetchDepartments();
     StudentStatisticsRepository.fetchFaculties();
     StudentStatisticsRepository.fetchUniversities();
+    applyDatePickerRTL();
+    setTimeout(applyDatePickerRTL, 100);
+    setTimeout(applyDatePickerRTL, 300);
+    setTimeout(applyDatePickerRTL, 500);
+});
+
+watch(locale, () => {
+    applyDatePickerRTL();
+});
+
+watch(() => StudentStatisticsRepository.createDialog, (isOpen) => {
+    if (isOpen) {
+        setTimeout(applyDatePickerRTL, 100);
+        setTimeout(applyDatePickerRTL, 300);
+        setTimeout(applyDatePickerRTL, 500);
+    }
 });
 
 const rules = {
@@ -343,8 +358,14 @@ const rules = {
 };
 
 const save = async () => {
-    const { valid } = await formRef.value.validate();
-    if (!valid) return;
+    // Manual validation since we're using custom components
+    if (!formData.academic_year || !formData.university_id || !formData.faculty_id || 
+        !formData.department_id || !formData.semester_number || !formData.student_type || 
+        !formData.shift || !formData.season || 
+        (formData.male_total === null || formData.male_total === '') ||
+        (formData.female_total === null || formData.female_total === '')) {
+        return;
+    }
 
     if (StudentStatisticsRepository.isEditMode) {
         await StudentStatisticsRepository.updateStatistic(

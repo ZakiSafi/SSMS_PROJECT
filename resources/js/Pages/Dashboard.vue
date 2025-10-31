@@ -16,65 +16,65 @@
             <!-- 5 filters in a single row (wrap on small screens) -->
             <v-row dense class="pa-4">
                 <v-col class="col-1-5" cols="12" sm="6">
-                    <v-select
-                        v-model="filters.year"
+                        <v-select
+                            v-model="filters.year"
                         :items="yearsWithAll"
                         item-title="label"
                         item-value="value"
                         :label="$t('year')"
-                        density="comfortable"
+                            density="comfortable"
                         @update:modelValue="handleTopFiltersChange"
-                    />
-                </v-col>
+                        />
+                    </v-col>
 
                 <v-col class="col-1-5" cols="12" sm="6">
-                    <v-select
+                        <v-select
                         v-model="filters.university_type"
                         :items="universityTypeOptions"
                         item-title="label"
                         item-value="value"
                         :label="$t('university_type')"
-                        density="comfortable"
+                            density="comfortable"
                         @update:modelValue="handleTopFiltersChange"
-                    />
-                </v-col>
+                        />
+                    </v-col>
 
                 <v-col class="col-1-5" cols="12" sm="6">
-                    <v-select
+                        <v-select
                         v-model="filters.province_id"
                         :items="provincesWithAll"
-                        item-title="name"
-                        item-value="id"
+                            item-title="name"
+                            item-value="id"
                         :label="$t('Province')"
-                        density="comfortable"
+                            density="comfortable"
                         @update:modelValue="handleTopFiltersChange"
-                    />
-                </v-col>
+                        />
+                    </v-col>
 
                 <v-col class="col-1-5" cols="12" sm="6">
-                    <v-select
+                        <v-select
                         v-model="filters.university_id"
                         :items="universitiesWithAll"
                         item-title="name"
                         item-value="id"
                         :label="$t('University')"
-                        density="comfortable"
+                            density="comfortable"
                         @update:modelValue="handleTopFiltersChange"
-                    />
-                </v-col>
+                        />
+                    </v-col>
 
                 <v-col class="col-1-5" cols="12" sm="6">
-                    <v-select
+                        <v-select
                         v-model="filters.shift"
                         :items="shiftOptions"
                         item-title="label"
                         item-value="value"
                         :label="$t('Shift')"
-                        density="comfortable"
+                            density="comfortable"
                         @update:modelValue="handleTopFiltersChange"
-                    />
-                </v-col>
-            </v-row>
+                        />
+                    </v-col>
+                </v-row>
         </v-card>
 
         <!-- Summary Cards (5 in one row) -->
@@ -154,8 +154,8 @@
                         <div class="text-caption text-medium-emphasis mb-2">
                             {{ $t("shows_total_students_hint") }}
                         </div>
-                        <canvas ref="barChartCanvas"></canvas>
-                    </div>
+                            <canvas ref="barChartCanvas"></canvas>
+                        </div>
                 </v-card>
             </v-col>
 
@@ -215,50 +215,50 @@
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <div class="d-flex" style="gap: 8px">
-                            <v-select
-                                v-model="trendFilters.university_type"
-                                :items="universityTypeOptions"
+                                <v-select
+                                    v-model="trendFilters.university_type"
+                                    :items="universityTypeOptions"
                                 item-title="label"
                                 item-value="value"
-                                density="compact"
+                                    density="compact"
                                 hide-details
                                 style="max-width: 160px"
                                 :label="$t('university_type')"
-                                @update:modelValue="fetchTrends"
-                            />
-                            <v-select
-                                v-model="trendFilters.province_id"
+                                    @update:modelValue="fetchTrends"
+                                />
+                                <v-select
+                                    v-model="trendFilters.province_id"
                                 :items="provincesWithAll"
-                                item-title="name"
-                                item-value="id"
+                                    item-title="name"
+                                    item-value="id"
                                 density="compact"
                                 hide-details
                                 style="max-width: 160px"
                                 :label="$t('Province')"
-                                @update:modelValue="fetchTrends"
-                            />
-                            <v-select
-                                v-model="trendFilters.time_range"
-                                :items="timeRangeOptions"
+                                    @update:modelValue="fetchTrends"
+                                />
+                                <v-select
+                                    v-model="trendFilters.time_range"
+                                    :items="timeRangeOptions"
                                 item-title="label"
                                 item-value="value"
-                                density="compact"
+                                    density="compact"
                                 hide-details
                                 style="max-width: 160px"
                                 :label="$t('range')"
-                                @update:modelValue="fetchTrends"
-                            />
-                            <v-select
+                                    @update:modelValue="fetchTrends"
+                                />
+                                <v-select
                                 v-model="trendFilters.group_by"
                                 :items="groupByOptions"
                                 item-title="label"
                                 item-value="value"
-                                density="compact"
+                                    density="compact"
                                 hide-details
                                 style="max-width: 140px"
                                 :label="$t('group')"
-                                @update:modelValue="fetchTrends"
-                            />
+                                    @update:modelValue="fetchTrends"
+                                />
                         </div>
                     </v-toolbar>
                     <v-divider></v-divider>
@@ -266,8 +266,8 @@
                         <div class="text-caption text-medium-emphasis mb-2">
                             {{ $t("trend_hint") }}
                         </div>
-                        <canvas ref="lineChartCanvas"></canvas>
-                    </div>
+                            <canvas ref="lineChartCanvas"></canvas>
+                        </div>
                 </v-card>
             </v-col>
         </v-row>
@@ -292,42 +292,42 @@
             ></v-progress-linear>
 
             <div v-else class="activity-grid pa-4">
-                <v-card
-                    v-for="(log, index) in DashboardRepo.recentActivity"
-                    :key="log.id"
-                    class="activity-card"
-                    elevation="2"
+                    <v-card
+                        v-for="(log, index) in DashboardRepo.recentActivity"
+                        :key="log.id"
+                        class="activity-card"
+                        elevation="2"
                 >
                     <v-card-text>
                         <div
                             class="d-flex justify-space-between align-center mb-2"
                         >
-                            <div class="d-flex align-center">
-                                <v-avatar
+                                <div class="d-flex align-center">
+                                    <v-avatar
                                     size="32"
                                     color="primary"
                                     class="mr-2"
                                 >
                                     <span class="text-white">{{
                                         getUserInitials(log.user?.name)
-                                    }}</span>
-                                </v-avatar>
-                                <div>
+                                        }}</span>
+                                    </v-avatar>
+                                    <div>
                                     <strong>{{ log.user?.name }}</strong>
                                     <div class="text-caption">
                                         {{ $t("table_name") }}:
                                         {{ log.table_name }}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <v-chip
+                                <v-chip
                                 small
-                                :color="getActionColor(log.action_type)"
+                                    :color="getActionColor(log.action_type)"
                                 text-color="white"
-                            >
+                                >
                                 {{ (log.action_type || "").toUpperCase() }}
-                            </v-chip>
-                        </div>
+                                </v-chip>
+                            </div>
 
                         <div class="mb-2">
                             <v-icon small class="mr-1">mdi-pound</v-icon>
@@ -335,18 +335,18 @@
                                 >{{ $t("record_id") }}:
                                 {{ log.record_id || "—" }}</span
                             >
-                        </div>
+                            </div>
 
                         <div class="activity-description">
                             {{
                                 log.action_description ||
                                 $t("no_data_available")
                             }}
-                        </div>
+                            </div>
 
                         <v-divider class="my-2"></v-divider>
 
-                        <div class="d-flex justify-space-between align-center">
+                            <div class="d-flex justify-space-between align-center">
                             <div class="text-caption text-medium-emphasis">
                                 <v-icon small>mdi-clock-outline</v-icon>
                                 {{
@@ -354,17 +354,17 @@
                                         ? formatDate(log.created_at)
                                         : "N/A"
                                 }}
-                            </div>
-                            <div class="text-caption text-medium-emphasis">
+                                </div>
+                                <div class="text-caption text-medium-emphasis">
                                 <v-icon small class="mr-1">mdi-earth</v-icon>
                                 {{ log.ip_address || "—" }}
+                                </div>
                             </div>
-                        </div>
-                    </v-card-text>
-                </v-card>
-            </div>
+                        </v-card-text>
+                    </v-card>
+                </div>
 
-            <div
+                <div
                 v-if="!loadingActivity && recentActivities.length === 0"
                 class="d-flex flex-column justify-center align-center text-center py-4"
             >
@@ -373,8 +373,8 @@
                 >
                 <div class="text-subtitle-1 mt-2">
                     {{ $t("no_data_available") }}
-                </div>
-            </div>
+                    </div>
+                    </div>
         </v-card>
     </v-container>
 </template>
@@ -517,29 +517,29 @@ const summaryStats = computed(() => {
     return [
         {
             title: t("total_students"),
-            value: DashboardRepo.summaryData.total_students,
-            icon: "mdi-school",
-        },
-        {
+        value: DashboardRepo.summaryData.total_students,
+        icon: "mdi-school",
+    },
+    {
             title: t("new_students"),
-            value: DashboardRepo.summaryData.new_students,
-            icon: "mdi-account-plus",
-        },
-        {
+        value: DashboardRepo.summaryData.new_students,
+        icon: "mdi-account-plus",
+    },
+    {
             title: t("graduated_students"),
-            value: DashboardRepo.summaryData.graduated_students,
-            icon: "mdi-school-outline",
-        },
-        {
+        value: DashboardRepo.summaryData.graduated_students,
+        icon: "mdi-school-outline",
+    },
+    {
             title: t("universities"),
             value: DashboardRepo.summaryData.universities_count?.total,
-            icon: "mdi-office-building",
-        },
-        {
+        icon: "mdi-office-building",
+    },
+    {
             title: t("student_teacher_ratio"),
-            value: DashboardRepo.summaryData.student_teacher_ratio,
+        value: DashboardRepo.summaryData.student_teacher_ratio,
             icon: "mdi-account-group-outline",
-        },
+    },
     ];
 });
 
