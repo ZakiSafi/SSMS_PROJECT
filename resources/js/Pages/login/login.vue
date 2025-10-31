@@ -98,10 +98,10 @@
                         v-model="formData.email"
                         :label="t('email_id')"
                         :prepend-inner-icon="
-                            dir === 'ltr' ? 'mdi-email-outline' : ''
+                            isLtr ? 'mdi-email-outline' : undefined
                         "
                         :append-inner-icon="
-                            dir === 'rtl' ? 'mdi-email-outline' : ''
+                            isRtl ? 'mdi-email-outline' : undefined
                         "
                         variant="outlined"
                         color="#009EE2"
@@ -123,19 +123,12 @@
                         v-model="formData.password"
                         :label="t('password')"
                         :type="visible ? 'text' : 'password'"
-                        :prepend-inner-icon="
-                            dir === 'ltr' ? 'mdi-lock-outline' : ''
-                        "
-                        :append-inner-icon="
-                            dir === 'rtl'
-                                ? 'mdi-lock-outline'
-                                : visible
-                                ? 'mdi-eye-off'
-                                : 'mdi-eye'
-                        "
+                        :prepend-inner-icon="getPasswordPrependIcon"
+                        :append-inner-icon="getPasswordAppendIcon"
                         variant="outlined"
                         density="comfortable"
-                        @click:append-inner="visible = !visible"
+                        @click:append-inner="togglePasswordVisibility"
+                        @click:prepend-inner="togglePasswordVisibility"
                         color="secondary"
                         class="w-full mb-6"
                         rounded="lg"
@@ -178,19 +171,19 @@ const AuthRepository = useAuthRepository();
 const formData = reactive({ email: "", password: "" });
 const visible = ref(false);
 const formRef = ref(null);
-const isRtl = ref(false);
 const emailField = ref(null);
 const passwordField = ref(null);
 
-// Change direction based on language
+// Direction and language helpers
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
+const isLtr = computed(() => dir.value === "ltr");
+const isRtl = computed(() => dir.value === "rtl");
 
 // Initialize language
 onMounted(() => {
     const savedLang = localStorage.getItem("locale");
     if (savedLang) {
         locale.value = savedLang;
-        isRtl.value = savedLang !== "en";
     }
 });
 
@@ -204,7 +197,31 @@ const languageItems = ref([
 const changeLanguage = (lang) => {
     locale.value = lang;
     localStorage.setItem("locale", lang);
-    isRtl.value = lang !== "en";
+};
+
+// Password field icon logic
+const getPasswordPrependIcon = computed(() => {
+    if (isRtl.value) {
+        // In RTL, show eye icon on the left (prepend position)
+        return visible.value ? "mdi-eye-off" : "mdi-eye";
+    } else {
+        // In LTR, show lock icon on the left (prepend position)
+        return "mdi-lock-outline";
+    }
+});
+
+const getPasswordAppendIcon = computed(() => {
+    if (isRtl.value) {
+        // In RTL, show lock icon on the right (append position)
+        return "mdi-lock-outline";
+    } else {
+        // In LTR, show eye icon on the right (append position)
+        return visible.value ? "mdi-eye-off" : "mdi-eye";
+    }
+});
+
+const togglePasswordVisibility = () => {
+    visible.value = !visible.value;
 };
 
 // Validation rules
@@ -293,4 +310,17 @@ const loginFunc = async () => {
     left: auto !important;
     text-align: right !important;
 }
+/* Ensure proper spacing for RTL icons */
+.input-rtl .v-field__append-inner {
+    padding-right: 0 !important;
+    padding-left: 12px !important;
+}
+.input-rtl .v-field__prepend-inner {
+    padding-left: 0 !important;
+    padding-right: 12px !important;
+}
 </style>
+
+<!--  -->
+<!--  -->
+<!--  -->
