@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DepartmentRequest extends FormRequest
 {
@@ -21,9 +22,23 @@ class DepartmentRequest extends FormRequest
      */
     public function rules(): array
     {
+        $departmentId = $this->route('department')?->id;
+
         return [
-            'name'=> 'required|string|max:255',
-            'faculty_id'=> 'required|exists:faculties,id'
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('departments', 'name')->ignore($departmentId),
+            ],
+            'faculty_id' => 'required|exists:faculties,id'
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.unique' => 'Department name already exists.',
         ];
     }
 }

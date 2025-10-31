@@ -19,7 +19,7 @@
                     item-value="id"
                     density="compact"
                     hide-details
-                    :return-object=false
+                    :return-object="false"
                 />
             </div>
 

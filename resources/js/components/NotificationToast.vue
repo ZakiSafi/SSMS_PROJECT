@@ -3,7 +3,7 @@
     <v-snackbar
         v-model="show"
         :timeout="timeout"
-        :color="type"
+        :color="snackbarColor"
         location="top right"
     >
         {{ message }}
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 
 const props = defineProps({
     notification: {
@@ -26,15 +26,23 @@ const props = defineProps({
 
 const show = ref(false);
 const message = ref("");
-const type = ref("success");
+const type = ref("primary");
 const timeout = ref(3000);
+
+const snackbarColor = computed(() => {
+    if (type.value === "success") return "green-darken-1";
+    if (type.value === "error") return "red-darken-1";
+    if (type.value === "warning") return "amber-darken-1";
+    if (type.value === "info") return "indigo-darken-1";
+    return "primary";
+});
 
 watch(
     () => props.notification,
     (newVal) => {
         if (newVal.message) {
             message.value = newVal.message;
-            type.value = newVal.type || "success";
+            type.value = newVal.type || "primary";
             show.value = true;
         }
     },

@@ -3,7 +3,6 @@
 
     <div :dir="dir">
         <AppBar :pageTitle="t('student_statistic')" />
-
         <v-divider :thickness="1" class="border-opacity-100" />
 
         <!-- Advanced Filters -->
@@ -25,18 +24,22 @@
                                 item-value="id"
                                 :label="t('province')"
                                 clearable
-                            ></v-select>
+                                :no-data-text="t('no_data_available')"
+                            />
                         </v-col>
+
                         <v-col cols="12" md="3">
                             <v-select
                                 v-model="
                                     StudentStatisticRepository.filters
                                         .university_type
                                 "
-                                :items="['private', 'public']"
+                                :items="[t('private'), t('public')]"
                                 :label="t('university_type')"
-                            ></v-select>
+                                :no-data-text="t('no_data_available')"
+                            />
                         </v-col>
+
                         <v-col cols="12" md="3">
                             <v-select
                                 v-model="
@@ -48,9 +51,13 @@
                                 item-title="name"
                                 item-value="id"
                                 clearable
-                               
-                            ></v-select>
+                                :disabled="
+                                    !StudentStatisticRepository.filters.province
+                                "
+                                :no-data-text="t('no_data_available')"
+                            />
                         </v-col>
+
                         <v-col cols="12" md="3">
                             <v-select
                                 v-model="
@@ -61,8 +68,14 @@
                                 item-title="name"
                                 item-value="id"
                                 clearable
-                            ></v-select>
+                                :disabled="
+                                    !StudentStatisticRepository.filters
+                                        .university
+                                "
+                                :no-data-text="t('no_data_available')"
+                            />
                         </v-col>
+
                         <v-col cols="12" md="3">
                             <v-select
                                 v-model="
@@ -74,19 +87,24 @@
                                 item-title="name"
                                 item-value="id"
                                 clearable
-                            ></v-select>
-                        </v-col>
-                        <v-col cols="12" md="3">
-                            <v-select
-                                v-model="
-                                    StudentStatisticRepository.filters
-                                        .academic_year
+                                :disabled="
+                                    !StudentStatisticRepository.filters.faculty
                                 "
-                                :items="academicYears"
-                                :label="t('academic_year')"
-                                clearable
-                            ></v-select>
+                                :no-data-text="t('no_data_available')"
+                            />
                         </v-col>
+
+                        <v-col cols="12" md="3" class="mt-6">
+                            <DatePicker
+                                v-model="selectedAcademicYear"
+                                format="jYYYY"
+                                type="year"
+                                :placeholder="$t('select_academic_year')"
+                                :rules="[rules.required]"
+                                clearable
+                            />
+                        </v-col>
+
                         <v-col cols="12" md="3">
                             <v-select
                                 v-model="
@@ -96,20 +114,22 @@
                                 :items="studentTypes"
                                 :label="t('student_type')"
                                 clearable
-                            ></v-select>
+                                :no-data-text="t('no_data_available')"
+                            />
                         </v-col>
+
                         <v-col cols="12" md="3" class="d-flex align-end">
                             <v-btn
                                 color="primary"
                                 @click="applyFilters"
-                                class="mb-4"
+                                class="mb-6"
                             >
                                 {{ t("apply_filters") }}
                             </v-btn>
                             <v-btn
                                 color="error"
                                 @click="resetFilters"
-                                class="mb-4 ml-2"
+                                class="mb-6 mx-2"
                                 variant="outlined"
                             >
                                 {{ t("reset") }}
@@ -162,6 +182,7 @@
             class="w-100 mx-auto"
             hover
             @update:options="loadStatistics"
+            :no-data-text="t('no_data_available')"
         >
             <template #bottom>
                 <div class="d-flex align-center justify-end pa-2">
@@ -183,6 +204,7 @@
                         variant="outlined"
                         hide-details
                         style="max-width: 100px"
+                        :no-data-text="t('no_data_available')"
                         @update:modelValue="
                             loadStatistics({
                                 page: 1,
@@ -190,7 +212,7 @@
                                     StudentStatisticRepository.itemsPerPage,
                             })
                         "
-                    ></v-select>
+                    />
                 </div>
             </template>
 
@@ -210,18 +232,19 @@
                                 @click="edit(item)"
                                 class="cursor-pointer d-flex gap-3 pb-3"
                             >
-                                <v-icon color="tealColor"
-                                    >mdi-square-edit-outline</v-icon
-                                >
+                                <v-icon color="tealColor">
+                                    mdi-square-edit-outline
+                                </v-icon>
                                 {{ t("Edit") }}
                             </v-list-item-title>
+
                             <v-list-item-title
                                 @click="deleteItem(item)"
                                 class="cursor-pointer d-flex gap-3"
                             >
-                                <v-icon color="error"
-                                    >mdi-delete-outline</v-icon
-                                >
+                                <v-icon color="error">
+                                    mdi-delete-outline
+                                </v-icon>
                                 {{ t("Delete") }}
                             </v-list-item-title>
                         </v-list-item>
@@ -231,17 +254,31 @@
         </v-data-table-server>
     </div>
 </template>
+
 <script setup>
-import { computed, onMounted, watch ,ref} from "vue";
+import { computed, onMounted, watch, ref } from "vue";
 import AppBar from "@/components/AppBar.vue";
 import CreateStudentStatistic from "./CreateStudentStatistic.vue";
 import { useStudentStatisticRepository } from "../../store/StudentStatisticRepository";
 import { useI18n } from "vue-i18n";
+import DatePicker from "vue3-persian-datetime-picker";
+import persianDate from "persian-date";
 
 const { t, locale } = useI18n();
 const StudentStatisticRepository = useStudentStatisticRepository();
 
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
+
+// Add DatePicker for academic year
+const selectedAcademicYear = ref(new persianDate().year());
+const rules = {
+    required: (v) => !!v || t("validation.required"),
+};
+
+// Watch for academic year changes
+watch(selectedAcademicYear, (newYear) => {
+    StudentStatisticRepository.filters.academic_year = newYear;
+});
 
 // ---------------- Dynamic Headers ----------------
 const dynamicHeaders = computed(() => {
@@ -293,58 +330,52 @@ const filteredDepartments = ref([]);
 
 // Watch province → fetch universities
 watch(
-  () => StudentStatisticRepository.filters.province,
-  async (newVal) => {
-    if (!newVal) {
-      UniversitiesOption.value = [];
-      return;
-    }
+    () => StudentStatisticRepository.filters.province,
+    async (newVal) => {
+        if (!newVal) {
+            UniversitiesOption.value = [];
+            return;
+        }
 
-    await StudentStatisticRepository.fetchUniversitiesByProvince(newVal);
-    UniversitiesOption.value = StudentStatisticRepository.universities;
-  }
+        await StudentStatisticRepository.fetchUniversitiesByProvince(newVal);
+        UniversitiesOption.value = StudentStatisticRepository.universities;
+    }
 );
 
 // Watch university → fetch faculties
 watch(
-  () => StudentStatisticRepository.filters.university,
-  async (newVal) => {
-    if (!newVal) {
-      facultiesOption.value = [];
-      return;
-    }
+    () => StudentStatisticRepository.filters.university,
+    async (newVal) => {
+        if (!newVal) {
+            facultiesOption.value = [];
+            return;
+        }
 
-    await StudentStatisticRepository.fetchFacultiesByUniversity(newVal);
-    facultiesOption.value = StudentStatisticRepository.faculties;
-  }
+        await StudentStatisticRepository.fetchFacultiesByUniversity(newVal);
+        facultiesOption.value = StudentStatisticRepository.faculties;
+    }
 );
 
 // Watch faculty → fetch departments
 watch(
-  () => StudentStatisticRepository.filters.faculty,
-  async (newVal) => {
-    if (!newVal) {
-      filteredDepartments.value = [];
-      return;
-    }
+    () => StudentStatisticRepository.filters.faculty,
+    async (newVal) => {
+        if (!newVal) {
+            filteredDepartments.value = [];
+            return;
+        }
 
-    await StudentStatisticRepository.fetchDepartmentsByFaculty(newVal);
-    filteredDepartments.value = StudentStatisticRepository.departments;
-  }
+        await StudentStatisticRepository.fetchDepartmentsByFaculty(newVal);
+        filteredDepartments.value = StudentStatisticRepository.departments;
+    }
 );
 
-// ---------------- Academic years & Student Types ----------------
-const academicYears = computed(() => {
-    const currentYear = new Date().getFullYear();
-    return Array.from({ length: 10 }, (_, i) => (currentYear - i).toString());
-});
-
-const studentTypes = computed(() => [
+// ---------------- Student Types ----------------
+const studentTypes = [
     { title: t("Current"), value: "current" },
     { title: t("Graduated"), value: "graduated" },
     { title: t("New"), value: "new" },
-]);
-
+];
 // ---------------- Methods ----------------
 const showCreateDialog = () => {
     StudentStatisticRepository.statistic = {};
@@ -386,6 +417,7 @@ const applyFilters = () => {
 
 const resetFilters = () => {
     StudentStatisticRepository.resetFilters();
+    selectedAcademicYear.value = new persianDate().year();
     loadStatistics({
         page: 1,
         itemsPerPage: StudentStatisticRepository.itemsPerPage,
@@ -399,7 +431,8 @@ const loadStatistics = (options) => {
 // ---------------- Lifecycle ----------------
 onMounted(() => {
     StudentStatisticRepository.fetchProvinces();
+    // Initialize the academic year filter
+    StudentStatisticRepository.filters.academic_year =
+        selectedAcademicYear.value;
 });
 </script>
-
-

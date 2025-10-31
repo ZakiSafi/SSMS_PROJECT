@@ -99,8 +99,21 @@ class DepartmentClassBasedController extends Controller
             )
             ->get();
 
-        // STEP 3: Get unique class names
-        $allClasses = $classResults->pluck('classroom')->filter()->unique()->sort()->values();
+        // STEP 3: Get unique class names and normalize them
+        $allClasses = $classResults
+            ->pluck('classroom')
+            ->filter()
+            ->unique()
+            ->map(function ($classroom) {
+                // Normalize classroom key to lowercase format expected by frontend
+                $classroomKey = strtolower($classroom);
+                if (is_numeric($classroomKey)) {
+                    $classroomKey = 'class' . $classroomKey;
+                }
+                return $classroomKey;
+            })
+            ->sort()
+            ->values();
 
         // STEP 4: Build nested structure - FIXED VERSION
         $universities = [];
@@ -143,7 +156,13 @@ class DepartmentClassBasedController extends Controller
         foreach ($classResults as $row) {
             foreach ($departmentsMap as &$department) {
                 if ($department['department'] === $row->department_name) {
-                    $department['classes'][$row->classroom] = [
+                    // Normalize classroom key to lowercase format expected by frontend
+                    $classroomKey = strtolower($row->classroom);
+                    if (is_numeric($classroomKey)) {
+                        $classroomKey = 'class' . $classroomKey;
+                    }
+
+                    $department['classes'][$classroomKey] = [
                         'shift' => $row->shift,
                         'Total_males' => (string) $row->Total_males,
                         'Total_Females' => (string) $row->Total_Females,

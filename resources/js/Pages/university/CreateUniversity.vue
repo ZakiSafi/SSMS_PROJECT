@@ -8,7 +8,9 @@
         >
             <template v-slot:default="{ isActive }">
                 <v-card class="px-3">
-                    <v-card-title class="px-2 pt-4 d-flex justify-space-between">
+                    <v-card-title
+                        class="px-2 pt-4 d-flex justify-space-between"
+                    >
                         <h2 class="font-weight-bold pl-4">
                             {{
                                 UniversityRepository.isEditMode
@@ -23,7 +25,12 @@
                     <v-divider class="border-opacity-100 mx-6"></v-divider>
 
                     <v-card-text>
-                        <v-form ref="formRef" class="pt-4" v-model="formIsValid">
+                        <v-form
+                            ref="formRef"
+                            class="pt-4"
+                            v-model="formIsValid"
+                            @submit.prevent="save"
+                        >
                             <v-text-field
                                 v-model="formData.name"
                                 variant="outlined"
@@ -49,7 +56,7 @@
                                 v-model="formData.type"
                                 :items="[
                                     { label: $t('public'), value: 'public' },
-                                    { label: $t('private'), value: 'private' }
+                                    { label: $t('private'), value: 'private' },
                                 ]"
                                 item-title="label"
                                 item-value="value"
@@ -95,6 +102,7 @@
 
                     <div class="d-flex flex-row-reverse mb-6 mx-6 gap-2">
                         <v-btn
+                            type="submit"
                             color="primary"
                             class="px-4"
                             @click="save"
@@ -165,9 +173,9 @@ watch(
             formData.name = newVal.name;
             formData.province_id = newVal.province?.id || null;
             formData.type = newVal.type || null;
-            
+
             // Set selected faculties (just IDs)
-            selectedFaculties.value = newVal.faculties?.map(f => f.id) || [];
+            selectedFaculties.value = newVal.faculties?.map((f) => f.id) || [];
         } else {
             resetForm();
         }
@@ -193,7 +201,9 @@ const loadData = async () => {
 
 // Remove faculty from selection
 const removeFaculty = (facultyId) => {
-    selectedFaculties.value = selectedFaculties.value.filter(id => id !== facultyId);
+    selectedFaculties.value = selectedFaculties.value.filter(
+        (id) => id !== facultyId
+    );
 };
 
 // Save function

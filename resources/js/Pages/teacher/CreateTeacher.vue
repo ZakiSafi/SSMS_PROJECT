@@ -4,13 +4,18 @@
             transition="dialog-top-transition"
             width="50rem"
             v-model="FacultyRepository.createDialog"
-            
         >
             <template v-slot:default="{ isActive }">
                 <v-card class="px-3">
-                    <v-card-title class="px-2 pt-4 d-flex justify-space-between">
+                    <v-card-title
+                        class="px-2 pt-4 d-flex justify-space-between"
+                    >
                         <h2 class="font-weight-bold pl-4">
-                            {{ FacultyRepository.isEditMode ? $t('form.update') : $t('create')  }}
+                            {{
+                                FacultyRepository.isEditMode
+                                    ? $t("form.update")
+                                    : $t("create")
+                            }}
                         </h2>
                         <v-btn variant="text" @click="isActive.value = false">
                             <v-icon>mdi-close</v-icon>
@@ -19,52 +24,60 @@
                     <v-divider class="border-opacity-100 mx-6"></v-divider>
 
                     <v-card-text>
-                        <v-form ref="formRef" class="pt-4">
+                        <v-form
+                            ref="formRef"
+                            class="pt-4"
+                            @submit.prevent="save"
+                        >
                             <v-row>
                                 <v-col cols="12">
                                     <DatePicker
-                                            v-model="formData.academic_year" 
-                                            format="jYYYY"
-                                            type="year"
-                                            :placeholder="$t('Select year')"
-                                            rounded
-                                        />
+                                        v-model="formData.academic_year"
+                                        format="jYYYY"
+                                        type="year"
+                                        :placeholder="$t('Select year')"
+                                        rounded
+                                    />
                                 </v-col>
-                               <v-col cols="6">
-                                 <v-text-field
-                                v-model="formData.total_teachers"
-                               variant="outlined"
-                                :label="$t('Total Teachers')"
-                              
-                                class="pb-4"
-                                density="compact"
-                                :rules="[rules.required,rules.number]"
-                            ></v-text-field>
-                               </v-col>
-                               <v-col cols="6">
-                                 <v-select
-                                v-model="formData.university_id"
-                                :items="FacultyRepository.universities"
-                                item-value="id"
-                                item-title="name"
-                               variant="outlined"
-                                :label="$t('University')"
-                                density="compact"
-                                class="pb-4"
-                                :rules="[rules.required]"
-                            ></v-select>
-                               </v-col>
-                                    
+                                <v-col cols="6">
+                                    <v-text-field
+                                        v-model="formData.total_teachers"
+                                        variant="outlined"
+                                        :label="$t('Total Teachers')"
+                                        class="pb-4"
+                                        density="compact"
+                                        :rules="[rules.required, rules.number]"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="6">
+                                    <v-select
+                                        v-model="formData.university_id"
+                                        :items="FacultyRepository.universities"
+                                        item-value="id"
+                                        item-title="name"
+                                        variant="outlined"
+                                        :label="$t('University')"
+                                        density="compact"
+                                        class="pb-4"
+                                        :rules="[rules.required]"
+                                    ></v-select>
+                                </v-col>
                             </v-row>
-                            
-                           
-                            
                         </v-form>
                     </v-card-text>
 
                     <div class="d-flex flex-row-reverse mb-6 mx-6">
-                        <v-btn color="primary" class="px-4" @click="save">
-                            {{ FacultyRepository.isEditMode ? $t('form.update')   : $t("form.submit") }}
+                        <v-btn
+                            type="submit"
+                            color="primary"
+                            class="px-4"
+                            @click="save"
+                        >
+                            {{
+                                FacultyRepository.isEditMode
+                                    ? $t("form.update")
+                                    : $t("form.submit")
+                            }}
                         </v-btn>
                     </div>
                 </v-card>
@@ -73,51 +86,40 @@
     </div>
 </template>
 
-
 <script setup>
 import { ref, reactive } from "vue";
 import { onMounted } from "vue";
 import { useFacultyRepository } from "@/store/FacultyRepository";
 import DatePicker from "vue3-persian-datetime-picker";
 
-
 const FacultyRepository = useFacultyRepository();
 
-onMounted(()=>{
-
+onMounted(() => {
     FacultyRepository.FetchUniversities();
-})
+});
 
 const formRef = ref(null);
 
 const formData = reactive({
     id: FacultyRepository.teacher.id,
-    academic_year:FacultyRepository.teacher.academic_year?.toString() || null,
+    academic_year: FacultyRepository.teacher.academic_year?.toString() || null,
     total_teachers: FacultyRepository.teacher.total_teachers,
     university_id: FacultyRepository.teacher.university?.id || null,
 });
 
-
 const rules = {
-  required: (value) => !!value || "This field is required.",
-  number: (value) =>
-    /^[0-9]+$/.test(value) || "Please enter a valid number.",
+    required: (value) => !!value || "This field is required.",
+    number: (value) => /^[0-9]+$/.test(value) || "Please enter a valid number.",
 };
 
 const save = async () => {
     const isValid = await formRef.value.validate();
     if (isValid) {
         if (FacultyRepository.isEditMode) {
-            await FacultyRepository.updateTeacher(formData,formData.id,);
+            await FacultyRepository.updateTeacher(formData, formData.id);
         } else {
             await FacultyRepository.createTeacher(formData);
         }
     }
 };
-
-
-
-
-
-
 </script>

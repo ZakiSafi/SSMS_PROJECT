@@ -292,11 +292,11 @@ class DashboardService
             $query->where('academic_year', $filters['year']);
         }
 
-        if (!empty($filters['season'])) {
+        if (!empty($filters['season']) && $filters['season'] !== 'all') {
             $query->where('season', $filters['season']);
         }
 
-        if (!empty($filters['university_type'])) {
+        if (!empty($filters['university_type']) && $filters['university_type'] !== 'all') {
             $query->whereHas('university', function ($q) use ($filters) {
                 $q->where('type', $filters['university_type']);
             });

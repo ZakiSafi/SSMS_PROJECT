@@ -9,6 +9,7 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
         totalExpenses: 0,
         expenses: reactive([]),
         universities: reactive([]),
+        provinces: reactive([]),
 
         // UI state
         dialog: false,
@@ -40,6 +41,8 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
 
         facultyBreakdown: reactive([]),
         trends: reactive([]),
+        recentActivity: reactive([]),
+        genderDistribution: reactive({ data: [], percentages: {} }),
 
         // API-specific data
         earnings: 0,
@@ -71,16 +74,52 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
     }),
 
     actions: {
-        async fetchSummaryData({ year, season, university }) {
+        _sanitizeFilters(raw) {
+            const params = { ...raw };
+            // Only remove 'all' for season as it's not accepted by most endpoints
+            if (
+                params.season &&
+                String(params.season).toLowerCase() === "all"
+            ) {
+                delete params.season;
+            }
+            // Keep university_type='all' as it's accepted by summary endpoint
+            // Remove explicit nulls and empty strings to avoid exists validations
+            Object.keys(params).forEach((k) => {
+                if (
+                    params[k] === null ||
+                    params[k] === undefined ||
+                    params[k] === ""
+                ) {
+                    delete params[k];
+                }
+            });
+            return params;
+        },
+        async fetchSummaryData({
+            year,
+            season,
+            university_type,
+            province_id,
+            university_id,
+            shift,
+            faculty_id,
+        }) {
             this.isLoading = true;
             try {
+                const raw = {
+                    year,
+                    season,
+                    university_type,
+                    province_id,
+                    university_id,
+                    faculty_id,
+                    shift,
+                };
+                // summary endpoint accepts university_type=all but NOT season=all
+                const params = this._sanitizeFilters(raw);
                 const response = await axios.get("/dashboard/summary", {
-                    params: {
-                        year,
-                        season: season.toLowerCase(),
-                        shift: "day", // You can make this dynamic too if needed
-                        university, // optional, if your API supports it
-                    },
+                    params,
                 });
 
                 const data = response.data.data;
@@ -106,11 +145,14 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
                 this.isLoading = false;
             }
         },
-        async fetchFacultyBreakdown() {
+        async fetchFacultyBreakdown(filters = {}) {
             this.isLoading = true;
             try {
+                // faculty-breakdown does NOT accept season=all; strip it
+                const params = this._sanitizeFilters(filters);
                 const response = await axios.get(
-                    "/dashboard/faculty-breakdown"
+                    "/dashboard/faculty-breakdown",
+                    { params }
                 );
                 this.facultyBreakdown = response.data.data || [];
             } catch (error) {
@@ -128,6 +170,26 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
                 this.trends = response.data.data || [];
             } catch (error) {
                 console.error("Failed to fetch trends :", error);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+        async fetchGenderDistribution(filters = {}) {
+            this.isLoading = true;
+            try {
+                // gender-distribution does NOT accept season=all; strip it
+                const params = this._sanitizeFilters(filters);
+                const response = await axios.get(
+                    "/dashboard/gender-distribution",
+                    { params }
+                );
+                this.genderDistribution = response.data.data || {
+                    data: [],
+                    percentages: {},
+                };
+            } catch (error) {
+                console.error("Failed to fetch gender distribution:", error);
+                this.genderDistribution = { data: [], percentages: {} };
             } finally {
                 this.isLoading = false;
             }
@@ -150,6 +212,15 @@ export const useDashboardRepository = defineStore("DashboardRepository", {
                 this.universities = response.data.data;
             } catch (error) {
                 console.error("Failed to fetch universities:", error);
+            }
+        },
+        async fetchProvinces() {
+            try {
+                const response = await axios.get(`provinces`);
+                this.provinces = response.data.data || [];
+            } catch (error) {
+                console.error("Failed to fetch provinces:", error);
+                this.provinces = [];
             }
         },
     },

@@ -76,10 +76,20 @@ export const useProvinceRepository = defineStore("provinceRepository", {
                 });
                 return response.data;
             } catch (error) {
+                const serverMessage = error.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    error.response?.data?.errors
+                )
+                    ? error.response.data.errors[0]
+                    : error.response?.data?.errors &&
+                      typeof error.response.data.errors === "object"
+                    ? Object.values(error.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || error.message;
                 const notificationStore = useNotificationStore();
                 notificationStore.showNotification(
-                    "Failed to create province: " +
-                        (error.response?.data?.message || error.message),
+                    `Failed to create province: ${message}`,
                     "error"
                 );
                 throw error;
@@ -106,10 +116,20 @@ export const useProvinceRepository = defineStore("provinceRepository", {
                 });
                 return response.data;
             } catch (error) {
+                const serverMessage = error.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    error.response?.data?.errors
+                )
+                    ? error.response.data.errors[0]
+                    : error.response?.data?.errors &&
+                      typeof error.response.data.errors === "object"
+                    ? Object.values(error.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || error.message;
                 const notificationStore = useNotificationStore();
                 notificationStore.showNotification(
-                    "Failed to update province: " +
-                        (error.response?.data?.message || error.message),
+                    `Failed to update province: ${message}`,
                     "error"
                 );
                 throw error;

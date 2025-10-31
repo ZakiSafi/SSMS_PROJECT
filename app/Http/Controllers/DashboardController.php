@@ -26,7 +26,7 @@ class DashboardController extends Controller
     {
         $validated = $request->validate([
             'year' => 'nullable|integer',
-            'season' => 'nullable|in:spring,autumn',
+            'season' => 'nullable|in:spring,autumn,all',
             'university_type' => 'nullable|in:public,private,all',
             'province_id' => 'nullable|exists:provinces,id',
             'university_id' => 'nullable|exists:universities,id',
@@ -34,8 +34,9 @@ class DashboardController extends Controller
             'shift' => 'nullable|in:day,night',
         ]);
 
+        // Only filter out null values, keep 'all' values for the service to handle
         $filters = array_filter($validated, function ($value) {
-            return $value !== null && $value !== 'all';
+            return $value !== null;
         });
 
         return response()->json([

@@ -4,16 +4,17 @@
         <v-divider :thickness="1" class="border-opacity-100"></v-divider>
 
         <v-row class="pt-6 align-center">
-            <!-- Year Combobox (left side) -->
-            <v-col cols="3">
-                <v-combobox
+            <!-- Year Picker (left side) -->
+            <v-col cols="3" class="mb-4">
+                <DatePicker
                     v-model="ReportRepository.date"
-                    :items="yearRange"
-                    :label="$t('Select or Type Year')"
-                    variant="outlined"
-                    density="compact"
+                    format="jYYYY"
+                    type="year"
+                    :placeholder="$t('Select or Type Year')"
+                    rounded
+                    :auto-submit="true"
                     @update:modelValue="onDateChange"
-                ></v-combobox>
+                />
             </v-col>
 
             <!-- Print Button (right side) -->
@@ -90,6 +91,7 @@ import { useReportRepository } from "@/store/ReportRepository";
 import { ref, computed } from "vue";
 import persianDate from "persian-date";
 import { useI18n } from "vue-i18n";
+import DatePicker from "vue3-persian-datetime-picker";
 
 const { t, locale } = useI18n();
 const dir = computed(() => {

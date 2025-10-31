@@ -15,7 +15,7 @@
                 <v-menu transition="scale-transition">
                     <template #activator="{ props }">
                         <v-btn
-                            :icon="$t('mdi-web')"
+                            icon="mdi-web"
                             flat
                             class="icon bg-head mx-4"
                             size="small"
@@ -32,22 +32,18 @@
                             :key="$t(item.title)"
                             @click="changeLanguage(item.lang)"
                         >
-                            <div class="flex items-center gap-4">
-                                <div class="mr-2">
-                                    <v-list-item-icon>
-                                        <img
-                                            :src="item.icon"
-                                            :alt="$t('language_icon')"
-                                            class="icon-size"
-                                            height="22"
-                                            width="22"
-                                        />
-                                    </v-list-item-icon>
-                                </div>
-                                <v-list-item-title>{{
-                                    $t(item.title)
-                                }}</v-list-item-title>
-                            </div>
+                            <template v-slot:prepend>
+                                <img
+                                    :src="item.icon"
+                                    :alt="$t('language_icon')"
+                                    class="icon-size"
+                                    height="22"
+                                    width="22"
+                                />
+                            </template>
+                            <v-list-item-title>{{
+                                $t(item.title)
+                            }}</v-list-item-title>
                         </v-list-item>
                     </v-list>
                 </v-menu>
@@ -61,7 +57,7 @@
                             size="small"
                             height="4.7vh"
                             width="4.7vh"
-                            :icon="$t('mdi-logout')"
+                            icon="mdi-logout"
                             v-bind="activatorProps"
                             :title="$t('logout_button')"
                         >
@@ -83,9 +79,7 @@
                                     @click="isActive.value = false"
                                     :aria-label="$t('close_dialog')"
                                 >
-                                    <v-icon>{{
-                                        $t("mdi-close")
-                                    }}</v-icon></v-btn
+                                    <v-icon>mdi-close</v-icon></v-btn
                                 >
                             </v-card-title>
 

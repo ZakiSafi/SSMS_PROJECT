@@ -25,6 +25,7 @@ class LogResource extends JsonResource
             "table_name" => $this->table_name,
             "record_id" => $this->record_id,
             "ip_address" => $this->ip_address,
+            "user_agent" => $this->user_agent,
             "created_at" => $this->created_at->toDateTimeString(),
             "updated_at" => $this->updated_at->toDateTimeString(),
         ];

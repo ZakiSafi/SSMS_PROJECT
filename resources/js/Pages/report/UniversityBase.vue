@@ -6,55 +6,90 @@
         <v-divider :thickness="1" class="border-opacity-100" />
 
         <v-row class="pt-6 align-center">
-            <!-- Left side: Year Combobox -->
-            <v-col cols="3">
-                <v-combobox
+            <!-- Left side: Year Picker -->
+            <v-col cols="3" class="mb-4">
+                <DatePicker
                     v-model="ReportRepository.date"
-                    :items="yearRange"
-                    :label="$t('Select or Type Year')"
-                    variant="outlined"
-                    density="compact"
-                    :rules="[validateYearInput]"
+                    format="jYYYY"
+                    type="year"
+                    :placeholder="$t('Select or Type Year')"
+                    rounded
+                    :auto-submit="true"
                     @update:modelValue="onDateChange"
-                ></v-combobox>
+                />
             </v-col>
 
-            <!-- Center: Type and Shift selects -->
-            <v-col cols="6">
-                <v-row>
-                    <v-col cols="6">
-                        <v-select
-                            v-model="ReportRepository.type"
-                            :items="[
-                                { text: $t('public'), value: 'public' },
-                                { text: $t('private'), value: 'private' },
-                            ]"
-                            :label="$t('Select University Type')"
+            <!-- Filters dropdown wrapper -->
+            <v-col cols="auto" class="mb-6">
+                <v-menu
+                    location="bottom"
+                    transition="fade-transition"
+                    :close-on-content-click="false"
+                >
+                    <template #activator="{ props }">
+                        <v-btn
+                            v-bind="props"
+                            color="primary"
                             variant="outlined"
-                            density="compact"
-                            item-title="text"
-                            item-value="value"
-                            :rules="[validateType]"
-                            @update:modelValue="onTypeChange"
-                        />
-                    </v-col>
-                    <v-col cols="6">
-                        <v-select
-                            v-model="ReportRepository.shift"
-                            :items="[
-                                { text: $t('day'), value: 'Day' },
-                                { text: $t('night'), value: 'Night' },
-                            ]"
-                            item-title="text"
-                            item-value="value"
-                            :label="$t('Select Shift')"
-                            variant="outlined"
-                            density="compact"
-                            :rules="[validateShift]"
-                            @update:modelValue="onShiftChange"
-                        />
-                    </v-col>
-                </v-row>
+                        >
+                            {{ $t("filters") || "Filters" }}
+                        </v-btn>
+                    </template>
+                    <v-card min-width="320" class="pa-4">
+                        <v-row dense>
+                            <v-col cols="12">
+                                <v-select
+                                    v-model="ReportRepository.type"
+                                    :items="[
+                                        { text: $t('all'), value: 'all' },
+                                        { text: $t('public'), value: 'public' },
+                                        {
+                                            text: $t('private'),
+                                            value: 'private',
+                                        },
+                                    ]"
+                                    :label="$t('Select University Type')"
+                                    variant="outlined"
+                                    density="compact"
+                                    item-title="text"
+                                    item-value="value"
+                                    @update:modelValue="onTypeChange"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-select
+                                    v-model="ReportRepository.shift"
+                                    :items="[
+                                        { text: $t('all'), value: 'all' },
+                                        { text: $t('day'), value: 'day' },
+                                        { text: $t('night'), value: 'night' },
+                                    ]"
+                                    item-title="text"
+                                    item-value="value"
+                                    :label="$t('Select Shift')"
+                                    variant="outlined"
+                                    density="compact"
+                                    @update:modelValue="onShiftChange"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-select
+                                    v-model="ReportRepository.university"
+                                    :items="[
+                                        { id: 'all', name: $t('all') },
+                                        ...ReportRepository.allUniversities,
+                                    ]"
+                                    item-title="name"
+                                    item-value="id"
+                                    :label="$t('select_university')"
+                                    variant="outlined"
+                                    density="compact"
+                                    @update:modelValue="onUniversityChange"
+                                />
+                            </v-col>
+                        </v-row>
+                    </v-card>
+                </v-menu>
             </v-col>
 
             <!-- Right side: Print Button -->
@@ -128,9 +163,10 @@
 <script setup>
 import AppBar from "@/components/AppBar.vue";
 import { useReportRepository } from "@/store/ReportRepository";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import persianDate from "persian-date";
 import { useI18n } from "vue-i18n";
+import DatePicker from "vue3-persian-datetime-picker";
 
 const { t, locale } = useI18n();
 const dir = computed(() => {
@@ -142,6 +178,17 @@ const ReportRepository = useReportRepository();
 // Initialize pagination values
 ReportRepository.page = ReportRepository.page || 1;
 ReportRepository.itemsPerPage = ReportRepository.itemsPerPage || 10;
+
+// Ensure defaults for new filters
+ReportRepository.type = ReportRepository.type || "all";
+ReportRepository.shift = ReportRepository.shift || "all";
+ReportRepository.university = ReportRepository.university || "all";
+
+onMounted(() => {
+    if (!ReportRepository.allUniversities?.length) {
+        ReportRepository.fetchUniversities();
+    }
+});
 
 const getCurrentPersianYear = () => new persianDate().year().toString();
 const currentYear = ref(getCurrentPersianYear());
@@ -251,7 +298,8 @@ const fetchData = () => {
         },
         ReportRepository.date,
         ReportRepository.type,
-        ReportRepository.shift
+        ReportRepository.shift,
+        ReportRepository.university
     );
 };
 
@@ -269,6 +317,12 @@ const onTypeChange = (type) => {
 
 const onShiftChange = (shift) => {
     ReportRepository.shift = shift;
+    ReportRepository.page = 1;
+    fetchData();
+};
+
+const onUniversityChange = (id) => {
+    ReportRepository.university = id;
     ReportRepository.page = 1;
     fetchData();
 };

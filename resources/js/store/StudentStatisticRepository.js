@@ -96,13 +96,29 @@ export const useStudentStatisticRepository = defineStore(
         throw error;
     }
 },
+            async fetchUniversitiesByProvince(provinceId) {
+                try {
+                    const response = await axios.get("universities");
+                    this.universities = response.data.data.filter(
+                        (uni) => uni.province.id === provinceId
+                    );
+                    console.log(this.universities);
+                } catch (error) {
+                    console.error("Error fetching universities:", error);
+                    throw error;
+                }
+            },
             async fetchFacultiesByUniversity(universityId) {
                 try {
                     const params = universityId
                         ? { university_id: universityId }
                         : {};
                     const response = await axios.get("faculties", { params });
-                    this.faculties = response.data.data.filter( (faculty) => faculty.universities.some((uni) => uni.id === universityId) );;
+                    this.faculties = response.data.data.filter((faculty) =>
+                        faculty.universities.some(
+                            (uni) => uni.id === universityId
+                        )
+                    );
                 } catch (error) {
                     console.error("Error fetching faculties:", error);
                     throw error;
@@ -113,7 +129,9 @@ export const useStudentStatisticRepository = defineStore(
                 try {
                     const params = facultyId ? { faculty_id: facultyId } : {};
                     const response = await axios.get("departments", { params });
-                    this.departments = response.data.data.filter(dep => dep.faculty.id === facultyId);
+                    this.departments = response.data.data.filter(
+                        (dep) => dep.faculty.id === facultyId
+                    );
                 } catch (error) {
                     console.error("Error fetching departments:", error);
                     throw error;
@@ -153,15 +171,14 @@ export const useStudentStatisticRepository = defineStore(
                 }
             },
 
-            async fetchProvinces(){
-                   try {
+            async fetchProvinces() {
+                try {
                     const response = await axios.get("provinces");
                     this.provinces = response.data.data;
                 } catch (error) {
                     console.error("Failed to fetch departments:", error);
                     throw error;
                 }
-
             },
 
             async fetchStatistic(id) {
@@ -183,7 +200,18 @@ export const useStudentStatisticRepository = defineStore(
                         itemsPerPage: this.itemsPerPage,
                     });
                 } catch (error) {
-                    console.error("Failed to create statistic:", error);
+                    const serverMessage = error.response?.data?.message;
+                    const firstValidationError = Array.isArray(
+                        error.response?.data?.errors
+                    )
+                        ? error.response.data.errors[0]
+                        : error.response?.data?.errors &&
+                          typeof error.response.data.errors === "object"
+                        ? Object.values(error.response.data.errors).flat()[0]
+                        : null;
+                    const message =
+                        firstValidationError || serverMessage || error.message;
+                    console.error("Failed to create statistic:", message);
                     throw error;
                 }
             },
@@ -197,7 +225,18 @@ export const useStudentStatisticRepository = defineStore(
                         itemsPerPage: this.itemsPerPage,
                     });
                 } catch (error) {
-                    console.error("Failed to update statistic:", error);
+                    const serverMessage = error.response?.data?.message;
+                    const firstValidationError = Array.isArray(
+                        error.response?.data?.errors
+                    )
+                        ? error.response.data.errors[0]
+                        : error.response?.data?.errors &&
+                          typeof error.response.data.errors === "object"
+                        ? Object.values(error.response.data.errors).flat()[0]
+                        : null;
+                    const message =
+                        firstValidationError || serverMessage || error.message;
+                    console.error("Failed to update statistic:", message);
                     throw error;
                 }
             },

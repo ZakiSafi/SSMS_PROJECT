@@ -8,6 +8,7 @@ import { aliases, mdi } from "vuetify/iconsets/mdi";
 export default createVuetify({
     components,
     directives,
+    rtl: true,
     icons: {
         defaultSet: "mdi",
         aliases,

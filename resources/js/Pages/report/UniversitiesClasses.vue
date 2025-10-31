@@ -5,30 +5,93 @@
 
         <!-- Filters and Print Button -->
         <v-row class="pt-6 pb-6" align="center">
-            <!-- Year Combobox -->
+            <!-- Year DatePicker -->
             <v-col cols="3">
-                <v-combobox
+                <DatePicker
                     v-model="ReportRepository.date"
-                    :items="yearRange"
-                    :label="$t('Select or Type Year')"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
+                    format="jYYYY"
+                    type="year"
+                    :placeholder="$t('Select or Type Year')"
+                    rounded
+                    :auto-submit="true"
                     @update:modelValue="onDateChange"
                 />
             </v-col>
 
-            <!-- Shift Select -->
-            <v-col cols="3">
-                <v-select
-                    v-model="ReportRepository.shift"
-                    :items="[$t('day'), $t('night')]"
-                    :label="$t('Select Shift')"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    @update:modelValue="onDateChange"
-                />
+            <!-- Filters dropdown wrapper -->
+            <v-col cols="auto">
+                <v-menu
+                    location="bottom"
+                    transition="fade-transition"
+                    :close-on-content-click="false"
+                >
+                    <template #activator="{ props }">
+                        <v-btn
+                            v-bind="props"
+                            color="primary"
+                            variant="outlined"
+                        >
+                            {{ $t("filters") || "Filters" }}
+                        </v-btn>
+                    </template>
+                    <v-card min-width="320" class="pa-4">
+                        <v-row dense>
+                            <v-col cols="12">
+                                <v-select
+                                    v-model="ReportRepository.shift"
+                                    :items="[
+                                        { text: $t('all'), value: 'all' },
+                                        { text: $t('day'), value: 'day' },
+                                        { text: $t('night'), value: 'night' },
+                                    ]"
+                                    :label="$t('Select Shift')"
+                                    variant="outlined"
+                                    density="compact"
+                                    item-title="text"
+                                    item-value="value"
+                                    hide-details
+                                    @update:modelValue="onDateChange"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-select
+                                    v-model="ReportRepository.type"
+                                    :items="[
+                                        { text: $t('all'), value: 'all' },
+                                        { text: $t('public'), value: 'public' },
+                                        {
+                                            text: $t('private'),
+                                            value: 'private',
+                                        },
+                                    ]"
+                                    :label="$t('Select University Type')"
+                                    variant="outlined"
+                                    density="compact"
+                                    item-title="text"
+                                    item-value="value"
+                                    hide-details
+                                    @update:modelValue="onDateChange"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-select
+                                    v-model="ReportRepository.university"
+                                    :items="[
+                                        { id: 'all', name: $t('all') },
+                                        ...ReportRepository.allUniversities,
+                                    ]"
+                                    item-title="name"
+                                    item-value="id"
+                                    :label="$t('select_university')"
+                                    variant="outlined"
+                                    density="compact"
+                                    hide-details
+                                    @update:modelValue="onDateChange"
+                                />
+                            </v-col>
+                        </v-row>
+                    </v-card>
+                </v-menu>
             </v-col>
 
             <!-- Print Button -->
@@ -84,19 +147,28 @@
                             <td>
                                 {{
                                     institution.classes?.[`class${classNum}`]
-                                        ?.Total_males || 0
+                                        ?.Total_males ||
+                                    institution.classes?.[`Class${classNum}`]
+                                        ?.Total_males ||
+                                    0
                                 }}
                             </td>
                             <td>
                                 {{
                                     institution.classes?.[`class${classNum}`]
-                                        ?.Total_Females || 0
+                                        ?.Total_Females ||
+                                    institution.classes?.[`Class${classNum}`]
+                                        ?.Total_Females ||
+                                    0
                                 }}
                             </td>
                             <td>
                                 {{
                                     institution.classes?.[`class${classNum}`]
-                                        ?.Total_Students || 0
+                                        ?.Total_Students ||
+                                    institution.classes?.[`Class${classNum}`]
+                                        ?.Total_Students ||
+                                    0
                                 }}
                             </td>
                         </template>
@@ -154,6 +226,7 @@ import { ref, computed, onMounted } from "vue";
 import { useReportRepository } from "@/store/ReportRepository";
 import { useI18n } from "vue-i18n";
 import persianDate from "persian-date";
+import DatePicker from "vue3-persian-datetime-picker";
 
 const { t, locale } = useI18n();
 const dir = computed(() => (locale.value === "en" ? "ltr" : "rtl"));
@@ -170,13 +243,20 @@ const yearRange = computed(() => {
     }
     return years;
 });
-// In your <script setup>
+
+// Initialize defaults
+ReportRepository.type = ReportRepository.type || "all";
+ReportRepository.shift = ReportRepository.shift || "day"; // Use 'day' instead of 'all' as default
+ReportRepository.university = ReportRepository.university || "all";
+
 const onPageChange = (newPage) => {
     ReportRepository.page = newPage;
     ReportRepository.fetchUniversityClasses(
         { page: newPage, itemsPerPage: ReportRepository.itemsPerPage },
         ReportRepository.date,
-        ReportRepository.shift
+        ReportRepository.shift,
+        ReportRepository.type,
+        ReportRepository.university
     );
 };
 
@@ -188,9 +268,12 @@ const onItemsPerPageChange = () => {
             itemsPerPage: ReportRepository.itemsPerPage,
         },
         ReportRepository.date,
-        ReportRepository.shift
+        ReportRepository.shift,
+        ReportRepository.type,
+        ReportRepository.university
     );
 };
+
 const onDateChange = () => {
     ReportRepository.page = 1;
     ReportRepository.fetchUniversityClasses(
@@ -199,11 +282,19 @@ const onDateChange = () => {
             itemsPerPage: ReportRepository.itemsPerPage,
         },
         ReportRepository.date,
-        ReportRepository.shift
+        ReportRepository.shift,
+        ReportRepository.type,
+        ReportRepository.university
     );
 };
 
-onMounted(() => {
+onMounted(async () => {
+    // Fetch universities list first
+    if (!ReportRepository.allUniversities?.length) {
+        await ReportRepository.fetchUniversities();
+    }
+
+    // Then fetch the data
     ReportRepository.page = 1;
     ReportRepository.fetchUniversityClasses(
         {
@@ -211,7 +302,9 @@ onMounted(() => {
             itemsPerPage: ReportRepository.itemsPerPage,
         },
         ReportRepository.date,
-        ReportRepository.shift
+        ReportRepository.shift,
+        ReportRepository.type,
+        ReportRepository.university
     );
 });
 

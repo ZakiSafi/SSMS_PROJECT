@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
-import {ref,reactive} from 'vue';
-import {axios} from '../axios';
+import { ref, reactive } from "vue";
+import { axios } from "../axios";
+import { useNotificationStore } from "./notification";
 
-export  const useFacultyRepository=defineStore("facultyRepository",{
-    state(){
-        return{
+export const useFacultyRepository = defineStore("facultyRepository", {
+    state() {
+        return {
             isEditMode: ref(false),
             search: ref(""),
             loadingTable: ref(true),
@@ -18,71 +19,105 @@ export  const useFacultyRepository=defineStore("facultyRepository",{
             teacher: reactive({}),
             faculty: reactive({}),
             universities: reactive([]),
-        }
+        };
     },
-    actions:{
-        async FetchFaculties({ page, itemsPerPage }){
-            this.loading=true;
-            const response=await axios.get(
+    actions: {
+        async FetchFaculties({ page, itemsPerPage }) {
+            this.loading = true;
+            const response = await axios.get(
                 `faculties?page=${page}&perPage=${itemsPerPage}&name=${this.search}`
             );
 
-            this.faculties=response.data.data
-            this.totalItems=response.data.meta.total
-            this.loading=false
-
+            this.faculties = response.data.data;
+            this.totalItems = response.data.meta.total;
+            this.loading = false;
         },
 
-        async FetchFaculty(id){
-            try{
-                const response= await axios.get(`faculties/${id}`);
-                this.faculty=response.data.data
-                console.log(this.faculty)
-            }
-            catch(err){
-                console.log(err)
+        async FetchFaculty(id) {
+            try {
+                const response = await axios.get(`faculties/${id}`);
+                this.faculty = response.data.data;
+                console.log(this.faculty);
+            } catch (err) {
+                console.log(err);
             }
         },
 
-        async CreateFaculty(formData){
-            try{
-                const config={
-                    method:"POST",
-                    url:"faculties",
-                    data:formData
+        async CreateFaculty(formData) {
+            try {
+                const config = {
+                    method: "POST",
+                    url: "faculties",
+                    data: formData,
                 };
 
                 await axios(config);
-                this.createDialog=false
+                this.createDialog = false;
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    "Faculty created successfully",
+                    "success"
+                );
                 this.FetchFaculties({
                     page: this.page,
                     itemsPerPage: this.itemsPerPage,
                 });
             } catch (err) {
-                // handle error if needed
+                const serverMessage = err.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    err.response?.data?.errors
+                )
+                    ? err.response.data.errors[0]
+                    : err.response?.data?.errors &&
+                      typeof err.response.data.errors === "object"
+                    ? Object.values(err.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || err.message;
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    `Failed to create faculty: ${message}`,
+                    "error"
+                );
             }
-
         },
 
-
-        async UpdateFaculty(formData,id){
-            try{
-                const config={
-                    method:"PUT",
-                    url:`faculties/${id}`,
-                    data:formData
+        async UpdateFaculty(formData, id) {
+            try {
+                const config = {
+                    method: "PUT",
+                    url: `faculties/${id}`,
+                    data: formData,
                 };
 
-                await axios(config)
-                this.createDialog=false
+                await axios(config);
+                this.createDialog = false;
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    "Faculty updated successfully",
+                    "success"
+                );
                 this.FetchFaculties({
                     page: this.page,
-                        itemsPerPage: this.itemsPerPage,
+                    itemsPerPage: this.itemsPerPage,
                 });
-            }
-
-            catch(err){
-                console.log(err)
+            } catch (err) {
+                const serverMessage = err.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    err.response?.data?.errors
+                )
+                    ? err.response.data.errors[0]
+                    : err.response?.data?.errors &&
+                      typeof err.response.data.errors === "object"
+                    ? Object.values(err.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || err.message;
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    `Failed to update faculty: ${message}`,
+                    "error"
+                );
             }
         },
 
@@ -97,17 +132,37 @@ export  const useFacultyRepository=defineStore("facultyRepository",{
                 };
 
                 await axios(config);
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    "Faculty deleted successfully",
+                    "success"
+                );
                 this.FetchFaculties({
                     page: this.page,
                     itemsPerPage: this.itemsPerPage,
                 });
             } catch (err) {
                 this.error = err;
+                const serverMessage = err.response?.data?.message;
+                const firstValidationError = Array.isArray(
+                    err.response?.data?.errors
+                )
+                    ? err.response.data.errors[0]
+                    : err.response?.data?.errors &&
+                      typeof err.response.data.errors === "object"
+                    ? Object.values(err.response.data.errors).flat()[0]
+                    : null;
+                const message =
+                    firstValidationError || serverMessage || err.message;
+                const notificationStore = useNotificationStore();
+                notificationStore.showNotification(
+                    `Failed to delete faculty: ${message}`,
+                    "error"
+                );
             }
         },
 
-
-        async fetchTeachers({ page, itemsPerPage } ){
+        async fetchTeachers({ page, itemsPerPage }) {
             this.loading = true;
             try {
                 const response = await axios.get(
@@ -197,5 +252,5 @@ export  const useFacultyRepository=defineStore("facultyRepository",{
                 // handle error if needed
             }
         },
-    }
-})
+    },
+});

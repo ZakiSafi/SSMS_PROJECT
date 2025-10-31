@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProvinceRequest extends FormRequest
 {
@@ -21,8 +22,22 @@ class ProvinceRequest extends FormRequest
      */
     public function rules(): array
     {
+        $provinceId = $this->route('province')?->id;
+
         return [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('provinces', 'name')->ignore($provinceId),
+            ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.unique' => 'Province name already exists.',
         ];
     }
 }
