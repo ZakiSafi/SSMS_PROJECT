@@ -450,6 +450,8 @@ const timeRangeOptions = computed(() => {
     return [
         { label: `5 ${t("years")}`, value: "5years" },
         { label: `10 ${t("years")}`, value: "10years" },
+        { label: `15 ${t("years")}`, value: "15years" },
+        { label: `20 ${t("years")}`, value: "20years" },
         { label: t("all"), value: "all" },
     ];
 });
